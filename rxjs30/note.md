@@ -282,7 +282,7 @@ forEach: 是 JavaScript 从 ES5 开始提供的一种遍历(枚举)数组的方�
 
 ## 3. concatAll
 
-03-concatall.js
+[代码 03-concatAll](03-concatall.js)
 
 # 04: 什么是 Observable ?
 
@@ -300,7 +300,7 @@ document.body.addEventListener('click', function (event) {
 });
 ```
 
-代码 04-observer.js
+[代码 04-observer](04-observer.js)
 
 观察者模式主要就是为了让事件和监听者去除耦合.
 
@@ -308,7 +308,7 @@ document.body.addEventListener('click', function (event) {
 
 迭代器 (Iterator) 其实就是一个指针 (pointer), 它会指向一个集合并产生一个序列 (sequence), 这个序列里面有集合中所有的元素 (element).
 
-代码 04-iterator.js
+[代码 04-iterator](04-iterator.js)
 
 > JavaScript 到了 ES6 才有原生的迭代器.
 >
@@ -322,6 +322,8 @@ document.body.addEventListener('click', function (event) {
 ## 3. 补充: 延迟运算 
 
 延迟运算 (Lazy evaluation), 也称为 call-by-need, 是一种运算策略 (evaluation strategy). 通俗的讲, 就是我们让表达式并不是马上去运行, 而是延迟到我们需要表达式运算出来的结果时, 才让它开始运算.
+
+[代码 04-lazy](04-lazy.js)
 
 ```javascript
 function* getNumbers(words) {
@@ -378,11 +380,11 @@ const observable = Rx.Observable.create(function(observer) {});
 
 > 虽然 Observable 可以被 create, 但通常在实际使用中都是使用 creation operator 像是 from, of, fromEvent, fromPromise 等.
 
-代码: 05-create.js
+[代码 05-create](05-create.js)
 
 > 虽然订阅 Observable (observable.subscribe()) 和 addEventListener 在行为上很像, 但二者在实现上是有非常大的不同的. 最大的区别在于, 实际上 Observable 本身并没有管理订阅的清单.
 
-代码: 05-createasync.js
+[代码 05-createasync](05-createasync.js)
 
 > Observable 可以同时处理同步与异步!
 
@@ -410,7 +412,7 @@ const observer = {
 };
 ```
 
-代码: 05-observer.js
+[代码 05-observer](05-observer.js)
 
 观察者可以是不完整的, 它可以只有一个 next 方法
 
@@ -474,4 +476,4 @@ Observable 有许多创建对象的方法, 称为 creation operator. 以下是 R
 
 同步的传递几个值时, 可以使用 of 这个 operator.
 
-代码: 06-of.js
+[代码 06-of](06-of.js)
