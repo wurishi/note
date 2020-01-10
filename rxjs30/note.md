@@ -274,11 +274,11 @@ forEach: 是 JavaScript 从 ES5 开始提供的一种遍历(枚举)数组的方�
 
 ## 1. map
 
-03-map.js
+[代码 03-map](03-map.js)
 
 ## 2. filter
 
-03-filter.js
+[代码 03-filter](03-filter.js)
 
 ## 3. concatAll
 
@@ -351,3 +351,127 @@ console.log(iterator.next()); // { value: undefined, done: true }
 Observable 其实就是上述二种设计模式的结合. 它既具备生产者推送内容的特性, 同时也能像序列一样, 拥有序列处理内容的方法(map, filter...).
 
 更简单的来说, Observable 就是一个序列, 里面的元素会随着时间而推送.
+
+# 05: 创建 Observable
+
+> 一定要分清楚 Observable 和 Observer , 二者不要搞混.
+
+整个 RxJS 说白了就是一个核心三个重点.
+
+核心就是 Observable 再加上相关的操作 (map, filter...).
+
+三个重点分别是
+
+- Observer (观察者)
+- Subject
+- Schedulers
+
+> redux-observable 就是使用 Subject 实现的
+
+## 1. 创建 Observable (一)
+
+创建 Observable 的方法有很多种, 其中 create 是最基本的方法. create 方法在 Rx.Observable 中, 要传入一个回调函数, 这个回调函数会接收一个观察者 (observer) 参数.
+
+```javascript
+const observable = Rx.Observable.create(function(observer) {});
+```
+
+> 虽然 Observable 可以被 create, 但通常在实际使用中都是使用 creation operator 像是 from, of, fromEvent, fromPromise 等.
+
+代码: 05-create.js
+
+> 虽然订阅 Observable (observable.subscribe()) 和 addEventListener 在行为上很像, 但二者在实现上是有非常大的不同的. 最大的区别在于, 实际上 Observable 本身并没有管理订阅的清单.
+
+代码: 05-createasync.js
+
+> Observable 可以同时处理同步与异步!
+
+## 2. 观察者 (Observer)
+
+Observable 可以被订阅(subscribe), 或者说可以被观察. 而订阅 Observable 的对象又被称为观察者 (Observer). 观察者有三个方法 (method), 每当 Observable 发生事件时, 便会执行观察者相对应的方法.
+
+观察者的三个方法:
+
+- next: 每当 Observable  发送出新的值, next 方法就会被执行.
+- complete: 当 Observable 没有其他的内容可以取得时, complete 方法就会被执行. 在 complete 执行之后, next 方法将不会再起作用.
+- error: 每当 Observable 内发生错误时, error 方法就会被执行.
+
+```javascript
+const observer = {
+  next(value) {
+    console.log(value);
+  },
+  error(error) {
+    console.log(error);
+  },
+  complete() {
+    console.log('complete');
+  }
+};
+```
+
+代码: 05-observer.js
+
+观察者可以是不完整的, 它可以只有一个 next 方法
+
+```javascript
+const observer = {
+  next(value) {
+    console.log(value);
+  }
+};
+```
+
+subscribe 方法也可以按 next, error, complete 的顺序依次传入.(主要是有些事件, 如 click, 它可能是一个无限序列, complete 是永远不会被执行的)
+
+```javascript
+observable.subscribe(
+    value => { console.log(value); },
+    error => { console.log('Error: ', error); },
+    () => { console.log('complete'); }
+);
+// observalbe.subscribe 会在内部自动生成一个 observer
+```
+
+## 3. Observable 实现细节
+
+Observable 的订阅跟 addEventListener 的实现有很大的差异. addEventListener 本质上是观察者模式的实现, 它的内部会有一份订阅清单, 如代码 04-observer.js 中 的Producer , 它的内部有一份所有监听者的清单 (this.listeners), 在发布通知时, 会逐一执行清单中的监听者. 但 Observable 不是这样实现的, 它的内部并没有一份订阅者清单. 订阅 Observable 的行为比较像是执行了一个对象中的方法, 并把生成的内容传到指定的方法中.
+
+类似这样:
+
+```javascript
+function subscribe(observer) {
+	observer.next('Jerry');
+    observer.next('Anna');
+}
+subscribe({
+    next(value) {
+        console.log(value);
+    },
+    // error, complete...
+});
+// 这里的 subscribe 是一个 function, 这个 function 执行时会传入一个观察者(observer), 而 subscribe 执行时,内部会再去执行观察者的方法
+```
+
+> 订阅一个 Observable 就像是执行一个 function.
+
+# 06: 创建 Observable (二)
+
+Observable 有许多创建对象的方法, 称为 creation operator. 以下是 RxJS 中常用的 creation operator.
+
+- create
+- of
+- from
+- fromEvent
+- fromPromise
+- never
+- empty
+- throw
+- interval
+- timer
+
+## of
+
+同步的传递几个值时, 可以使用 of 这个 operator.
+
+代码: 06-of.js
