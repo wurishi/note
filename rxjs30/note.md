@@ -274,15 +274,15 @@ forEach: 是 JavaScript 从 ES5 开始提供的一种遍历(枚举)数组的方�
 
 ## 1. map
 
-[代码 03-map](03-map.js)
+[代码 03-map](codes/03-map.js)
 
 ## 2. filter
 
-[代码 03-filter](03-filter.js)
+[代码 03-filter](codes/03-filter.js)
 
 ## 3. concatAll
 
-[代码 03-concatAll](03-concatall.js)
+[代码 03-concatAll](codes/03-concatall.js)
 
 # 04: 什么是 Observable ?
 
@@ -300,7 +300,7 @@ document.body.addEventListener('click', function (event) {
 });
 ```
 
-[代码 04-observer](04-observer.js)
+[代码 04-observer](codes/04-observer.js)
 
 观察者模式主要就是为了让事件和监听者去除耦合.
 
@@ -308,7 +308,7 @@ document.body.addEventListener('click', function (event) {
 
 迭代器 (Iterator) 其实就是一个指针 (pointer), 它会指向一个集合并产生一个序列 (sequence), 这个序列里面有集合中所有的元素 (element).
 
-[代码 04-iterator](04-iterator.js)
+[代码 04-iterator](codes/04-iterator.js)
 
 > JavaScript 到了 ES6 才有原生的迭代器.
 >
@@ -323,7 +323,7 @@ document.body.addEventListener('click', function (event) {
 
 延迟运算 (Lazy evaluation), 也称为 call-by-need, 是一种运算策略 (evaluation strategy). 通俗的讲, 就是我们让表达式并不是马上去运行, 而是延迟到我们需要表达式运算出来的结果时, 才让它开始运算.
 
-[代码 04-lazy](04-lazy.js)
+[代码 04-lazy](codes/04-lazy.js)
 
 ```javascript
 function* getNumbers(words) {
@@ -380,11 +380,11 @@ const observable = Rx.Observable.create(function(observer) {});
 
 > 虽然 Observable 可以被 create, 但通常在实际使用中都是使用 creation operator 像是 from, of, fromEvent, fromPromise 等.
 
-[代码 05-create](05-create.js)
+[代码 05-create](codes/05-create.js)
 
 > 虽然订阅 Observable (observable.subscribe()) 和 addEventListener 在行为上很像, 但二者在实现上是有非常大的不同的. 最大的区别在于, 实际上 Observable 本身并没有管理订阅的清单.
 
-[代码 05-createasync](05-createasync.js)
+[代码 05-createasync](codes/05-createasync.js)
 
 > Observable 可以同时处理同步与异步!
 
@@ -412,7 +412,7 @@ const observer = {
 };
 ```
 
-[代码 05-observer](05-observer.js)
+[代码 05-observer](codes/05-observer.js)
 
 观察者可以是不完整的, 它可以只有一个 next 方法
 
@@ -465,7 +465,7 @@ Observable 有许多创建对象的方法, 称为 creation operator. 以下是 R
 - of
 - from
 - fromEvent
-- fromPromise
+- ~~fromPromise~~ (新版本直接使用 from)
 - never
 - empty
 - throw
@@ -476,4 +476,95 @@ Observable 有许多创建对象的方法, 称为 creation operator. 以下是 R
 
 同步的传递几个值时, 可以使用 of 这个 operator.
 
-[代码 06-of](06-of.js)
+[代码 06-of](codes/06-of.js)
+
+## from
+
+of 操作的参数其实就是一个 list. 而 list 在 JavaScript 中最常见的就是数组 (array), 那有没有办法将一个已经存在的数组直接作为参数使用呢?
+
+有的, 可以使用 from 来接收任何可迭代 (iterable) 的参数!
+
+[代码 06-from](codes/06-from.js)
+
+> 因为 ES6 后可迭代 (iterable) 的类型变多了, 所以 fromArray 就被移除了.
+
+[代码 06-from-str](codes/06-from-str.js)
+
+> from 也可以接收字符串, 内部会逐一遍历每个字符.
+
+## ~~fromPromise~~
+
+[代码 06-frompromise](codes/06-frompromise.js)
+
+> 新版本没有 fromPromise 了, 可以直接使用 from 处理 promise.
+
+## fromEvent
+
+我们也可以使用 Event 来创建 Observable, 使用 fromEvent 方法即可.
+
+[代码 06-fromevent.html](codes/06-fromevent.html)
+
+> fromEvent 的第一个参数是 DOM 对象, 第二个参数是要监听的事件名称.
+>
+> 取到 DOM 对象的常用方法有: getElementById(); querySelector(); getElementsByTagName(); getElementsByClassName(); 等
+
+## fromEventPattern (补充)
+
+要用 Event 来创建 Observable 对象还有另一个方法 fromEventPattern, 这个方法是给类事件使用的. 所谓的类事件, 可以理解为我们自己创建的其行为与事件相像的对象(即同时具备注册监听与移除监听这二种行为), 就像 DOM Event 有 addEventListener 及 removeEventListener 一样. 比如之前实现的 [Observer Pattern](04-observer.js)就是一个类事件.
+
+[代码 06-fromeventpattern](codes/06-fromeventpattern.js)
+
+> 传入的方法要注意 this 指向的问题.
+
+## empty, never, throw
+
+这几个操作单独看起来没有什么意义, 之后在使用 observables 的合并 (combine), 转换 (transforme) 的方法时, 这些操作将会变得很有用.
+
+### 1: empty
+
+在数学中的 零 (0), 虽然有时候看起来没什么用, 但却非常的重要. 在 Observable 中也有类似的东西, 就是 empty.
+
+[代码 06-empty](codes/06-empty.js)
+
+> empty 会给我们一个空的 observable, 订阅这个 observable, 它会直接发送 complete.
+>
+> 可以直接把 empty 想成没有做任何事, 但它至少还是会告知你.(complete 还是被执行了)
+
+### 2: never
+
+在数学上有一个跟零 (0) 很像的数字, 那就是无穷( ∞ ). 在 Observable 里我们使用 never 来建立无穷的 observable.
+
+[代码 06-never](codes/06-never.js)
+
+> never 会给我们一个无穷的 observable, 订阅这个 observable 会发生什么事情呢?
+>
+> ...什么事都不会发生, 它就是一个一直存在但却什么都不会做的 observable.
+>
+> 可以把 never 想像成一个结束在无穷久之后的 observable, 但我们永远等不到那一天!
+
+### 3: throw
+
+throw 就只做一件事, 那就是抛出错误.
+
+[代码 06-throw](codes/06-throw.js)
+
+> 新版本中没有 throw 了, 使用 throwError 代替.
+
+## interval, timer
+
+这二个操作都与时间有关. 在 JavaScript 中, 我们使用 setInterval 来建立一个持续的行为, 这也能用在 Observable 中.
+
+[代码 06-interval](codes/06-interval.js)
+
+[代码 06-timer](codes/06-timer.js)
+
+## 订阅与取消订阅
+
+有时候在某些行为后我们就不需要这些 observable了, 要做到这件事, 最简单的方法就是取消订阅 (unsubscribe).
+
+[代码 06-unsubscribe](codes/06-unsubscribe.js)
+
+> 返回的 subscription 对象还有其他合并订阅等功能.
+>
+> Events observable 尽量不要使用 unsubscribe, 通常我们会使用 takeUntil, 在某个事件发生后来完成取消操作.
+

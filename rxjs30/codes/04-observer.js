@@ -26,3 +26,5 @@ egghead.addListener(msg => console.log(`${msg} from listener1`));
 egghead.addListener(msg => console.log(`${msg} from listener2`));
 
 egghead.notify('哈哈');
+
+module.exports = Producer;

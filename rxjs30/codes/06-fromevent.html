@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="./node_modules/rxjs/bundles/rxjs.umd.js"></script>
+    <style>
+      #item {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="item"></div>
+    <script>
+      const Rx = window.rxjs;
+
+      const source = Rx.fromEvent(document.getElementById('item'), 'click');
+      source.subscribe(evt => console.log('click', evt));
+    </script>
+  </body>
+</html>
