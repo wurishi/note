@@ -1070,7 +1070,7 @@ source : ----h----e----l----l----o|
 example: ----h----(he)----(hel)----(hell)----(hello)|
 ```
 
-> scan 跟 reducer 最大的区别就是 scan 一定会返回一个 observable, 而 reducer 最后返回的值有可能是任何类型, 必须要看使用者传入的回调函数才能决定 reducer 最后的返回值.
+> scan 跟 reduce 最大的区别就是 scan 一定会返回一个 observable, 而 reduce 最后返回的值有可能是任何类型, 必须要看使用者传入的回调函数才能决定 reduce 最后的返回值.
 >
 > Jafar Husain 就曾说: JavaScript 的 reduce 是错误的, 它最后应该永远返回一个数组才对!
 
@@ -1124,4 +1124,3 @@ buffer 会把原本的 source 发送出的元素缓存到数组中, 等到传入
 上面的示例中, 只有在500毫秒内连点二下以上, 才能成功打印出 '双击'. 
 
 这个功能也能用在批次处理上以降低请求 (request) 的次数.
-
