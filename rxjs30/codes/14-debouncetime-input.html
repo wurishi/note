@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    <input type="text" id="searchInput" />
+    <div id="theRequestValue"></div>
+    <script>
+      const Rx = window.rxjs;
+
+      const searchInput = document.getElementById('searchInput');
+      const theRequestValue = document.getElementById('theRequestValue');
+      Rx.fromEvent(searchInput, 'input')
+        .pipe(
+          Rx.operators.debounceTime(300),
+          Rx.operators.map(e => e.target.value)
+        )
+        .subscribe(value => (theRequestValue.textContent = value));
+    </script>
+  </body>
+</html>

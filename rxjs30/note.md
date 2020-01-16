@@ -1171,3 +1171,48 @@ example: --0---1------2-----------3------------------4|
 
 [代码 13-delay-example](codes/13-delay-example.html)
 
+# 14: Observable Operators (六)
+
+throttle, debounce 在性能优化上是不可或缺的好工具!
+
+## 1. debounce
+
+跟 buffer 和 bufferTime 一样, RxJS 有 debounce 和 debounceTime, 前者传入 observable, 后者传入毫秒, 比较常用到的是 debounceTime.
+
+[代码 14-debouncetime](codes/14-debouncetime.js)
+
+这里只会打印4, 然后就结束了. 是因为 debounce 运行的方式是每次收到元素后, 它会先把这个元素缓存起来并等待一段时间, 如果这段时间内没有收到任何元素, 才会把元素发送出去. 如果这段时间内又收到新的元素, 则会把原来缓存的元素释放掉, 然后重新缓存新的元素并重新计时, 不断反复.
+
+> 如果 observable 结束 (complete) 时, 则 debounce 直接发送出元素.
+
+用弹珠图表示就是:
+
+```
+source : --0--1--2--3--4|
+		debounceTime(1000)
+example: ------------------------4|
+```
+
+debounce 会在收到元素后等待一段时间, 这很适合处理间歇行为. 
+
+比如要完成自动补全功能, 输入搜索关键词时, 只有在停止输入一小段时间之后, 才去请求 (request), 而不是每打一个字就发送一次请求 (request).
+
+[代码 14-debouncetime-input](codes/14-debouncetime-input.html)
+
+## 2. throttle
+
+基本上每次看到 debounce 就会想到 throttle, 它们的作用都是要降低事件的触发频率, 但行为上有很大的不同.
+
+跟 debounce 一样, 在 RxJS 中有 throttle 和 throttleTime 二个方法. 前者传入 observable 后者传入毫秒. 比如常用的也是 throttleTime.
+
+[代码 14-throttletime](codes/14-throttletime.js)
+
+跟 debounce 不同的是 throttle 会先发送出元素, 等到有元素被发送后就会沉默一段时间, 等到时间过了后又会开始发送元素.
+
+throttle 比较像是控制行为的最高频率, 也就是说如果我们设定为1000毫秒, 那么该事件频率的最大值就是每秒触发一次, 不会再更快了. 而 debounce 则比较像是必须等待的时间, 要等到一定的时间过了后才会收到元素.
+
+throttle 更适合用在连续的行为上, 比如说 UI 动画的运算过程. 因为 UI 动画是连续的, 像我们之前在做拖动时, 就可以加上 throttleTime(12) , 让 mousemove event 不要发送的太快, 避免画面更新速度跟不上样式切换的速度.
+
+> 浏览器中有一个 requestAnimationFrame API 是专门用来优化 UI 运算的, 通常用这个的效果会比 throttle 好.
+>
+> RxJS 也能用 requestAnimationFrame 做优化, 而且使用方法也很简单, 这个部分会在 Scheduler 提到.
