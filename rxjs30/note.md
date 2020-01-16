@@ -1124,3 +1124,50 @@ buffer 会把原本的 source 发送出的元素缓存到数组中, 等到传入
 上面的示例中, 只有在500毫秒内连点二下以上, 才能成功打印出 '双击'. 
 
 这个功能也能用在批次处理上以降低请求 (request) 的次数.
+
+# 13: Observable Operators (五)
+
+UI 大概是所有异步行为中最不好处理的, 不只是因为它直接影响用户体验, 更大的问题是 UI 互动常常是高频率触发的事件, 而且多个组件间的时序是不一致的. 用 Promise 或 async/await, 很难协调多个不同组件之间的关系, 但是用 RxJS 仍能轻易地处理!
+
+delay 和 delayWhen 这二个操作, 经常在 UI 互动中使用.
+
+## 1. delay
+
+[代码 13-delay](codes/13-delay.js)
+
+从输出信息中很难看出差异, 所以直接看弹珠图:
+
+```
+source : --0--1--2--3--4|
+		delay(500)
+example: -------0--1--2--3--4|
+```
+
+从弹珠图可以看出, 第一次发送元素的时间变慢了.
+
+delay 除了可以传入毫秒以外, 也可以传入 Date 类型的变量.
+
+```javascript
+const example = source.pipe(delay(new Date(Date.now() + 1000))); // 当前时间后的1000毫秒才开始执行
+```
+
+## 2. delayWhen
+
+delayWhen 的作用和 delay 很像, 最大的区别在于 delayWhen 是可以影响每个元素的, 而且需要传入一个返回 observable 的回调函数.
+
+[代码 13-delaywhen](codes/13-delaywhen.js)
+
+当然直接从输出信息中是很难看出差异的, 所以直接看弹珠图:
+
+```
+source : --0--1--2--3--4|
+		delayWhen(x => Rx.empty().pipe(delay(100 * x * x)))
+example: --0---1------2-----------3------------------4|
+```
+
+> 13-delaywhen 的执行结果有点奇怪, 0 直接没有了... 具体原因待查.
+
+利用 delay 制作一个多张图片跟着鼠标跑的功能. 注: 每张图片不能跑的一样快.
+
+[代码 13-delay-example](codes/13-delay-example.html)
+

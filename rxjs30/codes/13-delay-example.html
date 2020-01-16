@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <style>
+      img {
+        position: absolute;
+        border-radius: 50%;
+        border: 3px white solid;
+        width: 100px;
+        height: 100px;
+        transform: translate3d(0, 0, 0);
+      }
+    </style>
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    <img src="./13-1.jpg" />
+    <img src="./13-2.jpg" />
+    <img src="./13-3.jpg" />
+    <img src="./13-4.jpg" />
+    <img src="./13-5.jpg" />
+    <img src="./13-6.jpg" />
+    <script>
+      const Rx = window.rxjs;
+      const imgList = document.getElementsByTagName('img');
+      const movePos = Rx.fromEvent(document, 'mousemove').pipe(
+        Rx.operators.map(e => ({ x: e.clientX, y: e.clientY })) // 将 mousemove 的 e 事件转换成我们需要处理的 x,y 坐标
+      );
+
+      function followMouse(domArr) {
+        const delayTime = 600;
+        domArr.forEach((item, index) => {
+          movePos
+            .pipe(
+              Rx.operators.delay(
+                (delayTime * (Math.pow(0.65, index) + Math.cos(index / 4))) / 2 // 根据 index 延迟不同的时间
+              )
+            )
+            .subscribe(
+              pos =>
+                (item.style.transform =
+                  'translate3d(' +
+                  (pos.x - 50) +
+                  'px, ' +
+                  (pos.y - 50) +
+                  'px, 0)')
+            );
+        });
+      }
+
+      followMouse(Array.from(imgList)); // 通过 Array.from 将 imgList 从 HTMLCollection 转换成 Array
+    </script>
+  </body>
+</html>
