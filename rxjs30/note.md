@@ -1,5 +1,7 @@
 [参考资料](https://www.yuque.com/octavio000416/nb6ycv)
 
+> RxJS 版本: 6.5.4
+
 # 00: 安利RxJS
 
 ## 1. 响应式编程的兴起
@@ -504,7 +506,7 @@ of 操作的参数其实就是一个 list. 而 list 在 JavaScript 中最常见�
 
 我们也可以使用 Event 来创建 Observable, 使用 fromEvent 方法即可.
 
-[代码 06-fromevent.html](codes/06-fromevent.html)
+[代码 06-fromevent](codes/06-fromevent.html)
 
 > fromEvent 的第一个参数是 DOM 对象, 第二个参数是要监听的事件名称.
 >
@@ -574,7 +576,9 @@ throw 就只做一件事, 那就是抛出错误.
 
 ## 1. 什么是Operator ?
 
-Operators 就是一个个被附加到 Observable 上的函数, 例如像是 map, filter, contactAll... 等等. 所有这些函数都会拿到原来的 observable 并返回一个新的 observable.
+~~Operators 就是一个个被附加到 Observable 上的函数, 例如像是 map, filter, contactAll... 等等. 所有这些函数都会拿到原来的 observable 并返回一个新的 observable.~~
+
+RxJS 6 开始使用管线操作(pipe), operators 将不再是 observable 上的函数, 而是统一调用 observable 上的 pipe, 然后传递不同的 operator 来实现. 所以这里再称呼为 observable operators 可能会有不妥.
 
 [代码 07-operator-map](codes/07-operator-map.js)
 
@@ -645,15 +649,17 @@ const newest = source.map(x => x + 1);
 
 [Marble Diagrams 相关资源](https://rxmarbles.com/)
 
-## 3. Operators
+## 3. Operators (一)
 
-### 1: map
+### 3-1: map
 
 Observable 的 map 方法使用上跟数组的 map 是一样的.
 
 ```javascript
 const source = Rx.interval(1000);
-const newest = source.map(x => x + 2);
+// const newest = source.map(x => x + 2); // 这是老版本的写法
+// Rx6 开始使用 pipe 管道操作
+const newest = source.pipe(map(x => x + 2)); // map 通过 rxjs/operators 获取
 ```
 
 用弹珠图表示就是:
@@ -664,13 +670,14 @@ source: -----0-----1-----2-----3--...
 newest: -----2-----3-----4-----5--...
 ```
 
-### 2: mapTo
+### 3-2: mapTo
 
 mapTo 可以把传递进来的值改成一个固定的值.
 
 ```javascript
 const source = Rx.interval(1000);
-const newest = source.mapTo(2);
+// const newest = source.mapTo(2);
+const newest = source.pipe(mapTo(2));
 ```
 
 用弹珠图表示就是:
@@ -681,13 +688,14 @@ source: -----0-----1-----2-----3--...
 newest: -----2-----2-----2-----2--...
 ```
 
-### 3: filter
+### 3-3: filter
 
 filter 在使用上也和数组相同.
 
 ```javascript
 const source = Rx.interval(1000);
-const newest = source.filter(x => x % 2 === 0);
+// const newest = source.filter(x => x % 2 === 0);
+const newest = source.pipe(filter(x => x % 2 === 0));
 ```
 
 用弹珠图表示就是:
@@ -701,4 +709,419 @@ newest: -----0-----------2-----------4--...
 > map, filter 这些方法其实和数组上的同名方法是相同的操作, 因为这些都是面向函数编程中的通用函数, 就算换个语言也有机会看到相同的命名与相同的用法.
 >
 > Observable 实际上跟 Array 的 operators(map, filter), 在行为上还是有极大差异的. 当数据量很大时, Observable 的性能会好上非常多.
+
+# 08: 简易拖放操作
+
+## 1. Operators
+
+### 1-1: take
+
+take 是一个很简单的操作, 顾名思意就是取前几个元素后就结束, 如:
+
+[代码 08-take](codes/08-take.js)
+
+这里可以看到, 原来的 source 是会发射出无限元素的, 但这里使用了 take(3) 之后, 就只会取前3个元素了, 取完后就直接结束 (complete).
+
+用弹珠图表示就是:
+
+```
+source : -----0-----1-----2-----3--...
+		take(3)
+example: -----0-----1-----2|
+```
+
+### 1-2: first
+
+first 会取到 observable 送出的第1个元素之后就直接结束. 行为跟 take(1) 一致.
+
+[代码 08-first](codes/08-first.js)
+
+用弹珠图表示就是: 
+
+```
+source : -----0-----1-----2-----3--...
+		first()
+example: -----0|
+```
+
+### 1-3: takeUntil
+
+takeUntil 经常会被用到, 它可以在某件事件发生时, 让一个 observable 直接发送完成 (complete) 信息, 如下:
+
+[代码 08-takeuntil](codes/08-takeuntil.html)
+
+用弹珠图表示就是:
+
+```
+source : -----0-----1-----2-----3--...
+click  : --------------------c-----...
+		takeUntil(click)
+example: -----0-----1-----2--|
+```
+
+当 click 一触发, observable 就会直接完成 (complete)
+
+### 1-4: concatAll
+
+有时候一个 observable 发送的元素又是一个 observable, 就像二维数组一样, 数组里面的元素还是数组. 这个时候我们就可以使用 concatAll 把它摊平成一个一维数组. 可以把 concatAll 想像成把所有元素 concat 起来.
+
+[代码 08-concatall](codes/08-concatall.html)
+
+用弹珠图表示就是:
+
+```
+click  : ----------c----------c-------...
+source : ----------o----------o-------...
+				  \			\
+				   (123)|	  (123)|
+				   	 concatAll()
+example: ----------(123)------(123)---...
+```
+
+这里要注意的是 concatAll 会处理 source 先发出来的 observable, 必须等这个 observable 结束, 才会再处理下一个 source 发送出来的 observable, 如下:
+
+[代码 08-concatall-order](codes/08-concatall-order.js)
+
+这里的 source 会发送3个 observable, 但是 coancatAll 的行为永远都是先处理第一个 observable, 等到当前处理结束之后, 才会再处理下一个.
+
+用弹珠图表示就是:
+
+```
+source : (o1                 o2       o3)|
+		  \                  \        \
+		   --0--1--2--3--4|   -0-1|    ----0|
+		   		concatAll()
+example: --0--1--2--3--4-0-1----0|
+```
+
+## 2. 拖放操作
+
+[代码 08-drag](codes/08-drag.html)
+
+# 09: Observable Operators (二)
+
+## 1. skip
+
+take 可以取前几个发送的元素, skip 则是可以用来跳过前几个发送出来的元素.
+
+```javascript
+const source = Rx.interval(1000);
+const example = source.pipe(skip(3));
+example.subscribe(console.log);
+// 3 -> 4 -> 5 -> ...
+```
+
+原来是从0开始的, 现在就变成从3开始了, 但要记住原来的元素等待时间仍然是存在的, 也就是说这个例子中, 取到第一个元素(3)需要等4秒.用弹珠图表示就是:
+
+```
+source : ----0----1----2----3----4----5--...
+			skip(3)
+example: -------------------3----4----5--...
+```
+
+## 2. takeLast
+
+除了可以用 take 取前几个之外, 也可以倒过来取最后几个.
+
+```javascript
+const source = Rx.interval(1000).pipe(take(6));
+const example = source.pipe(takeLast(2));
+example.subscribe({
+    next:console.log,
+    complete() {
+        console.log('complete');
+    }
+});
+// 4 -> 5 -> complete
+```
+
+这里我们先取前6个元素, 再取最后2个. 所以最后会送出 4, 5, complete. 这里有一个**重点**就是, takeLast 必须是等待到整个 observable 完成 (complete), 才能知道最后的元素有哪些, 并且**同步送出**. 用弹珠图表示就是:
+
+```
+source : ----0----1----2----3----4----5|
+			takeLast(2)
+example: ------------------------------(45)|
+```
+
+## 3. last
+
+跟 take(1) 相同, 有一个 takeLast(1) 的简化写法, last() 就是用来取最后一个元素的.
+
+```javascript
+const source = Rx.interval(1000).pipe(take(6));
+const example = source.pipe(last());
+example.subscribe({
+    next:console.log,
+    complete() {
+        console.log('complete');
+    }
+});
+```
+
+用弹珠图表示就是:
+
+```
+source : ----0----1----2----3----4----5|
+			last()
+example: ------------------------------(5)|
+```
+
+## 4. concat
+
+concat 可以把多个 observable 对象合并成一个.
+
+[代码 09-concat](codes/09-concat.js)
+
+和 concatAll 一样, concat 必须先等前一个 observable 完成 (complete), 才会继续下一个. 用弹珠图表示就是:
+
+```
+source : ----0----1----2|
+source2: (3)|
+source3: (456)|
+			concat()
+example: ----0----1----2(3456)|
+```
+
+## 5. startWith
+
+startWith 可以在 observable 的一开始塞进要发送的元素.
+
+```javascript
+const source = Rx.interval(1000);
+const example = source.pipe(startWith(0));
+example.subscribe(console.log);
+```
+
+这里我们往 source 的一开始就塞了一个0, 让 example 从一开始就会立即发送0, 用弹珠图表示就是:
+
+```
+source    : ----0----1----2----3--...
+			startWith(0)
+example: (0)----0----1----2----3--...
+```
+
+> startWith 的值是一开始就同步发送出来的, 这个操作经常被用来保存程序的初始状态.
+
+## 6. merge
+
+merge 跟 concat 一样都是用来合并 observable的, 但二者在行为上有非常大的不同!
+
+```javascript
+const source = Rx.interval(500).take(3);
+const source2 = Rx.interval(300).take(6);
+const example = source.pipe(merge(source2));
+example.subscribe({
+    next:console.log,
+    complete() {
+        console.log('complete');
+    }
+});
+// 0->0->1->2->1->3->2->4->5->complete
+```
+
+merge 会把多个 observable 同时处理, 这和 concat 一次处理一个 observable 是完全不一样的. 由于是同时处理, 行为会变得较为复杂, 这里使用弹珠图表示会比较好解释.
+
+```
+source : ----0----1----2|
+source2: --0--1--2--3--4--5|
+			merge()
+example: --0-01--21-3--(24)--5|
+```
+
+# 10: Observable Operators (三)
+
+## 1.  combineLatest
+
+[代码 10-combinelatest](codes/10-combinelatest.js)
+
+第一次看到输出的内容会很困惑, 直接来看弹珠图:
+
+```
+source : ----0----1----2|
+newest : --0--1--2--3--4--5|
+			combineLatest(newest, (x, y) => x + y)
+example: ----01--23-4--(56)--7|
+```
+
+首先 combineLatest 可以接收多个 observable, 最后一个参数是一个回调函数, 这个回调函数接收的参数数量与要合并的 observable 的数量是相同的. 在例子中, 我们合并了二个 observable, 所以回调函数就会接收到 x, y 二个参数. x 会接收到 source 发送出来的值, y 会接收到 newest 发送出来的值. 最后一个**重点**是, 只有当二个 observable 都**曾经发送过值**后, 才会调用回调函数. 所以这段代码是这样运行的:
+
+| 时序 | source | newest |                           回调函数                           |
+| :--: | :----: | :----: | :----------------------------------------------------------: |
+|  1   |        |   0    |      因为 source 没有发送过任何值, 所以不会执行回调函数      |
+|  2   |   0    |        |       此时 newest 最后一次发送的值是 0, 所以 0 + 0 = 0       |
+|  3   |        |   1    |                          0 + 1 = 1                           |
+|  4   |        |   2    |                          0 + 2 = 2                           |
+|  5   |   1    |        |                          1 + 2 = 3                           |
+|  6   |        |   3    |                          1 + 3 = 4                           |
+| 7.1  |   2    |        | 2 + 3 = 5. 此时 source 结束了, 但 newest 还没结束, 所以 example 还不会结束. |
+| 7.2  |        |   4    |                          2 + 4 = 6                           |
+|  8   |        |   5    | 2 + 5 = 7. 此时 newest 结束了, 因为 source 也已经结束了, 所以 example 结束 |
+
+> combineLatest 常用在计算多个因子的结果上, 例如最常见的计算 BMI, 当身高发生变化时就会拿上次的体重计算新的 BMI, 同样的当体重发生变化时则会拿上次的身高计算 BMI.
+
+## 2. zip
+
+zip 会取每个 observable 相同顺序位置上的元素传入回调函数, 也就是说每个 observable 的第 n 个元素会一起传入回调函数.
+
+[代码 10-zip](codes/10-zip.js)
+
+用弹珠图表示就是:
+
+```
+source : ----0----1----2|
+newest : --0--1--2--3--4--5|
+			zip(newest, (x, y) => x + y)
+example: ----0----2----4|
+```
+
+在这个例子中, zip 会等到 source 和 newest 都发送出第一个元素后, 再传入回调函数. 下次回调函数的执行将等到 source 和 newest 都送出了第二个元素后. 所以执行的步骤如下:
+
+| 时序 | source | newest |                           回调函数                           |
+| :--: | :----: | :----: | :----------------------------------------------------------: |
+|  1   |        |   0    |   这时 source 并没有发送出第一个值, 所以回调函数不会执行.    |
+|  2   |   0    |        |        newest 之前发送的第一个值是 0, 所以 0 + 0 = 0         |
+|  3   |        |   1    |   这时 source 并没有发送出第二个值, 所以回调函数不会执行.    |
+|  4   |        |   2    |   这时 source 并没有发送出第三个值, 所以回调函数不会执行.    |
+|  5   |   1    |        |        newest 之前发送的第二个值是 1, 所以 1 + 1 = 2         |
+|  6   |        |   3    |   这时 source 并没有发送出第四个值, 所以回调函数不会执行.    |
+|  7   |   2    |        | newest 之前发送的第三个值是 2, 所以 2 + 2 = 4. 此时 source 结束, 所以 example 也就直接结束. |
+
+可以利用 zip 来实现原来只能同步发送的数据变成异步的形式, 这种用法很适合做一些示例或者单元测试模拟数据时使用.
+
+[代码 10-zip-hello](codes/10-zip-hello.js)
+
+用弹珠图表示就是:
+
+```
+source : (hello)|
+source2: -0-1-2-3-4-...
+		zip(source2, (x, y) => x)
+example: -h-e-l-l-o|
+```
+
+> 除非真的有需要, 建议不要乱用 zip. 因为 zip 必须将所有未处理的元素缓存起来. 当我们有二个 observable , 其中一个很快一个很慢时, 就会缓存非常多的元素, 用来等待比较慢的那个 observable. 这很有可能造成内存相关的问题!
+
+## 3. withLatestFrom
+
+withLatestFrom 运行方式和 combineLatest 有点像, 只是它有主从的关系. 只有在主要的 observable 发送出新的值时, 才会执行回调函数.
+
+[代码 10-withlatestfrom](codes/10-withlatestfrom.js)
+
+用弹珠图表示就是:
+
+```
+main   : ----h----e----l----l----o|
+some   : --0--1--0--0--0--1|
+	withLatestFrom(some, (x, y) => y === 1 ? x.toUpperCase() : x)
+example: ----h----e----l----L----O|
+```
+
+> withLatestFrom 会在 main 发送出值的时候执行回调函数, 但这里有一点要特点注意, 就是如果 main 发送出值时 some 之前并没有发送过任何值, 则回调函数也是不会执行的!
+
+以上示例代码的执行步骤如下:
+
+| 时序 | main | some |                           回调函数                           |
+| :--: | :--: | :--: | :----------------------------------------------------------: |
+|  1   |      |  0   |                  只在 main 发送值时才会执行                  |
+|  2   |  h   |      | 此时 some 上一次发送的值为 0 , 则回调函数('h', 0) 的执行结果为 h |
+|  3   |      |  1   |                                                              |
+|  4   |      |  0   |                                                              |
+|  5   |  e   |      | 此时 some 上一次发送的值为 0 , 则回调函数('e', 0) 的执行结果为 e |
+|  6   |      |  0   |                                                              |
+| 7.1  |  l   |      | 此时 some 上一次发送的值为 0 , 则回调函数('l', 0) 的执行结果为 l |
+| 7.2  |      |  0   |                                                              |
+|  8   |      |  1   |                                                              |
+|  9   |  l   |      | 此时 some 上一次发送的值为 1 , 则回调函数('l', 1) 的执行结果为 L |
+|  10  |  o   |      | 此时 some 上一次发送的值为 1 , 则回调函数('o', 1) 的执行结果为 O |
+
+# 11: 完整的拖放示例
+
+仿优酷的一个拖放效果:
+
+```
+在观看优酷的影片时, 可以往下滚动页面. 此时影片就会变成一个小窗口在右下角, 这个窗口可以拖动位置.
+这个功能可以让用户一边观看留言的同时又能继续观看影片.
+```
+
+[代码 11-page](codes/11-page.html)
+
+# 12: Observable Operators (四)
+
+## 1. scan
+
+scan 其实就是 observable 版本的 reduce, 只是命名不同. 原生 JS 的数组就有 reduce 方法:
+
+```javascript
+const arr = [1, 2, 3, 4];
+const result = arr.reduce((origin, next) => {
+  console.log(origin);
+  return origin + next;
+}, 0);
+console.log(result); // 10
+```
+
+[代码 12-scan](codes/12-scan.js)
+
+用弹珠图表示就是:
+
+```
+source : ----h----e----l----l----o|
+		scan((origin, next) => origin + next, '')
+example: ----h----(he)----(hel)----(hell)----(hello)|
+```
+
+> scan 跟 reducer 最大的区别就是 scan 一定会返回一个 observable, 而 reducer 最后返回的值有可能是任何类型, 必须要看使用者传入的回调函数才能决定 reducer 最后的返回值.
+>
+> Jafar Husain 就曾说: JavaScript 的 reduce 是错误的, 它最后应该永远返回一个数组才对!
+
+简单的加减示例:
+
+[代码 12-scan-example](codes/12-scan-example.html)
+
+## 2. buffer
+
+buffer 总共有五个相关的操作:
+
+- buffer
+- bufferCount
+- bufferTime
+- bufferToggle
+- bufferWhen
+
+比较常用的是 buffer, bufferCount 和 bufferTime 这三个.
+
+### 2-1: buffer
+
+[代码 12-buffer](codes/12-buffer.js)
+
+用弹珠图表示就是:
+
+```
+source : --0--1--2--3--4--5--6--7-...
+source2: ---------0---------1-------...
+			buffer(source2)
+example: ---------([0,1,2])---------([3,4,5])--...
+```
+
+buffer 会把原本的 source 发送出的元素缓存到数组中, 等到传入的 source2 发送元素时, 就会触发将缓存的元素发送出去.
+
+### 2-2: bufferTime
+
+上一个示例中 source2 其实就是每一秒发送一个元素, 所以可以改用 bufferTime 更简洁的表述.
+
+[代码 12-buffer](codes/12-buffer.js)
+
+### 2-3: bufferCount
+
+除了用时间来作缓存以外, 我们更常用数量来做缓存.
+
+[代码 12-buffercount](codes/12-buffercount.js)
+
+在实际应用中, 我们可以用 buffer 来做某个事件的过滤. 比如像是鼠标双击操作:
+
+[代码 12-buffer-example](codes/12-buffer-example.html)
+
+上面的示例中, 只有在500毫秒内连点二下以上, 才能成功打印出 '双击'. 
+
+这个功能也能用在批次处理上以降低请求 (request) 的次数.
 

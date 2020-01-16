@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    body
+    <script>
+      const Rx = window.rxjs;
+      const click = Rx.fromEvent(document.body, 'click');
+      const source = click.pipe(Rx.operators.map(e => Rx.of(1, 2, 3)));
+      const example = source.pipe(Rx.operators.concatAll());
+      example.subscribe(console.log);
+    </script>
+  </body>
+</html>

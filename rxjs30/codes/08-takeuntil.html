@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    body
+    <script>
+      const Rx = window.rxjs;
+
+      const source = Rx.interval(1000);
+      const click = Rx.fromEvent(document.body, 'click');
+      const example = source.pipe(Rx.operators.takeUntil(click));
+      example.subscribe({
+        next: console.log,
+        complete() {
+          console.log('complete');
+        }
+      });
+    </script>
+  </body>
+</html>

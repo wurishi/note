@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+    <style>
+      #drag {
+        background-color: turquoise;
+        width: 100px;
+        height: 100px;
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="drag"></div>
+    <script>
+      const Rx = window.rxjs;
+
+      const drag = document.getElementById('drag');
+      const body = document.body;
+
+      const dragDown = Rx.fromEvent(drag, 'mousedown');
+      const mouseUp = Rx.fromEvent(body, 'mouseup');
+      const mouseMove = Rx.fromEvent(body, 'mousemove');
+
+      dragDown
+        .pipe(
+          Rx.operators.map(() =>
+            mouseMove.pipe(Rx.operators.takeUntil(mouseUp))
+          ), // 当dragDown触发后, 返回mouseMove, 后续操作都针对mouseMove, mouseMove在mouseUp触发时结束
+          Rx.operators.concatAll(), // 将mouseMove的 observable 展开, 后续处理的其实是mouseMove发射出来的每个evt.
+          Rx.operators.map(evt => ({ x: evt.clientX, y: evt.clientY })) // 拿到evt, 只返回需要使用的 x, y 坐标
+        )
+        .subscribe(pos => {
+          // 拿到x,y坐标, 动态修改drag的样式, 实现拖动功能
+          drag.style.left = pos.x - 50 + 'px';
+          drag.style.top = pos.y - 50 + 'px';
+        });
+    </script>
+  </body>
+</html>

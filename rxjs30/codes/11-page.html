@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 2000px;
+        background-color: tomato;
+      }
+
+      #anchor {
+        height: 360px;
+        width: 100%;
+        background-color: #f0f0f0;
+      }
+
+      .video {
+        width: 640px;
+        height: 360px;
+        margin: 0 auto;
+        background-color: black;
+      }
+
+      .video-fixed {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        width: 320px;
+        height: 150px;
+        cursor: all-scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="anchor">
+      <div id="video" class="video"></div>
+    </div>
+    <script>
+      const Rx = window.rxjs;
+
+      const video = document.getElementById('video');
+      const anchor = document.getElementById('anchor');
+
+      const scroll = Rx.fromEvent(document, 'scroll');
+
+      // 根据滚动位置, 改变 video 的样式
+      scroll
+        .pipe(Rx.operators.map(e => anchor.getBoundingClientRect().bottom < 0))
+        .subscribe(scrollBottom => {
+          if (scrollBottom) {
+            video.classList.add('video-fixed');
+          } else {
+            video.classList.remove('video-fixed');
+          }
+        });
+
+      // 拖动行为
+      const mouseDown = Rx.fromEvent(video, 'mousedown');
+      const mouseUp = Rx.fromEvent(document, 'mouseup');
+      const mouseMove = Rx.fromEvent(document, 'mousemove');
+
+      /*
+      有二个问题:
+      1: 第一次拖动时会闪一下.
+      2: 拖动出当前可视区域就回不来了.
+      */
+      // mouseDown
+      //   .pipe(
+      //     Rx.operators.filter(e => video.classList.contains('video-fixed')),
+      //     Rx.operators.map(e =>
+      //       mouseMove.pipe(Rx.operators.takeUntil(mouseUp))
+      //     ),
+      //     Rx.operators.concatAll(),
+      //     Rx.operators.map(e => ({ x: e.clientX, y: e.clientY }))
+      //   )
+      //   .subscribe(pos => {
+      //     video.style.top = pos.y + 'px';
+      //     video.style.left = pos.x + 'px';
+      //   });
+
+      mouseDown
+        .pipe(
+          Rx.operators.filter(e => video.classList.contains('video-fixed')),
+          Rx.operators.map(e =>
+            mouseMove.pipe(Rx.operators.takeUntil(mouseUp))
+          ),
+          Rx.operators.concatAll(),
+          // Rx.operators.map(e => ({ x: e.clientX, y: e.clientY }))
+
+          // 问题1 是因为拖动时是直接给元素位置(clientX, clientY)
+          // 解决办法: 只要将点击目标的左上角作为(0,0)点, 后续拖动给的都是相对移动坐标即可
+          // Rx.operators.withLatestFrom(mouseDown, (move, down) => {
+          //   return {
+          //     x: move.clientX - down.offsetX,
+          //     y: move.clientY - down.offsetY
+          //   };
+          // })
+
+          // 问题2 其实只要给出拖动范围即可
+          // 解决办法: 限制拖动范围的最小值和最大值, 即最小值:0 最大值:窗口最大尺寸减去元素本身尺寸
+          Rx.operators.withLatestFrom(mouseDown, (move, down) => {
+            return {
+              x: validValue(
+                move.clientX - down.offsetX,
+                window.innerWidth - 320,
+                0
+              ),
+              y: validValue(
+                move.clientY - down.offsetY,
+                window.innerHeight - 180,
+                0
+              )
+            };
+          })
+        )
+        .subscribe(pos => {
+          video.style.top = pos.y + 'px';
+          video.style.left = pos.x + 'px';
+        });
+
+      function validValue(value, max, min) {
+        return Math.min(Math.max(value, min), max);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    <div id="addButton">addButton</div>
+    <div id="minusButton">minuseButton</div>
+    <div id="state"></div>
+    <script>
+      const Rx = window.rxjs;
+
+      const addButton = document.getElementById('addButton');
+      const minusButton = document.getElementById('minusButton');
+      const state = document.getElementById('state');
+
+      // 点击 addButton 将会发送一个 1
+      const addClick = Rx.fromEvent(addButton, 'click').pipe(
+        Rx.operators.mapTo(1)
+      );
+      // 点击 minusButton 将会发送一个 -1
+      const minusClick = Rx.fromEvent(minusButton, 'click').pipe(
+        Rx.operators.mapTo(-1)
+      );
+      const numberState = Rx.empty().pipe(
+        Rx.operators.startWith(0), // 首次先发送个默认值0
+        Rx.operators.merge(addClick, minusClick), // 合并 addClick 和 minusClick, 任何一个发送值了都会处理
+        Rx.operators.scan((origin, next) => origin + next, 0) // next 可能是 1(addClick) 也可能是 -1(minusClick)
+      );
+      numberState.subscribe(value => (state.innerHTML = value));
+    </script>
+  </body>
+</html>

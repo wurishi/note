@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    <div id="demo">双击生效</div>
+    <script>
+      const Rx = window.rxjs;
+      const button = document.getElementById('demo');
+      const click = Rx.fromEvent(button, 'click');
+      const example = click.pipe(
+        Rx.operators.bufferTime(500),
+        Rx.operators.filter(arr => arr.length >= 2)
+      );
+      example.subscribe(value => console.log('双击'));
+    </script>
+  </body>
+</html>
