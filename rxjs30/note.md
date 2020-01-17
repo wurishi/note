@@ -1670,3 +1670,69 @@ source : --o--o--o--o--o--o|
 example: --o--------o------|
 ```
 
+# 21: 深入 Observable
+
+之前是以数组 (Array) 的操作 (map, filter, concatAll) 作为切入点来理解 observable的, 但实际上 observable 的操作和数组是有很大的不同, 主要差异有二点:
+
+1. 延迟运算
+2. 渐进式取值
+
+## 1. 延迟运算
+
+延迟运算比较好理解, 所有 Observable 一定会等到订阅 (subscribe) 后, 才开始对元素进行运算, 如果没有订阅就不会运算.
+
+```javascript
+const source = Rx.from([1, 2, 3, 4, 5]);
+const example = source.map(x => x + 1);
+// example 因为没有被订阅, 所以不会对元素做运算
+```
+
+```javascript
+const source = [1, 2, 3, 4, 5];
+const example = source.map(x => x + 1);
+// example 这里已经对所有元素做过运算了
+```
+
+延迟运算是 Observable 和数组最明显的不同, 另外一个更重要的差异就是渐进式取值.
+
+## 2. 渐进式取值
+
+数组的操作都必须是完整运算出每个元素的返回值并组成一个数组后, 再做下一个操作的运算的.
+
+```javascript
+const source = [1, 2, 3];
+const example = source
+				.filter(x => x % 2 === 0) // 这里会运算并返回出一个完整的数组
+				.map(x => x + 1) // 这里也会运算并返回一个完整的数组
+// map 的模拟实现:
+Array.prototype.map = function (callback) {
+    const result = []; // 创建新数组
+    this.forEach(function (item, index, array) {
+        result.push(callback(item, index, array));
+    });
+    return result; // 返回新数组
+}
+```
+
+数组运算的过程:
+
+![21-2-1](assets/21-2-1.gif)
+
+Observable 操作的运算方式跟数组完全不同, 虽然 Observable 的操作也会返回一个新的 observable, 但因为元素是渐进式取得的关系, 所以每次的运算是一个元素运算到底的, 而不是运算完全部的元素再返回.
+
+```javascript
+const source = Rx.from([1, 2, 3]);
+const example = source.pipe(
+	filter(x => x % 2 === 0),
+	map(x => x + 1)
+);
+example.subscribe(console.log);
+```
+
+上面这段代码运行的方式是这样的:
+
+1. 送出 `1` 到 filter 被过滤掉
+2. 送出 `2` 到 filter , 再被送到 map 转换成 `3` , 再送到 observer 的 `console.log` 打印.
+3. 送出 `3` 到 filter 被过滤掉
+
+--21 未完--
