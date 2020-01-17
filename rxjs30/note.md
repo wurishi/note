@@ -1,4 +1,4 @@
-[参考资料](https://www.yuque.com/octavio000416/nb6ycv)
+[参考资料](https://blog.jerry-hong.com/series/rxjs/)
 
 > RxJS 版本: 6.5.4
 
@@ -1390,7 +1390,7 @@ example: ----a----b----c----a----b----c|
 
 switch, mergeAll 和 concatAll 三个 operators 是用来处理高阶 (Higher Order) Observable的.
 
-所谓的高阶 Observable, 就是指一个 observable 发送出的是一个元素还是一个 observable.
+所谓的高阶 Observable, 就是指一个 observable 发送出的还是一个 observable. 就像二维数组一样, 数组中的每个元素都是数组.
 
 ## 1. concatAll
 
@@ -1559,4 +1559,114 @@ switchMap, mergeMap, concatMap 还有一个共同的特性, 就是这三个 oper
 [代码 19-example](codes/19-example.html)
 
 [服务端代码 19-server](codes/19-server.js)
+
+# 20: Observable Operators (十一)
+
+之前讲了把高阶 observable 转换成一般 observable 的操作, 这里讲能够把一般的 observable 转换成高阶 observable 的操作. 其实前端不太有机会能够用到这类的操作.
+
+## 1. window
+
+window 总共有五个相关的操作:
+
+- window
+- windowCount
+- windowTime
+- windowToggle
+- windowWhen
+
+window 很类似 buffer, 都可以把一段时间内发送的元素拆出来, 只是 buffer 是把元素拆分到数组中的, 而 window 则是会把元素拆分出来放到一个新的 observable 中.
+
+[代码 20-window](codes/20-window.html)
+
+用弹珠图表示就是:
+
+```
+source : ----0----1----2----3----4----5----6---...
+click  : -----------c----------c------------c--...
+			window(click)
+example: -----------o----------o------------o--...
+                    \          \            \
+         ----0----1-|--2----3--|-4----5----6|--...
+			switchAll()
+       : ----0----1----2----3----4----5----6---...
+```
+
+以上这个示例只是为了单纯的表述 window 的作用, 并没有什么太大的意义. 实际上 window 会搭配其他的操作使用, 比如计算一秒钟内触发了几次 click 事件:
+
+[代码 20-window-count](codes/20-window-count.html)
+
+这个例子中把 source 和 click 对调了一下, 并且用到了一个方法 `count()`, 它可以用来取得 observable 总共发送了几个元素, 用弹珠图表示就是:
+
+```
+click  : --cc----c-----c-----------------...
+source : ---------0---------1---------2--...
+			window(source)
+example: ---------o---------o---------o--...
+                  \         \         \
+         --cc----c|----c----|---------|--...
+			count()
+       : --------3|--------1|--------0|--...
+			switchAll()
+       : ---------3---------1---------0--...
+```
+
+## 2. windowToggle
+
+windowToggle 不像 window 只能控制内部 observable 的结束, windowToggle 可以输入二个参数, 第一个是开始的 observable, 第二个是一个回调函数, 可以返回一个结束的 observable.
+
+[代码 20-windowtoggle](codes/20-windowtoggle.html)
+
+用弹珠图表示就是:
+
+```
+source   : ----0----1----2----3----4----5--...
+mouseDown: -------D------------------------...
+mouseUp  : ---------------------------U----...
+			windowToggle(mouseDown, () => mouseUp)
+example  : -------o------------------------...
+                  \
+                   -1----2----3----4--|
+			switchAll()
+         : ---------1----2----3----4-------...
+```
+
+从弹珠图可以看出, 使用 windowToggle 拆分出来的内部的 observable 开始于 mouseDown 结束于 mouseUp.
+
+## 3. groupBy
+
+groupBy 可以帮我们把相同条件的元素拆分成一个 observable, 其实就跟平常在 SQL 下是一样的概念.
+
+[代码 20-groupby](codes/20-groupby.js)
+
+用弹珠图表示就是:
+
+```
+source : ---0---1---2---3---4|
+			groupBy(x => x % 2)
+example: ---o---o------------|
+            \   \
+            \   1-------3----|
+            0-------2-------4|
+```
+
+一般在拿 groupBy 做完分组后, 还会再对组 observable 操作, 例如下面的例子将每个人的分数求和后再发送:
+
+[代码 20-groupby-sum](codes/20-groupby-sum.js)
+
+用弹珠图表示就是:
+
+```
+source : --o--o--o--o--o--o|
+			groupBy(p => p.name)
+       : --i--------i------|
+           \        \
+           \        o--o--o|
+           o--o--o--|
+			map(group => group.pipe(reducer(...)))
+       : --i--------i------|
+           \        \
+           o|       o|
+			mergeAll()
+example: --o--------o------|
+```
 

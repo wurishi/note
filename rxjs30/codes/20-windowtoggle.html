@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        background-color: lightcoral;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const Rx = window.rxjs;
+
+      const source = Rx.interval(1000);
+      const mouseDown = Rx.fromEvent(document, 'mousedown');
+      const mouseUp = Rx.fromEvent(document, 'mouseup');
+
+      const example = source
+        .pipe(
+          Rx.operators.windowToggle(mouseDown, () => mouseUp),
+          Rx.operators.switchAll()
+        )
+        .subscribe(console.log);
+    </script>
+  </body>
+</html>

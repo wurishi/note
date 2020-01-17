@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    <div id="click">click me</div>
+    <script>
+      const Rx = window.rxjs;
+      const click = Rx.fromEvent(document.getElementById('click'), 'click');
+      const source = Rx.interval(1000);
+      const example = source.pipe(Rx.operators.window(click));
+      example
+        .pipe(
+          // Rx.operators.map(innerObs => innerObs.pipe(Rx.operators.count())),
+          Rx.operators.switchAll()
+        )
+        .subscribe(console.log);
+    </script>
+  </body>
+</html>
