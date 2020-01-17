@@ -1553,3 +1553,10 @@ switchMap, mergeMap, concatMap 还有一个共同的特性, 就是这三个 oper
 > 如果不确定选用以上三种操作的哪一种时, 就使用 switchMap.
 >
 > 在使用 concatAll 或 concatMap 时, 要注意内部的 observable 一定要是能够结束的, 且外部 observable 发送元素的速度不能比内部的 observable 结束时间快太多, 不然可能会有内存问题 (memory issues)
+
+# 19: 自动补全的简易实现
+
+[代码 19-example](codes/19-example.html)
+
+[服务端代码 19-server](codes/19-server.js)
+

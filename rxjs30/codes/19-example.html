@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="rxjs.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        background: white;
+        padding: 0;
+        margin: 0;
+      }
+      .autocomplete {
+        position: relative;
+        display: inline-block;
+        margin: 20px;
+      }
+      .input {
+        width: 200px;
+        border: none;
+        border-bottom: 1px solid black;
+        padding: 0;
+        line-height: 24px;
+        font-size: 16px;
+      }
+      .input:focus {
+        outline: none;
+        border-bottom: 1px solid blue;
+      }
+      .suggest {
+        width: 200px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .suggest li {
+        cursor: pointer;
+        padding: 5px;
+      }
+      .suggest li:hover {
+        background-color: lightblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="autocomplete">
+      <input type="search" id="search" autocomplete="off" class="input" />
+      <ul id="suggest-list" class="suggest"></ul>
+    </div>
+    <script>
+      const Rx = window.rxjs;
+
+      const searchInput = document.getElementById('search');
+      const suggestList = document.getElementById('suggest-list');
+
+      const keyword = Rx.fromEvent(searchInput, 'input');
+      const selectItem = Rx.fromEvent(suggestList, 'click');
+
+      keyword
+        .pipe(
+          Rx.operators.filter(e => e.target.value.length > 2), // 只有输入字符超过2个才发送请求
+          Rx.operators.debounceTime(100), // 用户输入后100毫秒才发送请求
+          Rx.operators.switchMap(
+            e =>
+              Rx.from(getSuggestList(e.target.value)).pipe(
+                Rx.operators.retry(3) // 如果 API 失败则重试3次
+              ),
+            (e, res) => res[1] // res 的结果是[原搜索文字,[自动补全列表]], 后续只要[自动补全列表]即可.
+          )
+        )
+        .subscribe(list => render(list));
+
+      selectItem
+        .pipe(
+          Rx.operators.filter(e => e.target.matches('li')), // 只有 li 元素点击事件才处理
+          Rx.operators.map(e => e.target.innerText) // 后续只要处理 li 元素中的文本内容
+        )
+        .subscribe(text => {
+          searchInput.value = text;
+          render(); // 设置成选中内容后, 清除一个 ul 列表
+        });
+
+      function getSuggestList(keyword) {
+        return fetch(
+          'http://127.0.0.1:8888/search?query=' + keyword
+        ).then(res => res.json());
+      }
+
+      function render(suggestArr = []) {
+        suggestList.innerHTML = suggestArr
+          .map(item => `<li>${item}</li>`)
+          .join('');
+      }
+    </script>
+  </body>
+</html>
