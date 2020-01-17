@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="http://127.0.0.1:8888/rxjs.js"></script>
+  </head>
+  <body>
+    <div id="click">click me</div>
+    <script>
+      const Rx = window.rxjs;
+
+      function getPostData() {
+        return fetch('http://127.0.0.1:8888/get').then(res => res.json());
+      }
+
+      const source = Rx.fromEvent(document.getElementById('click'), 'click');
+      source.subscribe(e => {
+        console.log('点击了一下');
+      });
+      const example = source.pipe(
+        Rx.operators.concatMap(
+          e => Rx.from(getPostData()),
+          (e, res, eIndex, resIndex) => {
+            // e = 外部 observable 发送的元素 (click 的 evt)
+            // res = 内部 observable 发送的元素 (getPostData 返回的 json)
+            // eIndex = 外部 observable 发送的元素的 index
+            // resIndex = 内部 observable 发送的元素的 index
+            // console.log(e, res, eIndex, resIndex);
+            // 返回值可以返回我们想要处理的值, 默认是 res, 也可以按需求指定
+            return res.msg;
+          }
+        )
+      );
+      example.subscribe({
+        next: console.log,
+        error: err => console.log('Error: ' + err),
+        complete: console.log.bind(console, 'complete')
+      });
+    </script>
+  </body>
+</html>

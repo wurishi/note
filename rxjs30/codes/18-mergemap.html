@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    <div id="click">click me</div>
+    <script>
+      const Rx = window.rxjs;
+      const source = Rx.fromEvent(document.getElementById('click'), 'click');
+      // const example = source.pipe(
+      //   Rx.operators.map(e => Rx.interval(1000).pipe(Rx.operators.take(3))),
+      //   Rx.operators.mergeAll()
+      // );
+      // 可以将 map, mergeAll 简写成 mergeMap
+      const example = source.pipe(
+        Rx.operators.mergeMap(
+          e => Rx.interval(1000).pipe(Rx.operators.take(3)),
+          null,
+          3
+        )
+      );
+      example.subscribe(console.log);
+    </script>
+  </body>
+</html>

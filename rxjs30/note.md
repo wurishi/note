@@ -1482,3 +1482,74 @@ mergeAll(2)
 // 所以如果使用 mergeAll(1), 其行为就和 concatAll 一模一样了.
 ```
 
+# 18: Observable Operators (十)
+
+## 1. concatMap
+
+concatMap 其实就是 map 加上 concatAll 的简化写法.
+
+[代码 18-concatmap](codes/18-concatmap.html)
+
+用弹珠图表示就是:
+
+```
+source : -----------c--c--------------...
+			concatMap(e => Rx.interval(100).pipe(take(3)))
+example: -----------0-1-2-0-1-2-------...
+```
+
+这种行为经常被用来发送请求 (request):
+
+[代码 18-concatmap-fetch](codes/18-concatmap-fetch.html)
+
+可能需要服务器配合: [代码 18-concatmap-fetch-server](codes/18-concatmap-fetch-server.js)
+
+在这个示例中, 每点击一下就会发送一个 HTTP 请求, 如果快速连续的点击, 可以从开发者工具的 network 看到, 每个请求都是等到前一个请求完成之后, 才会开始发送的.( server 代码中延迟了5秒才会响应)
+
+concatMap 还有第二个参数是一个 selector 回调函数, 这个回调函数会有四个参数, 分别是:
+
+1. 外部 observable 发送的元素
+2. 内部 observable 发送的元素
+3. 外部 observable 发送的元素的 index
+4. 内部 observable 发送的元素的 index
+
+另外这个回调函数的返回值就是我们想要后续处理的值.
+
+## 2. switchMap
+
+switchMap 其实就是 map 加上 switchAll 的简化写法.
+
+[代码 18-switchmap](codes/18-switchmap.html)
+
+用弹珠图表示就是:
+
+```
+source : -----------c-c-------------...
+			switchMap(e => Rx.interval(100).pipe(take(3)))
+example: -----------0-0-----1-----2-...
+```
+
+用 switchMap 处理连续多次请求, 结果就是只有最后一次请求的结果才会处理, 前面发送的请求已经不会造成任何前端的副作用 (side effect)了, 这种比较适合只看最后一次请求的场景, 比如自动补全 (auto complete), 我们只需要根据用户最后一次输入的文字, 来显示建议选项即可.
+
+switchMap 跟 concatMap 一样有第二个参数 selector 回调函数, 这部分功能和 concatMap 是一样的.
+
+## 3. mergeMap
+
+mergeMap 其实就是 map 加 mergeAll 的简化写法.
+
+[代码 18-mergemap](codes/18-mergemap.html)
+
+mergeMap 也能传第二个参数 selector 回调函数, 这个回调函数和 concatMap 的第二个参数也是完全一样的. 但 mergeMap 的重点在于我们可以传入第三个参数, 用来限制并行处理的数量.
+
+> RxJS 5 还保留了 mergeMap 的别名叫 flatMap. 二个方法是完全一样的.
+
+switchMap, mergeMap, concatMap 还有一个共同的特性, 就是这三个 operators 可以把第一个参数所返回的 promise 对象直接转换成 observable, 所以我们不用再使用 Rx.from 转换一次了.
+
+```javascript
+// 之前的代码 18-concatmap-fetch.html 22行左右的 concatMap(e => Rx.from(getPostData())
+// 可以直接改写成 concatMap(e => getPostData())
+```
+
+> 如果不确定选用以上三种操作的哪一种时, 就使用 switchMap.
+>
+> 在使用 concatAll 或 concatMap 时, 要注意内部的 observable 一定要是能够结束的, 且外部 observable 发送元素的速度不能比内部的 observable 结束时间快太多, 不然可能会有内存问题 (memory issues)
