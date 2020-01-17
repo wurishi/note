@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    <div id="title"></div>
+    <script>
+      const Rx = window.rxjs;
+
+      const title = document.getElementById('title');
+      const source = Rx.from(['a', 'b', 'c', 'd', 2]).pipe(
+        Rx.operators.zip(Rx.interval(500), (x, y) => x),
+        Rx.operators.map(x => x.toUpperCase())
+      );
+      const example = source.pipe(
+        Rx.operators.catchError((err, obs) => {
+          return Rx.empty().pipe(
+            Rx.operators.startWith('发生错误: 5秒后重试'),
+            Rx.operators.concat(obs.pipe(Rx.operators.delay(5000)))
+          );
+        })
+      );
+      example.subscribe({
+        next(value) {
+          title.innerText = value;
+        },
+        error(err) {
+          console.log('Error: ' + err);
+        },
+        complete() {
+          console.log('complete');
+        }
+      });
+    </script>
+  </body>
+</html>

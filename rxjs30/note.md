@@ -1216,3 +1216,172 @@ throttle 更适合用在连续的行为上, 比如说 UI 动画的运算过程. 
 > 浏览器中有一个 requestAnimationFrame API 是专门用来优化 UI 运算的, 通常用这个的效果会比 throttle 好.
 >
 > RxJS 也能用 requestAnimationFrame 做优化, 而且使用方法也很简单, 这个部分会在 Scheduler 提到.
+
+# 15: Observable Operators (七)
+
+## 1. distinct
+
+如果对 SQL 命令熟悉应该都不会对 distinct 陌生, 它能帮我们把相同值的数据过滤到只留下一条, RxJS 里的 distinct 也是相同的作用.
+
+[代码 15-distinct](codes/15-distinct.js)
+
+用弹珠图表示就是:
+
+```
+source : --a--b--c--a--b|
+		distinct()
+example: --a--b--c------|
+```
+
+另外我们还可以传入一个 selector 回调函数, 这个回调函数会传入一个接收到的元素, 然后返回我们真正希望对比的值.
+
+[代码 15-distinct-selector](codes/15-distinct-selector.js)
+
+distinct 还可以传入第二个参数 flushes observable, 它可以用来清除暂存的数据.
+
+[代码 15-distinct-flushes](codes/15-distinct-flushes.js)
+
+用弹珠图表示就是:
+
+```
+source : --a--b--c--a--c|
+flushes: ------------0---...
+		distinct(null, flushes)
+example: --a--b--c-----c|
+```
+
+其实在 flushes 发送出元素时, distinct 会把暂存的数据清空, 所以之后再接收到元素就又是从头来过了. 这样就不用担心暂存的 Set 会越来越大的问题, 但其实我们平常不太会用这种方式来处理, 通常会用另一个方法 distinctUntilChanged.
+
+## 2. distinctUntilChanged
+
+distinctUntilChanged 跟 distinct 一样会把相同的元素过滤掉, 但 distinctUntilChanged 只会跟最后一次发送出的元素比较, 不会每个都比.
+
+[代码 15-distinctuntilchanged](codes/15-distinctuntilchanged.js)
+
+这里 distinctUntilChanged 只会暂存一个元素, 并在收到新元素时跟暂存的元素对比. 如果一样就不发送, 如果不一样就把暂存的元素换成刚新接收到的元素, 并把新元素发送出去.
+
+```
+source : --a--b--c--c--b|
+		distinctUntilChanged()
+example: --a--b--c-----b|
+```
+
+从弹珠图中可以看到, 第二个 c 送出时刚好上一个就是 c 所以就被过滤掉了, 但最后一个 b 则跟上一个不同, 所以没有被过滤掉.
+
+# 16: Observable Operators (八)
+
+错误处理是异步行为中的一大难题, 尤其有多个交错的异步行为时, 更容易凸显错误处理的困难. 接下来看看在 RxJS 中如何处理错误.
+
+## 1. catchError
+
+catch 是很常见的异步错误处理方法, 在 RxJS 中也能够直接用 ~~catch~~ (RxJS 6 中叫 catchError) 来处理错误, 在 RxJS 中的 catchError 可以返回一个 observable 来送出新的值.
+
+[代码 16-catcherror](codes/16-catcherror.js)
+
+这个示例中, 我们每隔 500 毫秒就发送出一个字符串 (string), 并用字符串方法 toUpperCase() 来把字符串改成大写英文字母, 在这个过程中因为某些原因, 送出了一个数值 (number) 2 导致发生了错误 (数值是没有 toUpperCase 方法的), 这时后面的 catchError 就能抓到错误了.
+
+catchError 可以返回一个新的 observable; Promise; Array 或者其他任何 iterable 的对象, 来发送之后的元素.
+
+上面例子的弹珠图如下:
+
+```
+source : ----a----b----c----d----2|
+			map(x => x.toUpperCase())
+         ----A----B----C----D----*|
+			catchError(error => Rx.of('h'))
+example: ----A----B----C----D----h|
+```
+
+也可以在遇到错误后, 让 observable 结束:
+
+[代码 16-catcherror-complete](codes/16-catcherror-complete.js)
+
+这里返回了一个 empty 的 observable 来直接结束 (complete).
+
+另外 catchError 的回调函数能接收第二个参数, 这个参数就是当前的 observable, 我们可以通过返回这个 observable 来做到重新执行.
+
+[代码 16-catcherror-retry](codes/16-catcherror-retry.js)
+
+这里我们直接返回了当前的 observable (其实就是 example) 来重新执行, 弹珠图表示就是:
+
+```
+source : ----a----b----c----d----2|
+			map(x => x.toUpperCase())
+         ----A----B----C----D----*|
+			catchError((error, obs) => obs)
+example: ----A----B----C----D---------A----B----C----D--...
+```
+
+因为只是简单示例, 所以这里会一直无限循环, 实际上通常会用在断线重连的情况.
+
+上面的处理方式有一个简化的写法, 叫做 retry
+
+## 2. retry
+
+如果一个 observable 发生错误了, 重新尝试就可以使用 retry 这个方法.
+
+[代码 16-retry](codes/16-retry.js)
+
+retry() 是无限重试的, 也可以设定只重试几次. retry(1) 表示重试一次.
+
+用弹珠图表示就是:
+
+```
+source : ----a----b----c----d----2|
+			map(x => x.toUpperCase())
+         ----A----B----C----D----*|
+			retry(1)
+example: ----A----B----C----D---------A----B----C----D----*|
+```
+
+## 3. retryWhen
+
+RxJS 还提供了一个方法 retryWhen, 它可以把错误发生的元素放到一个 observable 中, 让我们直接操作这个 observable, 并等到这个 observable 操作完之后, 再重新订阅一次原本的 observable.
+
+[代码 16-retrywhen](codes/16-retrywhen.js)
+
+用弹珠图表示就是:
+
+```
+source : ----a----b----c----d----2|
+		map(x => x.toUpperCase())
+         ----A----B----C----D----*|
+		retryWhen(errorObs => errorObs.pipe(delay(1000)))
+example: ----A----B----C----D-------------------A----B----C----D--...
+```
+
+从上图可以看到后续的重新订阅行为被延迟了1秒, 这里只是为了示范 retryWhen , 实际上我们通常会把 retryWhen 拿来做错误通知或者错误收集.
+
+```javascript
+// source: ['a','b','c','d',2]
+const example = source.pipe(
+	map(x => x.toUpperCase()),
+    retryWhen(errorObs => {
+        return errorObs.map(err => fetch(...));
+    })
+);
+```
+
+> 这里要注意的是, retryWhen 返回的 observable 预设是无限的, 如果我们把它结束了, 原来的 observable 也会跟着结束.
+>
+> 所以如果在 retryWhen 中返回 Rx.empty() , 则原来的 observable 也会马上跟着结束.
+
+## 4. repeat
+
+我们有时候可能会想要像上面 retry 一样, 有一个重复订阅的效果, 但是没有错误发生. 这个时候就可以用 repeat 来做到.
+
+[代码 16-repeat](codes/16-repeat.js)
+
+repeat 的行为跟 retry 基本一致, 只是 retry 只有在发生错误时才会触发, 用弹珠图表示就是:
+
+```
+source : ----a----b----c|
+		repeat(1)
+example: ----a----b----c----a----b----c|
+```
+
+同样的, 不指定重试次数就表示是无限循环: `repeat()`
+
+模仿即时通信断线时的示例:
+
+[代码 16-example](codes/16-example.html)
