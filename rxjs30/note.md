@@ -1385,3 +1385,100 @@ example: ----a----b----c----a----b----c|
 模仿即时通信断线时的示例:
 
 [代码 16-example](codes/16-example.html)
+
+# 17: Observable Operators (九)
+
+switch, mergeAll 和 concatAll 三个 operators 是用来处理高阶 (Higher Order) Observable的.
+
+所谓的高阶 Observable, 就是指一个 observable 发送出的是一个元素还是一个 observable.
+
+## 1. concatAll
+
+concatAll 最重要的就是它会处理完前一个 observable 才会再处理下一个 observable.
+
+[代码 17-concatall](codes/17-concatall.html)
+
+如果上面示例中不使用 `take(3)` , 那么弹珠图就会是这个样子:
+
+```
+click  : ---------c-c---------------------c--...
+			map(e => Rx.interval(1000))
+source : ---------o-o---------------------o--...
+                   \ \                     \
+                    ----0----1----2----3----4--...
+                       ----0----1----2----3----4--...
+                                             ----0----1----2----3----4--...
+			concatAll()
+example: ---------------0----1----2----3----4--...
+```
+
+click 事件被转换成了一个 observable , 这个 observable 每一秒发送一个递增的数字, 当我们使用 concatAll 之后会把二维的 observable 摊平成一维的 observable, 但是 concatAll 会一个一个处理, 一定是等前一个 observable 完成 (complete), 才会处理下一个 observable. 因为现在发送出来的 observable 是无限的不会完成 (complete), 导致它永远不会处理后面发送的 observable!
+
+上面的示例中加上 `take(3)`之后, 那么弹珠图就会是这个样子:
+
+```
+click  : --------c-c------------------c----...
+			map(e => Rx.interval(1000).pipe(take(3)))
+source : --------o-o------------------o----...
+                  \ \                  \
+                   ----0----1----2|
+                     ----0----1----2|
+                                         ----0----1----2|
+			concatAll()
+example: --------------0----1----2----0----1----2--...
+```
+
+当把 observable 变成有限只发送三个元素时, 就会看到 concatAll 不管二个 observable 发送的时间有多么的相近, 一定会是先处理完前一个 observable 后再处理下一个.
+
+## 2. switchAll
+
+~~switch~~ ( RxJS 6 中叫 switchAll ) 同样也能把二维的 observable 摊平成一维的, 但它们在行为上有很大的不同.
+
+[代码 17-switch](codes/17-switch.html)
+
+用弹珠图表示就是:
+
+```
+click  : ----------c-c---------------c--...
+			map(e => Rx.interval(1000))
+source : ----------o-o---------------o--...
+                    \ \               \
+                     ----0----1----2----3----4--...
+                       ----0----1----2----3----4--...
+                                        ----0----1----2----3----4--...
+			switchAll()
+example: ----------------0-0----1----2----3-0----1--...
+```
+
+switchAll 最重要的就是它会在新的 observable 发送后直接处理新的 observable 不管前一个 observable 是否完成 (complete), 每当有新的 observable 发送时, 就会直接把上一个 observable 退订 (unsubscribe), 永远只处理最新的 observable!
+
+## 3. mergeAll
+
+之前的 merge 可以让多个 observable 同时发送元素, mergeAll 也是同样的道理, 它会把二维 observable 转换成一维的, 并且能够同时处理所有的 observable.
+
+[代码 17-mergeall](codes/17-mergeall.html)
+
+用弹珠图表示就是:
+
+```
+click  : ----------c-c-----------------c--...
+			map(e => Rx.interval(1000))
+source : ----------o-o-----------------o--...
+                   \ \                 \
+                   ----0----1----2----3----4--...
+                     ----0----1----2----3----4--...
+                                       ----0----1----2----3----4--...
+			mergeAll()
+example: --------------0-0--1-1--2-2--3-3--(04)-4--...
+```
+
+在 mergeAll 中, 所有的 observable 都是并行 (Parallel) 处理的, 也就是说不会像 switchAll 一样退订 (unsubscribe) 原先的 observable, 而是并行处理多个 observable.
+
+另外 mergeAll 还可以输入一个数字, 这个数字代表它同时处理的 observable 的数量.
+
+```javascript
+mergeAll(2)
+// 如果发送的 observable 有三个, 那么 mergeAll 最多只会同时处理二个 observable, 只有当第一个 observable 结束后, 第三个 observable 才会开始.
+// 所以如果使用 mergeAll(1), 其行为就和 concatAll 一模一样了.
+```
+

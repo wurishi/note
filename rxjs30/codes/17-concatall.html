@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+  </head>
+  <body>
+    <div id="click">click me</div>
+    <script>
+      const Rx = window.rxjs;
+      const click = Rx.fromEvent(document.getElementById('click'), 'click');
+      const source = click.pipe(
+        Rx.operators.map(e => {
+          return Rx.interval(1000).pipe(Rx.operators.take(3)); // 重点关注这里的 take(3)
+        })
+      );
+      const example = source.pipe(Rx.operators.concatAll());
+      example.subscribe({
+        next: console.log,
+        complete: console.log.bind(console, 'complete')
+      });
+    </script>
+  </body>
+</html>
