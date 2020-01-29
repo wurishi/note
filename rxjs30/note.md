@@ -1773,3 +1773,33 @@ newIterator.next(); // { done: false, value: 2 }
 ![21-2-2](assets/21-2-2.gif)
 
 渐进式取值这个特性在 Observable 中非常的重要, 这个特性也使得 Observable 相较于 Array 在运算上会更加的高效, 尤其是在处理大量数据时会表现的非常明显.
+
+# 22: Subject 基本概念
+
+## 1. 多次订阅 (Multipe subscriptions)
+
+RxJS 的第二个重点就是 Subject, 之前的范例中, 每个 Observable 都只订阅了一次, 而实际上 Observable 是可以多次订阅的.
+
+[代码 22-multiple-subscriptions](codes/22-multiple-subscriptions.js)
+
+> 有一点要重点注意, 二个 observer 都各自收到了元素, 但其实他们是分开执行的, 或者说是每次订阅都会建立一个新的执行.
+>
+> 这样的行为在大部分情况下都是适用的, 但有些情况下我们会希望第二次订阅的 source 不会从头开始接收元素, 而是从第一次订阅到当前处理的元素开始发送, 我们把这种处理方式称为组播 (multicast), 如果做到组播呢?
+
+## 2. 手动创建 subject , 实现组播
+
+建立一个中间人来订阅 source, 再由中间人转发资料.
+
+[代码 22-multipe-subscriptions-addobserver](codes/22-multipe-subscriptions-addobserver.js)
+
+上面的代码中, 我们先创建了一个 subject 对象, 这个对象具备了 observer 的所有方法 (next, error, complete), 并且还能通过 addObserver 把 observer 加到内部的数组中, 每当有值发送出来, 就会遍历数组中所有的 observer 并把值发送给他们. 这样一来, 不管多久之后加进来的 observer , 都会是从当前处理到的元素开始往下执行. 当我们将这个 addObserver 方法名改成 subscribe 后, 其实就和 RxJS 中的 Subject 对象一模一样了.
+
+接下来是使用 RxJS 提供的 Subject 实现组播功能:
+
+[代码 22-subject](codes/22-subject.js)
+
+## 3. 什么是 Subject?
+
+- Subject 同时是 Observable 又是 Observer
+- Subject 会对内部的 observers 列表进行组播 (multicast)
+
