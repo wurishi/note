@@ -1735,4 +1735,41 @@ example.subscribe(console.log);
 2. 送出 `2` 到 filter , 再被送到 map 转换成 `3` , 再送到 observer 的 `console.log` 打印.
 3. 送出 `3` 到 filter 被过滤掉
 
---21 未完--
+每个元素送出后就是运算到底, 在这个过程中不会等待其他的元素运算. 这就是渐进式取值的特点.
+
+```javascript
+class IteratorFromArray {
+    construtor(arr) {
+        this._array = arr;
+        this._cursor = 0;
+    }
+    
+    next() {
+        return this._cursor < this._array.length ?
+            { value: this._array[this._cursor++], done: false } :
+        	{ done: true };
+    }
+    
+    map(callback) {
+        const iterator = new IteratorFromArray(this._array);
+        return {
+            next: () => {
+                const { done, value } = iterator.next();
+                return {
+                    done,
+                    value: done ? undefined: callback(value)
+                };
+            }
+        }
+    }
+}
+const myIterator = new IteratorFromArray([1,2,3]);
+const newIterator = myIterator.map(x => x + 1);
+newIterator.next(); // { done: false, value: 2 }
+```
+
+以上代码是一个简单的示例, 主要关注的就是每一次 map 虽然都会返回一个新的 iterator, 但实际上在做元素运算时, 因为渐进式的特性会使一个元素运算到底. 用图片来表示如下:
+
+![21-2-2](assets/21-2-2.gif)
+
+渐进式取值这个特性在 Observable 中非常的重要, 这个特性也使得 Observable 相较于 Array 在运算上会更加的高效, 尤其是在处理大量数据时会表现的非常明显.
