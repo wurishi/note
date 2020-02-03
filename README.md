@@ -1,10 +1,10 @@
 # reacthook
 
-参考资料: [Hook](https://react.docschina.org/docs/hooks-overview.html) (计划中)
+参考资料: [Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 3/8)_
 
 # rxjs30
 
-参考资料: [30 天精通 RxJS](https://blog.jerry-hong.com/series/rxjs/) *(进行中 21/32)*
+参考资料: [30 天精通 RxJS](https://blog.jerry-hong.com/series/rxjs/) _(进行中 22/32)_
 
 # xstate
 

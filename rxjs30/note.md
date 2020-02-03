@@ -1803,3 +1803,11 @@ RxJS 的第二个重点就是 Subject, 之前的范例中, 每个 Observable 都
 - Subject 同时是 Observable 又是 Observer
 - Subject 会对内部的 observers 列表进行组播 (multicast)
 
+# 23: Subject 及其变化
+
+## 1.  Subject
+
+Subject 实际上就是观察者模式的具体实现, 它会在内部管理一份观察者的清单, 并且在接收到值时遍历这份清单并发送该值.
+
+Subject 本身就是 Observable, 所以适用于某些无法超拽使用 Observable 的前端框架, 比如在 React 中想对 DOM 事件做监听.
+
