@@ -211,3 +211,173 @@ function Todos() {
 
 # 3: 使用 State Hook
 
+## 1. 等价的 class 示例
+
+[代码 1-example](src/1-example.js)
+
+之前的 State Hook 示例可以用 class 写成如下代码:
+
+```javascript
+class Example extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { count: 0 };
+    }
+    
+    render() {
+        return (
+        	<div>
+            <p>You Clicked {this.state.count} times</p>
+		   <button onClick={()=>{this.setState({count:this.state.count+1})}}>Click me</button>
+            </div>
+        );
+    }
+}
+```
+
+## 2. Hook 和函数组件
+
+React 的函数组件是这样的:
+
+```javascript
+const Example = (props) => {
+    // 你可以在这里使用 Hook
+    return <div />;
+}
+```
+
+或者是这样:
+
+```javascript
+function Example(props) {
+	// 你可以在这里使用 Hook
+    return <div />;
+}
+```
+
+之前把以上组件又叫做"无状态组件". 但现在可以借用 Hook 引入使用 React state 的能力, 所以称它们为"函数组件"更合适.
+
+> Hook 在 class 内部是不起作用的. 但你可以使用它们取代 class
+
+## 3. Hook 是什么?
+
+### 3.1 Hook 是什么?
+
+Hook 是一个特殊的函数, 它可以"钩入" React 的特性. 例如, `useState` 是允许你在 React 函数组件中添加 state 的 Hook.
+
+### 3.2 什么时候使用 Hook ?
+
+如果在编写函数组件并意识到需要向其添加一些 state, 之前的做法是必须将它转化为 class. 现在则可以在现有的函数组件中使用 Hook.
+
+## 4. 声明 State 变量
+
+在 class 中, 通过在构造函数中设置 `this.state` 为 `{ count: 0 }` 来初始化 `count` state 为 `0`:
+
+```javascript
+class Example extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { count: 0 };
+    }
+}
+```
+
+在函数组件中, 我们没有 `this` , 所以我们不能分配或读取 `this.state` . 我们直接在组件中调用 `useState` Hook:
+
+```javascript
+import React, { useState } from 'react';
+function Example() {
+    // 声明一个叫 "count" 的 state 变量
+    const [count, setCount] = useState(0);
+}
+```
+
+### 4.1 调用 `useState` 方法的时候做了什么?
+
+它定义了一个 "state 变量". 我们把这个变量叫做 `count`, 当然我们也可以叫他任何名字. 这是一种在函数调用时保存变量的方式 -- `useState` 是一种新方法, 它与 class 里面的 `this.state` 提供的功能完全相同. 一般来说, 在函数退出后变量就会"消失", 但在 state 中的变量会被 React 保留.
+
+### 4.2 useState 需要哪些参数?
+
+`useState()` 方法里面唯一的参数就是初始 state. 不同于 class 的是, 我们可以按照需要使用的是数字或字符串对其进行赋值, 而不一定是对象.
+
+### 4.3 useState 方法的返回值是什么?
+
+返回值为: 当前 state 以及更新 state 的函数. 就像之前代码中写的 `const [count, setCount] = useState()`, 这与 class 里面的 `this.state.count` 和 `this.setState` 类似, 唯一区别就是你需要**成对**的获取它们.
+
+> 注意: 
+>
+> 你可能想知道: 为什么叫 useState 而不叫 createState ?
+>
+> "Create" 可能不是很准确, 因为 state 只在组件首次渲染的时候被创建. 在下一次重新渲染时, useState 会返回当前的 state. 否则它就不是 "state" 了! 这也是 Hook 的名字总是以 use 开头的一个原因.
+
+## 5. 读取 state
+
+当我们想在 class 中显示当前的 count, 我们读取 `this.state.count`:
+
+```
+<p>You Clicked {this.state.count} times</p>
+```
+
+在函数中, 我们可以直接用 `count`:
+
+```
+<p>You clicked {count} times</p>
+```
+
+## 6. 更新 state
+
+在 class 中, 我们需要调用 `this.setState()`来更新 `count`值:
+
+```
+<button onClick = {() => this.setState({ count: this.state.count + 1 })}>
+Click me
+</button>
+```
+
+在函数中, 我们已经有了 `setCount`和 `count`变量, 所以我们不需要 `this`:
+
+```
+<button onClick = {() => setCount(count + 1)}>
+Click me
+</button>
+```
+
+## 7. 提示:  方括号有什么用?
+
+你可能注意到我们用方括号定义了一个 state 变量
+
+```
+const [count, setCount] = useState(0);
+```
+
+等号左边名字并不是 React API 的部分, 你可以自己取名字.
+
+这里的 [] 其实是 JavaScript 语法叫**数组解构**. 这意味着我们同时创建了 `count`和 `setCount`两个变量, `count`的值为 `useState`返回的第一个值, `setCount`是返回的第二个值. 它等价于下面的代码:
+
+```javascript
+const countStateVariable = useState(0); // 返回一个有两个元素的数组
+const count = countStateVariable[0]; // 数组里的第一个值
+const setCount = countStateVariable[1]; // 数组里的第二值
+```
+
+## 8. 提示: 使用多个 state 变量
+
+```javascript
+function ExampleWithManyStates() {
+    // 声明多个 state 变量
+    const [age, setAge] = useState(42);
+    const [fruit, setFruit] = useState('banana');
+    const [todos, setTodos] = useState([{text: '学习 Hookk'}]);
+    
+    // 这个组件中有局部变量 age, fruit, todos, 我们可以只单独更新其中的一个:
+    function handleOrangeClick() {
+        // 和 this.setState({fruit: 'orange'}) 类似
+        setFruit('orange');
+    }
+}
+```
+
+Hook State 变量也可以很好的存储对象和数组, 因此你仍然可以将相关数据分为一组. 然而, 不像 class 中的 `this.setState`, 更新 state 变量总是**替换**它而不是*合并*它.
+
+# 4: 使用 Effect Hook
+
