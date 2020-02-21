@@ -189,7 +189,7 @@ function FriendListItem(props) {
 
 自定义 Hook 更像是一种约定而不是功能. 如果函数的名字以 "`use`" 开头并调用了其他 Hook, 我们就说这是一个自定义 Hook.
 
-## 5. 其他 Hook
+## 6. 其他 Hook
 
 除此之外, 还有一些使用频率较低的但是很有用的 Hook. 比如 `useContext` 让你不使用组件嵌套就可以订阅 React 的 Context.
 
@@ -381,3 +381,22 @@ Hook State 变量也可以很好的存储对象和数组, 因此你仍然可以�
 
 # 4: 使用 Effect Hook
 
+Effect Hook 可以在函数组件中执行副作用操作
+
+[代码 2-useeffect](src/2-useeffect.js)
+
+> 数据获取, 设置订阅以及手动更改 React 组件中的 DOM 都属于副作用.
+>
+> 如果熟悉 React class 的生命周期函数, 你可以把 useEffect Hook 看做 componentDidMount, componentDidUpdate 和 componentWillUnmount 这三个函数的组合.
+
+在 React 组件中有两种常见副作用操作: 需要清除的和不需要清除的.
+
+## 1. 无需清除的 effect
+
+有时候, 我们只想**在 React 更新 DOM 之后运行一些额外的代码**. 比如发送网络请求, 手动更改 DOM, 记录日志等. 这些都是常见的无需清除的操作. 因为在执行完这些操作之后, 就可以忽略他们了. 让我们对比一下使用 class 和 Hook 都是怎么实现这些副作用的.
+
+### 1-1 使用 class 的示例
+
+在 React 的 class 组件中,  `render` 函数是不应该有任何副作用的. 一般来说, 在这里执行操作太早了, 我们基本上都希望在 React 更新 DOM 之后才执行我们的操作.
+
+这就是为什么在 React class 中, 我们把副作用操作放到 `componentDidMount` 和 `componentDidUpdate` 函数中.
