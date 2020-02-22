@@ -8,7 +8,7 @@
 
 # unity1
 
-参考资料:[C#与Unity基础]( https://www.yuque.com/henjihenguanjian/technicalarticles/gechkn ) *(进行中 3/5)*
+参考资料:[Unity系列教程](https://www.yuque.com/henjihenguanjian/technicalarticles/dsoxgs) _(进行中 3/5)_
 
 # xstate
 

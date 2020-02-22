@@ -14,5 +14,11 @@
     Cylinder3,
     Cylinder4,
     Sphere,
-    Sphere1
+    Sphere1,
+    Sphere2,
+    Torus,
+    Torus2,
+    Torus3,
+    Torus4,
+    Torus5
 }
