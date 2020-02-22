@@ -4,7 +4,7 @@
 
 # rxjs30
 
-参考资料: [30 天精通 RxJS](https://blog.jerry-hong.com/series/rxjs/) _(进行中 22/32)_
+参考资料: [30 天精通 RxJS](https://blog.jerry-hong.com/series/rxjs/) _(进行中 23/32)_
 
 # unity1
 
