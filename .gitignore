@@ -1,1 +1,7 @@
 node_modules
+unity*/Library/
+unity*/Temp/
+unity*/.idea/
+unity*/Logs/
+unity*/obj/
+unity*/*.csproj
