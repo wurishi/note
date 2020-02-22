@@ -76,3 +76,48 @@ MeshFilter filter = gameObject.AddComponent<MeshFilter>();
 filter.mesh = mesh;
 ```
 
+### 4.5 Initialize 方法在 Start 方法之前调用?
+
+> 首先新的游戏物体被创建, 然后一个新的 Fractal 组件也随之创建并附加给这个新物体. 这时, 如果存在 Awake 方法和 OnEnable 方法, 将会调用它们, 再然后 AddComponent 方法就执行完毕. 这个时候就会直接执行我们在 AddComponent 方法后写的 Initialize 方法. 而新物体脚本的 Start 方法则会在下一帧才被调用.
+
+### 4.6 枚举器(Enumerator)是什么?
+
+> 枚举(Enumeration), 指的是一次遍历集合所有元素的过程. 比如说, 循环一个数组中的所有元素.
+>
+> 枚举器(Enumerator), 也叫作迭代器(Iterator), 指提供了枚举功能接口的对象.
+>
+> System.Collections.Ienumerator 就提供了这样的接口.
+>
+> 为什么我们需要这样做? 因为协程使用它们.
+
+### 4.7 yield 是什么?
+
+> yield 语句是来告诉程序, 在枚举过程中, 你遍历到了集合中的第几个元素, 或者全部遍历完毕.
+>
+> 当使用 yield 语句时, 一个迭代器的实例对象就会在后台自动创建, 用于处理对应的枚举过程. 这就是为什么 CreateChildren 方法需要使用 IEnumerator 作为返回类型.
+
+### 4.8 协程是如何工作的?
+
+> 当你在 Unity 中创建一个协程时, 其实就是创建了一个迭代器. 当你把它传递给 StartCoroutine 方法, 它将在每一帧存储和检测下一个枚举内容, 直到整个枚举过程完成.
+>
+> yield 语句会提供枚举内容.
+>
+> 你可以通过 yield 语句返回指定内容, 比如我们用到的 WaitForSecond.
+
+### 4.9 Dynamic Batching (动态合批)
+
+通过查看 Unity 中的 Stats 面板, 会发现当场景中物体越来越多时, Batches 会大副增加, FPS 则会降低, 意味着游戏整体运行的性能下降.
+
+此时开启 Dynamic Batching, 会发现 Stats 面板中的 Batches 减少, 而 Saved by batching 会增加, 此时 FPS 会远大于之前, 意味着游戏整体运行的性能也有提升.
+
+什么是动态合批?
+
+> 动态合批(Dynamic batching)是"Unity 绘制调用机制(draw call batching performed by Unity)"的一种形式.
+>
+> 简单的说, 它将多个使用相同材质的网格(Mesh)组合成一个更大的网格整体, 这样做可以减少 CPU 和 GPU 之间的通信数量, 从而优化性能.
+>
+> 该机制只是为了小一些的网格而准备的. 比如说, 你会发现它适用于 Unity 内置的 cube 网格, 但是不适用于内置的 sphere 网格.
+
+### 4.10 Lerp 方法做了什么?
+
+> Leap 的含义代表的就是线性插值, 它的典型用法就是 Lerp(a,b,t), 返回值通过 a+(b-a)*t 来计算. t 的取值范围在 0 到 1 之间. 它有多种不同类型参数的方法版本, 比如小数, 向量, 颜色等.
