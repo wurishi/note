@@ -261,11 +261,11 @@ function Example(props) {
 
 ## 3. Hook 是什么?
 
-### 3.1 Hook 是什么?
+### 3-1 Hook 是什么?
 
 Hook 是一个特殊的函数, 它可以"钩入" React 的特性. 例如, `useState` 是允许你在 React 函数组件中添加 state 的 Hook.
 
-### 3.2 什么时候使用 Hook ?
+### 3-2 什么时候使用 Hook ?
 
 如果在编写函数组件并意识到需要向其添加一些 state, 之前的做法是必须将它转化为 class. 现在则可以在现有的函数组件中使用 Hook.
 
@@ -292,15 +292,15 @@ function Example() {
 }
 ```
 
-### 4.1 调用 `useState` 方法的时候做了什么?
+### 4-1 调用 `useState` 方法的时候做了什么?
 
 它定义了一个 "state 变量". 我们把这个变量叫做 `count`, 当然我们也可以叫他任何名字. 这是一种在函数调用时保存变量的方式 -- `useState` 是一种新方法, 它与 class 里面的 `this.state` 提供的功能完全相同. 一般来说, 在函数退出后变量就会"消失", 但在 state 中的变量会被 React 保留.
 
-### 4.2 useState 需要哪些参数?
+### 4-2 useState 需要哪些参数?
 
 `useState()` 方法里面唯一的参数就是初始 state. 不同于 class 的是, 我们可以按照需要使用的是数字或字符串对其进行赋值, 而不一定是对象.
 
-### 4.3 useState 方法的返回值是什么?
+### 4-3 useState 方法的返回值是什么?
 
 返回值为: 当前 state 以及更新 state 的函数. 就像之前代码中写的 `const [count, setCount] = useState()`, 这与 class 里面的 `this.state.count` 和 `this.setState` 类似, 唯一区别就是你需要**成对**的获取它们.
 
@@ -395,8 +395,246 @@ Effect Hook 可以在函数组件中执行副作用操作
 
 有时候, 我们只想**在 React 更新 DOM 之后运行一些额外的代码**. 比如发送网络请求, 手动更改 DOM, 记录日志等. 这些都是常见的无需清除的操作. 因为在执行完这些操作之后, 就可以忽略他们了. 让我们对比一下使用 class 和 Hook 都是怎么实现这些副作用的.
 
-### 1-1 使用 class 的示例
+### 1-1 使用 Class 的示例
 
 在 React 的 class 组件中,  `render` 函数是不应该有任何副作用的. 一般来说, 在这里执行操作太早了, 我们基本上都希望在 React 更新 DOM 之后才执行我们的操作.
 
 这就是为什么在 React class 中, 我们把副作用操作放到 `componentDidMount` 和 `componentDidUpdate` 函数中.
+
+```javascript
+// class example
+// ...
+componentDidMount() {
+    document.title = `You clicked ${this.state.count} times`;
+}
+componentDidUpdate() {
+    document.title = `You clicked ${this.state.count} times`;
+}
+// ...
+```
+
+**注意, 在这个 class 中, 我们需要在两个生命周期函数中编写重复的代码.**
+
+这是因为很多情况下, 我们希望在组件加载和更新时执行同样的操作. 从概念上说, 我们希望它在每次渲染之后执行, 但 React 的 class 组件没有提供这样的方法. 即使我们提取出一个方法, 我们还是要在两个地方调用它.
+
+### 1-2 使用 Hook 的示例
+
+```javascript
+function Example() {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        document.title = `You clicked ${count} times`;
+    });
+    // ...
+}
+```
+
+#### 1-2-a: useEffect 做了什么?
+
+通过使用 useEffect 这个 Hook, 等于告诉 React 组件需要在渲染后执行某些操作. React 会保存你传递的函数 (我们将它称之为 "effect"), 并且在执行 DOM 更新之后调用它.
+
+#### 1-2-b: 为什么在组件内部调用 useEffect?
+
+将 `useEffect` 放在组件内部让我们可以在 effect 中直接访问 `count` state 变量 (或其他 props). 我们不需要特殊的 API 来读取它, 它已经保存在函数作用域中. Hook 使用了 JavaScript 的闭包机制, 而不用在 JavaScript 已经提供了解决方案的情况下, 还引入其它特定的 React API.
+
+*就像 React 在 UI 中使用 {if} 来处理逻辑判断语句一样, React 的特点就是尽量使用已有的方案去解决问题, 对比 Vue 的 v:if 这种可以减少学习成本.*
+
+#### 1-2-c: useEffect 会在每次渲染后都执行吗?
+
+默认情况下是的, 它在第一次渲染之后和每次更新之后都会执行. 你可能会更容易接受 effect 发生在"渲染之后"这种概念, 不用再去考虑"挂载"还是"更新". React 保证了每次运行 effect 的同时, DOM 都已经更新完毕.
+
+> 要注意的是, 传递给 `useEffect` 的函数在每次渲染中都会有所不同, 这是刻意为之的. 事实上这正是我们可以在 effect 中获取最新的 `count` 的值, 而不用担心其过期的原因. 每次我们重新渲染, 都会生成新的 effect, 替换掉之前的. 某种意义上讲, effect 更像是渲染结果的一部分, 每个 effect "属于"一次特定的渲染.
+
+> 与 `componentDidMount` 或 `componentDidUpdate` 不同, 使用 `useEffect` 调度的 effect 不会阻塞浏览器更新屏幕, 这让你的应用看起来响应更快. 大多数情况下, effect 不需要同步地执行, 在个别情况下 (例如测量布局), 有单独的 `useLayoutEffect` Hook 供你使用, 其 API 与 `useEffect` 相同.
+
+## 2. 需要清除的 effect
+
+有些副作用是需要清除的, 例如**订阅外部数据源**. 这种情况下, 清除工作是非常重要的, 可以防止引起内存泄漏!
+
+### 1-1 使用 Class 的示例
+
+在 React class 中, 通常会在 `componentDidMount` 中设置订阅, 并在 `componentWillUnmount` 中清除它. 例如, 假设我们有一个 `ChatAPI` 模块, 它允许我们订阅好友的在线状态.
+
+```javascript
+// class example
+// ...
+componentDidMount() {
+    ChatAPI.subscribeToFriendStatus(
+        this.props.friend.id,
+        this.handleStatusChange
+    );
+}
+componentWillUnmont() {
+    ChatAPI.unsubscribeFromFriendStatus(
+        this.props.friend.id,
+        this.handleStatusChange
+    );
+}
+handleStatusChange(status) {
+    this.setState({ isOnline: status.isOnline });
+}
+// ...
+```
+
+你会注意到 `componentDidMount` 和 `componentWillUnmount` 之间相互对应. 使用生命周期函数迫使我们拆分这些逻辑代码, 即使这两部分代码都作用于相同的副作用.
+
+> 注意: 这个示例还需要编写 `componentDidUpdate` 方法才能保证完全正确. 目前先忽略这一点. (3-2)
+
+### 1-2 使用 Hook 的示例
+
+由于添加和删除订阅的代码的紧密性, 所以 `useEffect` 的设计是在同一个地方执行. 如果你的 effect 返回一个函数, React 将会在执行清除操作时调用它.
+
+```javascript
+function FriendStatus(props) {
+    const [isOnline, setIsOnline] = useState(null);
+    useEffect(() => {
+        function handleStatusChange(status) {
+            setIsOnline(status.isOnline);
+        }
+        ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+        return function cleanup() {
+            ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+        }
+    });
+    if(isOnline === null) {
+        return 'Loading...';
+    }
+    return isOnline ? 'Online' : 'Offline';
+}
+```
+
+#### 1-2-a: 为什么要在 effect 中返回一个函数?
+
+这是 effect 可选的清除机制. 每个 effect 都可以返回一个清除函数. 如此可以将添加和移除订阅的逻辑放在一起. 它们都属于 effect 的一部分.
+
+#### 1-2-b: React 何时清除 effect?
+
+React 会在组件卸载的时候执行清除操作. 正如之前所讲, effect 在每次渲染的时候都会执行. 这就是为什么 React 会在执行当前 effect 之前对上一个 effect 进行清除. 稍后将讨论<!--为什么这将助于避免 bug--> 以及<!--如何在遇到性能问题时跳过此行为-->.
+
+## 3. 使用 Effect 的提示
+
+### 3-1 使用多个 Effect 实现关注点分离
+
+使用 Hook 其中一个目的就是解决 class 中生命周期函数经常包含不相关的逻辑, 但又把相关逻辑分离到了几个不同方法中的问题.
+
+Hook 允许我们按照代码的用途分离他们, 而不是像生命周期函数那样.
+
+### 3-2 为什么每次更新的时候都要运行 Effect
+
+在之前的 class 示例的最后已经提到了, 当组件的 friend prop 发生变化时, 我们需要添加 `componentDidUpdate` 来解决仍然展示原来好友状态的 bug.
+
+```javascript
+componentDidUpdate(prevProps) {
+    // 取消订阅之前的 friend.id
+    ChatAPI.unsubscribeFromFriendStatus(
+        prevProps.friend.id,
+        this.handleStatusChange
+    );
+    // 订阅新的 friend.id
+    ChatAPI.subscribeToFriendStatus(
+        this.propos.friend.id,
+        this.handleStatusChange
+    );
+}
+```
+
+忘记正确地处理 `componentDidUpdate` 是 React 应用中觉的 bug 来源.
+
+而 Hook 版本不会受到此 bug 影响. 因为 `useEffect` 默认就会处理. 它会在调用一个新的 effect 之前对前一个 effect 进行清理.
+
+```
+Mount with { id: 100 } props
+会运行第一个 effect
+Update with { id: 200 } props
+会清除上一个 effect, 再运行下一个 effect
+Update with { id: 300 } props
+会清除上一个 effect, 再运行下一个 effect
+...
+Unmount
+清除最后一个 effect
+```
+
+### 3-3 通过跳过 Effect 进行性能优化
+
+在某些情况下, 每次渲染后都执行清理或者执行 effect 可能会导致性能问题. 在 class 组件中, 我们可以通过在 `componentDidUpdate` 中添加对 `prevProps` 或 `prevState` 的比较逻辑解决.
+
+```javascript
+componentDidUpdate(prevProps, prevState) {
+    if(prevState.count !== this.state.count) {
+        document.title = `You clicked ${this.state.count} times`;
+    }
+}
+```
+
+这是很常见的需求, 所以它被内置到了 `useEffect` 的 Hook API 中. 如果某些特定值在两次重渲染之前没有发生变化, 你可以通知 React 跳过对 effect 的调用, 只要传递数组作为 `useEffect` 的第二个可选参数即可.
+
+```javascript
+useEffect(() => {
+    document.title = `You clicked ${count} times`;
+}, [count]); // 仅在 count 更改时更新
+useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+        ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+}, [props.friend.id]); // 对于有清除操作的 effect 同样适用, 仅在 props.friend.id 发生变化时, 才重新订阅
+```
+
+> 注意:
+>
+> 如果你要使用此优化方式, 请确保数组中包含了**所有外部作用域中会随时间变化并且在 effect 中使用的变量**.
+>
+> 如果想执行只运行一次的 effect (仅在组件挂载和卸载时执行), 可以传递一个空数组([]) 作为第二个参数. 这就告诉 React 你的 effect 不依赖于 props 或 state 中的任何值, 所以它永远都不需要重复执行.
+>
+> 如果你传入了一个空数组([]), effect 内部的 props 和 state 就会一直拥有其初始值, 尽管这样做更接近大家熟悉的 `componentDidMount` 和 `componentWillUnmount` 思维模式, 但我们有更好的方式来避免过于频繁的重复调用 effect.(参考后续 Hooks FAQ)
+
+# 5. Hook 规则
+
+Hook 本质就是 JavaScript 函数, 但是在使用它时需要遵循两条规则.
+
+## 1. 只在最顶层使用 Hook
+
+**不要在循环, 条件或嵌套函数中调用 Hook,** 确保总是在你的 React 函数的最顶层调用他们. 遵守这条规则, 你就能确保 Hook 在每一次渲染中都按照同样的顺序被调用. 这让 React 能够在多次的 `useState` 和 `useEffect` 调用之间保持 hook 状态的正确.
+
+## 2. 只在 React 函数中调用 Hook
+
+**不要在普通的 JavaScript 函数中调用 Hook.**
+
+你可以:
+
+- 在 React 的函数组件中调用 Hook
+- 在自定义 Hook 中调用其他 Hook
+
+```javascript
+// React 怎么知道哪个 state 对应哪个 useState ? 答案是 React 靠的是 Hook 调用的顺序.
+// 首次渲染
+useState('Mary') // 1. 使用 'Mary' 初始化变量名为 name 的 state
+useEffect(persistForm) // 2. 添加 effect 以保存 form 操作
+useState('Poppins') // 3. 使用 'Poppins' 初始化变量名为 surname 的 state
+useEffect(updateTitle) // 4. 添加 effect 以更新标题
+// 二次渲染
+useState('Mary') // 1. 读取变量名为 name 的 state (参数被忽略)
+useEffect(persistForm) // 2. 替换保存 form 的 effect
+useState('Poppins') // 3. 读取变量名为 surname 的 state (参数被忽略)
+useEffect(updateTitle) // 4. 替换更新标题的 effect
+```
+
+只要 Hook 的调用顺序在多次渲染之间保持一致, React 就能正确地将内部 state 和对应的 Hook 进行关联.
+
+```javascript
+useState('Mary'); // 1. 读取变量名为 name 的 state (参数被忽略)
+// 在条件语句中使用 Hook 违反第一条规则
+if(name !== '') {
+    useEffect(...); // 此 Hook 被忽略!
+}
+useState('Poppins'); // 2 (之前为3). 读取变量名为 surname 的 state 失败
+
+// 上面的写法, 每次渲染时执行的顺序是不确定的, 会导致后续的 Hook 失败
+// 这就是为什么 Hook 需要在我们组件的最顶层调用. 如果想要有条件地执行一个 effect, 可以将判断放到 Hook 的内部
+useEffect(() => {
+    if(name !== '') {
+        localStorage.setItem('formData', name);
+    }
+});
+```
+

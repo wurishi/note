@@ -1,6 +1,6 @@
 # reacthook
 
-参考资料: [Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 3/8)_
+参考资料: [React Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 5/8)_
 
 # rxjs30
 
