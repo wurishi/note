@@ -1,6 +1,6 @@
 # reacthook
 
-参考资料: [React Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 5/8)_
+参考资料: [React Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 6/8)_
 
 # rxjs30
 
@@ -8,11 +8,11 @@
 
 # unity1
 
-参考资料:[Unity系列教程](https://www.yuque.com/henjihenguanjian/technicalarticles/dsoxgs) _(进行中 1/18)_
+参考资料: [Unity系列教程](https://www.yuque.com/henjihenguanjian/technicalarticles/dsoxgs) _(进行中 1/18)_
 
 # unityecs
 
-参考资料:[Unity3D Entity Component System 入门学习](https://blog.csdn.net/u012632851/category_7034956.html) (计划中)
+参考资料: [Unity3D Entity Component System 入门学习](https://blog.csdn.net/u012632851/category_7034956.html) (计划中)
 
 # xstate
 
