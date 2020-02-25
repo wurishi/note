@@ -766,3 +766,155 @@ function Todos() {
 ```
 
 在复杂组件中使用 reducer 管理内部 state 的需求很常见, `useReducer` 的 Hook 已经内置到 React 中.
+
+# 7. Hook API
+
+## 1. 基础 Hook
+
+### 1-1 useState
+
+```javascript
+const [state, setState] = useState(initialState);
+```
+
+返回一个 state, 以及更新 state 的函数.
+
+在初始渲染期间, 返回的状态 (state) 与传入的第一个参数 (initialState) 值相同.
+
+`setState` 函数用于更新 state. 它接收一个新的 state 值并将组件的一次重新渲染加入队列.
+
+```
+setState(newState);
+```
+
+在后续的重新渲染中, `useState` 返回的第一个值将始终是更新后最新的 state.
+
+> 注意: React 会确保 `setState` 函数的标识是稳定的, 并且不会在组件重新渲染时发生变化.
+
+#### 函数式更新
+
+如果新的 state 需要通过使用先前的 state 计算得出, 那么可以将函数传递给 `setState`. 该函数将接收先前的 state, 并返回一个更新后的值.
+
+```javascript
+function Counter({initialCount}) {
+    const [count, setCount] = useState(initialCount);
+    return (
+    	<>
+        	Count: {count}
+			<button onClick={()=>setCount(initialCount)}>Reset</button>
+			<button onClick={()=>setCount(prevCount => prevCount-1)}>-</button>
+			<button onClick={()=>setCount(prevCount => prevCount+1)}>+</button>
+        </>
+    );
+}
+```
+
+"+" 和 "-" 按钮采用函数式形式, 因为被更新的 state 需要基于之前的 state. 但是 "reset" 按钮则采用普通形式, 因为它总是把 count 设置回初始值.
+
+> 注意: 与 class 组件中的 `setState` 方法不同, `useState` 不会自动合并更新对象. 你可以使用函数式的 `setState` 结合展开运算符来达到合并更新对象的效果.
+>
+> `useReducer` 是另一种可选方案, 它更适用于管理包含多个子值的 state 对象.
+
+#### 惰性初始 state
+
+`initialState` 参数只会在组件的初始渲染中起作用, 后续渲染时会被忽略. 如果初始 state 需要通过复杂计算获得, 则可以传入一个函数,  在函数中计算并返回初始的 state, 此函数只在初始渲染时被调用.
+
+```javascript
+const [state, setState] = useState(() => {
+    const initialState = somExpensiveComputation(props);
+    return initialState;
+});
+```
+
+#### 跳过 state 更新
+
+调用 State Hook 的更新函数并传入当前的 state 时, React 将跳过子组件的渲染及 effect 的执行. (React 使用 `Object.is` 比较算法来比较 state).
+
+需要注意的是, React 可能仍需要在跳过渲染前渲染该组件. 不过由于 React 不会对组件树的"深层"节点进行不必要的渲染, 所以大可不必担心. 如果你在渲染期间执行了高开销的计算, 则可以使用 `useMemo` 来进行优化.
+
+### 1-2 useEffect
+
+```
+useEffect(didUpdate);
+```
+
+该 Hook 接收一个包含命令式, 且可能有副作用代码的函数.
+
+在函数组件主体内(这里指在 React 渲染阶段) 改变 DOM, 添加订阅, 设置定时器, 记录日志以及执行其他包含副作用的操作都是不被允许的, 因为这可能会产生莫名其妙的 bug 并破坏 UI 的一致性.
+
+使用 `useEffect` 完成副作用操作. 赋值给 `useEffect` 的函数会在组件渲染到屏幕之后执行. 你可以把 effect 看作从 React 的纯函数式世界通往命令式世界的逃生通道.
+
+默认情况下, effect 将在每轮渲染结束后执行, 但你可以选择让它*在只有某些值改变的时候*才执行.
+
+#### 清除 effect
+
+通常, 组件卸载时需要清除 effect 创建的诸如订阅或计时器 ID 等资源. 要实现这一点, `useEffect` 函数需返回一个清除函数.
+
+```javascript
+useEffect(() => {
+    const subscription = props.source.subscribe();
+    return () => {
+        // 清除订阅
+        subscription.unsubscribe();
+    };
+});
+```
+
+为防止内存泄漏, 清除函数会在组件卸载前执行. 另外, 如果组件多次渲染(通常如此), 则**在执行下一个 effect 之前, 上一个 effect 就已被清除.** 在上述示例中, 意味着组件的每一次更新都会创建新的订阅. 若想避免每次更新都触发 effect 的执行, 请参阅下一小节(effect 的条件执行).
+
+#### effect 的执行时机
+
+与 `componentDidMount`, `componentDidUpdate` 不同的是, 在浏览器完成布局与绘制之后, 传给 `useEffect` 的函数会延迟调用. 这使得它适用于许多常见的副作用场景, 比如设置订阅和事件处理等情况, 因此不应在函数中执行阻塞浏览器更新屏幕的操作.
+
+然而, 并非所有 effect 都可以被延迟执行. 例如, 在浏览器执行下一次绘制前, 用户可见的 DOM 变更就必须同步执行, 这样用户才不会感觉到视觉上的不一致. React 为此提供了一个额外的 `useLayoutEffect` Hook 来处理这类 effect. 它和 `useEffect` 的结构相同, 区别只是调用时机不同.
+
+虽然 `useEffect` 会在浏览器绘制后延迟执行, 但会保证在任何新的渲染前执行. React 将在组件更新前刷新上一轮渲染的 effect.
+
+#### effect 的条件执行
+
+默认情况下, effect 会在每轮组件渲染完成后执行. 这样的话, 一旦 effect 的依赖发生变化, 它就会被重新创建.
+
+然而, 在某些场景下这么做可能会矫枉过正. 比如, 在上一章节的订阅示例中, 我们不需要每次组件更新时都创建新的订阅, 而是仅需要在 `source` props 改变时重新创建.
+
+要实现这一点, 可以给 `useEffect` 传递第二个参数, 它是 effect 所依赖的值数组.
+
+```javascript
+useEffect(
+    () => {
+        const subscription = props.source.subscribe();
+        return () => {
+            subscription.unsubscribe();
+        };
+    },
+    [props.source] // 只有当 props.source 改变后才会重新创建订阅
+);
+```
+
+> 注意: 如果想执行只运行一次的 effect (仅在组件挂载和卸载时执行), 可以传递一个空数组 ([]) 作为第二个参数.
+
+### 1-3 useContext
+
+```javascript
+const value = useContext(MyContext);
+```
+
+接收一个 context 对象 (`React.createContext` 的返回值) 并返回该 context 的当前值. 当前的 context 值由上层组件中距离当前组件最近的 `<MyContext.Provider>` 的 `value` prop 决定.
+
+当组件上层最近的 `<MyContext.Provider>` 更新时, 该 Hook 会触发重渲染, 并使用最新传递给 `MyContext` provider 的 context `value` 值.
+
+别忘记 `useContext` 的参数必须是 context 对象本身.
+
+> 提示: 如果你在接触 Hook 前已经对 context API 比较熟悉, 那应该可以理解, `useContext(MyContext)` 相当于 class 组件中的 `static contextType = MyContext` 或者 `<MyContext.Consumer>`.
+>
+> `useContext(MyContext)` 只是让你能够读取 context 的值以及订阅 context 的变化. 你仍然需要在上层组件树中使用 `<MyContext.Provider>` 来为下层组件提供 context.
+
+[代码 7-usecontext](src/7-usecontext.js)
+
+## 2. 额外的 Hook
+
+### 2-1 useReducer
+
+```javascript
+const [state, dispatch] = useReducer(reducer, initialArg, init);
+```
+

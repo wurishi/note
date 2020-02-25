@@ -4,11 +4,12 @@ import './App.css';
 
 import Example1 from './1-example';
 import Example2 from './2-useeffect';
+import Example7 from './7-usecontext';
 
 function App() {
   return (
     <div className="App">
-      <Example2 />
+      <Example7 />
     </div>
   );
 }
