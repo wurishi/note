@@ -1,4 +1,4 @@
-# 1. ECS Entity Component System 入门学习1
+# 1. ECS Entity Component System 入门学习 1
 
 使用的是2015年谷歌(是 Wooga 的) 在 Github 上发布的一个名叫 Entitas 的 ECS 框架.
 
@@ -206,7 +206,7 @@ Collector 提供了一种简单的方法来处理 Group 中 Entity 变化的反�
 
 这就是 `ReactiveSystem` 的特性, 它只会在 Component 的属性发生变化时才会执行 `Execute`.
 
-# 2. ECS 入门学习2
+# 2. ECS 入门学习 2
 
 ## 1.1 Cleanup System
 
@@ -267,3 +267,5 @@ public class LogMouseClickSystem : IExecuteSystem {
 ### 对象池
 
 在程序运行时, 可以在 DontDestroyOnLoad 下看到每个环境的状态. 被 CleanupSystem 销毁掉的对象, 会被计数在 reusable 下, 表明这二个 Entity 其实只是被隐藏了, 当该组件被再次调用时, 会复用这个 Entity.
+
+# 3. ECS 入门学习 3
