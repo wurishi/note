@@ -270,9 +270,9 @@ public class LogMouseClickSystem : IExecuteSystem {
 
 # 3. ECS 入门学习 3
 
-## 3.1 点击移动的例子
+## 3.1 Unique 标签
 
-注 1: 添加了 Unique 标签表示这个 Component 是唯一的
+添加了 Unique 标签表示这个 Component 是唯一的
 
 ```c#
 // Chapter3/InputComponents.cs
@@ -305,6 +305,57 @@ public partial class InputContext {
 }
 ```
 
-注 2: 要注意 `AddViewSystem` 和 `RenderSpriteSystem` 在 Feature 中添加的先后顺序, RenderSprite 是要在 Entity 有 GameObject 的前提下才能添加 `SpriteRenderer` 的, 所以要先有 `AddViewSystem` 再有 `RenderSpriteSystem`.
+## 3.2 System 添加的先后顺序
 
-注 3: 一定要使用 ReplaceXXX 才能触发 `ReactiveSystem`, 直接赋值不会触发该类系统的 `Execute`.
+要注意 `AddViewSystem` 和 `RenderSpriteSystem` 在 Feature 中添加的先后顺序, RenderSprite 是要在 Entity 有 GameObject 的前提下才能添加 `SpriteRenderer` 的, 所以要先有 `AddViewSystem` 再有 `RenderSpriteSystem`.
+
+## 3.3 ReactiveSystem 触发条件
+
+一定要使用 ReplaceXXX 才能触发 `ReactiveSystem`, 直接赋值不会触发该类系统的 `Execute`.
+
+## 3.4 通过 ScreenToWorldPoint 转换鼠标坐标
+
+`Camera.main.ScreenToWorldPoint` 传入的坐标, 如果是通过 Input 拿来的, 要特别注意 z 是要根据 camera.nearClipPlane 进行调整.
+
+# 4. ECS 入门学习 4
+
+## 4.1 ReactiveSystem 原理
+
+实现 ReactiveSystem 其实一共要复写三个方法:
+
+1. GetTrigger
+2. Filter
+3. Execute
+
+ReactiveSystem 父类的 Execute 代码:
+
+```c#
+public void Execute() {
+    if(this._Collector.count == 0) return;
+    // 先通过 Collector 拿到一组 Entity, 由 GetTrigger 指定
+    foreach(Tentity collectedEntity in this._collector.collectedEntities) {
+        // 再通过 Filter 方法针对单一 Entity 进行过滤
+        if(this.Filter(collectedEntity)) {
+            collectedEntity.Retain((object) this);
+            this._buffer.Add(collectedEntity);
+        }
+    }
+    this._collector.ClearCollectedEntities();
+    if(this._buffer.Count == 0) return;
+    try {
+        // 批量执行过滤后拿到的 Entity
+        this.Execute(this._buffer);
+    }
+    finally {
+        // 清空 _buffer
+        for(int index = 0; index < this._buffer.Count; ++index) {
+            this._buffer[index].Release((object) this);
+        }
+        this._buffer.Clear();
+    }
+}
+```
+
+## 4.2 Collector
+
+Collector 里面有事件系统可以管理每个 Entity 进出 Group 的事件. 所以 ReactiveSystem 就是利用 Collector 的事件管理来触发的. 也可以利用 Group 的 `OnEntityAdded`, `OnEntityUpdated` 或 `OnEntityRemoved` 等添加事件用来触发相关逻辑.

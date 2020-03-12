@@ -16,6 +16,7 @@ public class CleanupDebugMessageSystem : ICleanupSystem
 
     public void Cleanup()
     {
+        
         foreach (var entity in _debugMessages.GetEntities())
         {
             entity.Destroy();

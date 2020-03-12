@@ -12,7 +12,7 @@
 
 # unityecs
 
-参考资料: [Unity3D Entity Component System 入门学习](https://blog.csdn.net/u012632851/category_7034956.html) (计划中)
+参考资料: [Unity3D Entity Component System 入门学习](https://blog.csdn.net/u012632851/category_7034956.html) **(完成)**
 
 # xstate
 
