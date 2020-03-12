@@ -208,7 +208,7 @@ Collector 提供了一种简单的方法来处理 Group 中 Entity 变化的反�
 
 # 2. ECS 入门学习 2
 
-## 1.1 Cleanup System
+## 2.1 Cleanup System
 
 之前的 Demo 打印完 "Hello World" 后, DebugMessage 组件仍然存在, 如果在打印完内容之后要销毁该组件, 就要使用到 CleanupSystem.
 
@@ -230,7 +230,7 @@ public class CleanupDebugMessageSystem : ICleanupSystem {
 // 别忘了在 Feature 中增加 Add(new CleanupDebugMessageSystem(contexts));
 ```
 
-## 1.2 IExecuteSystem
+## 2.2 IExecuteSystem
 
 鼠标点击时, 添加一个拥有 DebugMessage 组件的 Entity.
 
@@ -258,7 +258,7 @@ public class LogMouseClickSystem : IExecuteSystem {
 
 将 LogMouseClickSystem 添加到 Feature 后, 可能会没有效果. 主要是 `Add(new LogMouseClickSystem(contexts));` 必须在 `Add(new DebugMessageSystem(contexts));` 之前, 不然添加的组件会在下一帧才能被 DebugMessageSystem 执行到, 但是在这之前就被 CleanupDebugMessageSystem 销毁了.
 
-## 1.3 Entitas 的效率
+## 2.3 Entitas 的效率
 
 ### ContextObserverBehaviour.Update()
 
@@ -269,3 +269,37 @@ public class LogMouseClickSystem : IExecuteSystem {
 在程序运行时, 可以在 DontDestroyOnLoad 下看到每个环境的状态. 被 CleanupSystem 销毁掉的对象, 会被计数在 reusable 下, 表明这二个 Entity 其实只是被隐藏了, 当该组件被再次调用时, 会复用这个 Entity.
 
 # 3. ECS 入门学习 3
+
+## 3.1 点击移动的例子
+
+```c#
+// Chapter3/InputComponents.cs
+using Entitas.CodeGeneration.Attributes;
+[Input, Unique]
+public class LeftMouseComponent : IComponent {}
+```
+
+添加了 Unique 标签表示这个 Component 是唯一的, 可以直接通过 `inputContext.isLeftMouse` 访问到. 观察自动生成的代码, 其实相比不添加 Unique 标签, 多增加了以下代码: 
+
+```c#
+// InputLeftMouseComponent.cs 注意是自动生成的代码
+public partial class InputContext {
+    public InputEntity leftMouseEntity { get { return GetGroup(InputMatcher.LeftMouse).GetSingleEntity(); } }
+    public bool isLeftMouse {
+        get { return leftMouseEntity != null; }
+        set {
+            var entity = leftMouseEntity;
+            if(value != (entity != null)) {
+                if(value) {
+                    // 注意之前会有 hasXXX(Get), 设置 Unique 标签后, 会自动生成一个 isXXX(Get/Set) 的属性, 它相比 hasXXX 多了一个 Set 功能, 会自动根据需要创建组件
+                    CreateEntity().isLeftMouse = true;
+                }
+                else {
+                    entity.Destory();
+                }
+            }
+        }
+    }
+}
+```
+

@@ -4,10 +4,10 @@ using UnityEngine;
 using Entitas;
 using Entitas.CodeGeneration.Attributes;
 
-[Input]
+[Input, Unique]
 public class LeftMouseComponent : IComponent {}
 
-[Input]
+[Input, Unique]
 public class RightMouseComponent : IComponent {}
 
 [Input]
