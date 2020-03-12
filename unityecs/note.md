@@ -205,3 +205,65 @@ Collector 提供了一种简单的方法来处理 Group 中 Entity 变化的反�
 在 Chapter1.cs 中我们会看到 `Execute` 方法是在 `Update` 中每帧都执行的, 但 message 为什么只打印一次?
 
 这就是 `ReactiveSystem` 的特性, 它只会在 Component 的属性发生变化时才会执行 `Execute`.
+
+# 2. ECS 入门学习2
+
+## 1.1 Cleanup System
+
+之前的 Demo 打印完 "Hello World" 后, DebugMessage 组件仍然存在, 如果在打印完内容之后要销毁该组件, 就要使用到 CleanupSystem.
+
+```c#
+// Chapter2/CleanupDebugMessageSystem.cs
+public class CleanupDebugMessageSystem : ICleanupSystem {
+    readonly GameContext _context;
+    readonly IGroup<GameEntity> _debugMessages;
+    public CleanupDebugMessageSystem(Contexts contexts) {
+        _context = contexts.game;
+        _debugMessages = _context.GetGroup(GameMatcher.DebugMessage);
+    }
+    public void Cleanup() {
+        foreach(var e in _debugMessages.GetEntities()) {
+            e.Destroy();
+        }
+    }
+}
+// 别忘了在 Feature 中增加 Add(new CleanupDebugMessageSystem(contexts));
+```
+
+## 1.2 IExecuteSystem
+
+鼠标点击时, 添加一个拥有 DebugMessage 组件的 Entity.
+
+之前的 ReactiveSystem 是每当 Component 的值发生变化就会执行 `Execute`,  而类似 MonoBehaviour 中的 `Update` 呢? 那就是 IExecuteSystem.
+
+```c#
+// Chapter2/LogMouseClickSystem.cs
+public class LogMouseClickSystem : IExecuteSystem {
+    readonly GameContext _context;
+    public LogMouseClickSystem(Contexts contexts) {
+        _context = contexts.game;
+    }
+    public void Execute() {
+        if(Input.GetMouseButtonDown(0)) {
+            _context.CreateEntity()
+                .AddDebugMessage("Left Clicked");
+        }
+        if(Input.GetMouseButtonDown(1)) {
+            _context.CreateEntity()
+                .AddDebugMessage("Right Clicked");
+        }
+    }
+}
+```
+
+将 LogMouseClickSystem 添加到 Feature 后, 可能会没有效果. 主要是 `Add(new LogMouseClickSystem(contexts));` 必须在 `Add(new DebugMessageSystem(contexts));` 之前, 不然添加的组件会在下一帧才能被 DebugMessageSystem 执行到, 但是在这之前就被 CleanupDebugMessageSystem 销毁了.
+
+## 1.3 Entitas 的效率
+
+### ContextObserverBehaviour.Update()
+
+每个环境都会在每帧产生 100B 左右的 GC, 主要是 `ContextObserver.ToString()` 造成的, 但是因为 ContextObserverBehaviour 是一个 `[ExecuteInEditMode]` 所以应该可以忽略这个 GC.
+
+### 对象池
+
+在程序运行时, 可以在 DontDestroyOnLoad 下看到每个环境的状态. 被 CleanupSystem 销毁掉的对象, 会被计数在 reusable 下, 表明这二个 Entity 其实只是被隐藏了, 当该组件被再次调用时, 会复用这个 Entity.
