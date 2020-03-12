@@ -8,25 +8,25 @@
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public PositionComponent position { get { return (PositionComponent)GetComponent(GameComponentsLookup.Position); } }
-    public bool hasPosition { get { return HasComponent(GameComponentsLookup.Position); } }
+    public DirectionComponent direction { get { return (DirectionComponent)GetComponent(GameComponentsLookup.Direction); } }
+    public bool hasDirection { get { return HasComponent(GameComponentsLookup.Direction); } }
 
-    public void AddPosition(UnityEngine.Vector2 newValue) {
-        var index = GameComponentsLookup.Position;
-        var component = (PositionComponent)CreateComponent(index, typeof(PositionComponent));
+    public void AddDirection(float newValue) {
+        var index = GameComponentsLookup.Direction;
+        var component = (DirectionComponent)CreateComponent(index, typeof(DirectionComponent));
         component.value = newValue;
         AddComponent(index, component);
     }
 
-    public void ReplacePosition(UnityEngine.Vector2 newValue) {
-        var index = GameComponentsLookup.Position;
-        var component = (PositionComponent)CreateComponent(index, typeof(PositionComponent));
+    public void ReplaceDirection(float newValue) {
+        var index = GameComponentsLookup.Direction;
+        var component = (DirectionComponent)CreateComponent(index, typeof(DirectionComponent));
         component.value = newValue;
         ReplaceComponent(index, component);
     }
 
-    public void RemovePosition() {
-        RemoveComponent(GameComponentsLookup.Position);
+    public void RemoveDirection() {
+        RemoveComponent(GameComponentsLookup.Direction);
     }
 }
 
@@ -40,17 +40,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherPosition;
+    static Entitas.IMatcher<GameEntity> _matcherDirection;
 
-    public static Entitas.IMatcher<GameEntity> Position {
+    public static Entitas.IMatcher<GameEntity> Direction {
         get {
-            if (_matcherPosition == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Position);
+            if (_matcherDirection == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Direction);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherPosition = matcher;
+                _matcherDirection = matcher;
             }
 
-            return _matcherPosition;
+            return _matcherDirection;
         }
     }
 }

@@ -272,6 +272,8 @@ public class LogMouseClickSystem : IExecuteSystem {
 
 ## 3.1 点击移动的例子
 
+注 1: 添加了 Unique 标签表示这个 Component 是唯一的
+
 ```c#
 // Chapter3/InputComponents.cs
 using Entitas.CodeGeneration.Attributes;
@@ -279,7 +281,7 @@ using Entitas.CodeGeneration.Attributes;
 public class LeftMouseComponent : IComponent {}
 ```
 
-添加了 Unique 标签表示这个 Component 是唯一的, 可以直接通过 `inputContext.isLeftMouse` 访问到. 观察自动生成的代码, 其实相比不添加 Unique 标签, 多增加了以下代码: 
+可以直接通过 `inputContext.isLeftMouse` 访问到. 观察自动生成的代码, 其实相比不添加 Unique 标签, 多增加了以下代码: 
 
 ```c#
 // InputLeftMouseComponent.cs 注意是自动生成的代码
@@ -303,3 +305,6 @@ public partial class InputContext {
 }
 ```
 
+注 2: 要注意 `AddViewSystem` 和 `RenderSpriteSystem` 在 Feature 中添加的先后顺序, RenderSprite 是要在 Entity 有 GameObject 的前提下才能添加 `SpriteRenderer` 的, 所以要先有 `AddViewSystem` 再有 `RenderSpriteSystem`.
+
+注 3: 一定要使用 ReplaceXXX 才能触发 `ReactiveSystem`, 直接赋值不会触发该类系统的 `Execute`.

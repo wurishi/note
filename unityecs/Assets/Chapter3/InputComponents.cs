@@ -27,3 +27,8 @@ public class MouseUpComponent : IComponent
 {
     public Vector2 position;
 }
+
+[Input, Unique]
+public class LogPositionComponent : IComponent
+{
+}
