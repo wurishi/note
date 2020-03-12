@@ -5,3 +5,4 @@ unity*/.idea/
 unity*/Logs/
 unity*/obj/
 unity*/*.csproj
+unityecs/Assets/ecs/*
