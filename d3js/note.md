@@ -289,3 +289,15 @@ d3.select("body").append("br")
 ```
 
 之前 6 的图表例子中，如果数据源里面的数字非常大，绘制的矩形会撑出浏览器。使用线性比例尺后可以让矩形的宽度在一个合理的范围内。
+
+# 8. 坐标轴
+
+```javascript
+const xAxis = d3.axisBottom(scaleLinear) // 从 scaleLinear 比例尺创建出一个坐标轴, Bottom 表示刻度是在下面
+	.ticks(7) // 设置刻度数目
+
+g.call(xAxis) // 将 g 传给 xAxis 执行
+// 或者反过来也可以
+xAxis(g)
+```
+
