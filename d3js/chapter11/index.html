@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="600"></svg>
+    <script>
+      // 1. 得到 svg 画布
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 }
+      const svg = d3.select("svg")
+      const width = svg.attr("width")
+      const height = svg.attr("height")
+      const g = svg
+        .append("g")
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")")
+
+      // 2. 数据集
+      const dataset = [10, 20, 30, 23, 13, 40, 27, 35, 20]
+
+      // 3. 分别在 x 方向和 y 方向绘制坐标轴
+      const xScale = d3
+        .scaleBand()
+        .domain(d3.range(dataset.length)) // 根据数据源的个数
+        .rangeRound([0, width - marge.left - marge.right]) // 平均分配区域
+      const xAxis = d3.axisBottom(xScale)
+
+      const yScale = d3
+        .scaleLinear()
+        .domain([0, d3.max(dataset)])
+        .range([height - marge.top - marge.bottom, 0])
+      const yAxis = d3.axisLeft(yScale)
+
+      // 4. 为每个数据创建一个分组 g
+      const gs = g
+        .selectAll(".rect")
+        .data(dataset) //
+        .enter()
+        .append("g") // dataset有几条数据，就生成几个 g 分组
+
+      // 5. 绘制矩形 矩形过渡效果
+      const rectPadding = 20
+      gs.append("rect") // 绘制 rect
+        .attr("x", (d, i) => xScale(i) + rectPadding / 2)
+        .attr("y", (d) => {
+          return yScale(d)
+          // 过渡效果
+          // const min = yScale.domain()[0]
+          // return yScale(min)
+        })
+        .attr("width", () => xScale.step() - rectPadding)
+        .attr("height", (d) => {
+          return height - marge.top - marge.bottom - yScale(d)
+          // 过渡效果
+          // return 0
+        })
+        .attr("fill", "blue")
+        // .transition() // 添加过渡效果
+        // .duration(2000) // 持续时间
+        // .delay((d, i) => i * 400) // 延迟
+        // // .ease(d3.easeElasticInOut) // chrome 下报错
+        // .attr("y", (d) => yScale(d)) // y 过渡到最终状态
+        // .attr("height", (d) => height - marge.top - marge.bottom - yScale(d)) // height 过渡到的最终状态
+        // 增加鼠标事件
+        .on("mouseover", function () {
+          const rect = d3
+            .select(this) // 这里只能使用 function 才能拿到 this
+            .transition()
+            .duration(1500)
+            .attr("fill", "yellow")
+        })
+        .on("mouseout", function () {
+          const rect = d3
+            .select(this) //
+            .transition()
+            .delay(1500)
+            .duration(1500)
+            .attr("fill", "blue")
+        })
+
+      // 6. 绘制文字 文本过渡效果
+      gs.append("text") // 绘制文本
+        .attr("x", (d, i) => xScale(i) + rectPadding / 2)
+        .attr("y", (d) => {
+          // return yScale(d)
+          const min = yScale.domain()[0]
+          return yScale(min)
+        })
+        .attr("dx", () => (xScale.step() - rectPadding) / 2)
+        .attr("dy", 20)
+        .text((d) => d)
+        .transition()
+        .duration(2000)
+        .delay((d, i) => i * 400)
+        .attr("y", (d) => yScale(d))
+    </script>
+  </body>
+</html>

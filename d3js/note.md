@@ -318,3 +318,20 @@ xAxis(g)
 - .duration(2000) : 表示过渡时间持续2秒
 - .delay(500) : 表示延迟500毫秒
 - .ease(d3.easeElasticInOut) : 过渡方式
+
+# 11. 交互式操作
+
+新的知识点：
+
+- on('eventName', function) : 监听事件
+- d3.select(this) : 选择当前元素
+
+常见的事件类型：
+
+- click : 鼠标单击，相当于 mousedown 和 mouseup 的组合
+- mouseover
+- mouseout
+- mousemove
+- mousedown
+- mouseup
+- dblclick
