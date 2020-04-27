@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="600"></svg>
+    <script>
+      // 1. 数据准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 }
+      const svg = d3.select("svg")
+      const width = svg.attr("width")
+      const height = svg.attr("height")
+      const g = svg
+        .append("g") //
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")")
+      const dataset = [30, 10, 43, 55, 13]
+
+      // 2. 设置一个颜色比例尺
+      const colorScale = d3
+        .scaleOrdinal() // 离散比例尺
+        .domain(d3.range(dataset.length))
+        .range(d3.schemeCategory10) // 拿到离散的颜色
+
+      // 3. 新建一个饼状图
+      const pie = d3.pie()
+
+      // 4. 新建一个弧形生成器
+      const innerRadius = 0 // 内半径
+      const outerRadius = 100 // 外半径
+      const arc_generator = d3
+        .arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius)
+
+      // 5. 利用饼状图转换数据
+      const pieData = pie(dataset)
+      /*
+      [
+        {
+          data: 30,
+          index: 2,
+          value: 30,
+          startAngle: 
+          endAngle:
+          padAngle:
+        },
+        {
+          data: 10,
+          index: 4,
+          value: 10,
+          startAngle:
+          endAngle:
+          padAngle:
+        },
+        ...
+      ]
+      */
+      // console.log(pieData)
+
+      // 6. 绘制 g 分组
+      const gs = g
+        .selectAll(".g")
+        .data(pieData)
+        .enter()
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+
+      // 7. 绘制扇形
+      gs.append("path") // 绘制路径
+        .attr("d", (d) => arc_generator(d))
+        .attr("fill", (d, i) => colorScale(i))
+
+      // 8. 绘制文字
+      gs.append("text")
+        .attr(
+          "transform",
+          (d) => "translate(" + arc_generator.centroid(d) + ")"
+        )
+        .attr("text-anchor", "middle") // 文字锚点 居中
+        .text((d) => d.data)
+    </script>
+  </body>
+</html>
