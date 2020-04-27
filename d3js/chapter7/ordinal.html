@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <script>
+      const dataset = [0, 1, 2, 3, 4]
+      const color = ["red", "blue", "yellow", "black", "green"]
+      const scaleOrdinal = d3.scaleOrdinal().domain(dataset).range(color)
+      document.write("scaleOrdinal(1) 输出：" + scaleOrdinal(1))
+      d3.select("body").append("br")
+      document.write("scaleOrdinal(2) 输出：" + scaleOrdinal(2))
+      d3.select("body").append("br")
+      document.write("scaleOrdinal(4) 输出：" + scaleOrdinal(4))
+      d3.select("body").append("br")
+    </script>
+  </body>
+</html>

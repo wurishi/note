@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <p>dog</p>
+    <p>cat</p>
+    <p>pig</p>
+    <p>rat</p>
+
+    <script>
+      const dataset = [3, 6]
+      const p = d3.select("body").selectAll("p")
+
+      const update = p.data(dataset) // 绑定数据，并得到 update 部分
+      // 对 update 的处理
+      update.text((d, i) => `update: ${d}, index: ${i}`)
+
+      const exit = update.exit() // 得到 exit 部分
+      // 对 exit 的处理
+      exit.text((d, i) => "exit")
+    </script>
+  </body>
+</html>

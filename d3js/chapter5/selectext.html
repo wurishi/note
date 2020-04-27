@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <p>dog</p>
+    <p>cat</p>
+    <p>pig</p>
+    <p>rat</p>
+
+    <script>
+      const dataset = [3, 6, 9, 12]
+      const p = d3
+        .select("body")
+        .selectAll("p")
+        .data(dataset)
+        .text(function (d, i) {
+          if (i == 3) {
+            // this 只能通过 function 获取
+            // 意味着 ()=>{} 不能在这里使用
+            // 后续会继续研究有没有解决这个问题的方法
+            d3.select(this).style("color", "red")
+          }
+          return d
+        })
+    </script>
+  </body>
+</html>

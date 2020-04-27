@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <p>dog</p>
+    <p>cat</p>
+    <p>pig</p>
+
+    <script>
+      const str = "is an animal"
+      const p = d3.select("body").selectAll("p")
+
+      p.datum(str).text((d, i) => `第${i}个元素:${d}`)
+    </script>
+  </body>
+</html>

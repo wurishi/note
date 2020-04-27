@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <script>
+      const dataset = [1.2, 2.3, 0.9, 1.5, 3.3]
+      const min = d3.min(dataset) // 得到最小值
+      const max = d3.max(dataset) // 得到最大值
+      const scaleLinear = d3.scaleLinear().domain([min, max]).range([0, 300])
+      document.write("scaleLinear(1) 输出：" + scaleLinear(1))
+      d3.select("body").append("br")
+      document.write("scaleLinear(2) 输出：" + scaleLinear(2))
+      d3.select("body").append("br")
+      document.write("scaleLinear(3.3) 输出：" + scaleLinear(3.3))
+      d3.select("body").append("br")
+    </script>
+  </body>
+</html>

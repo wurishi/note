@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="600"></svg>
+    <script>
+      // 1. 数据准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const dataset = [250, 210, 170, 130, 90] // 数据 这里用来对应每个矩形的宽度
+
+      // 2. 获取svg画布，并创建分组
+      const svg = d3.select("svg")
+      const g = svg
+        .append("g") //定义一个用来装下整个图表的分组
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")") // 设置位置
+
+      // 3. 定义一个线性比例尺
+      const scaleLinear = d3
+        .scaleLinear()
+        .domain([0, d3.max(dataset)])
+        .range([0, 300])
+
+      // 4. 画出矩形
+      const rectHeight = 30 // 设置每个矩形的高度
+      g.selectAll("rect") // 拿到所有的 rect
+        .data(dataset) // 并绑到到数组 dataset
+        .enter() // 因为 g 是个空容器，所以通过 enter 拿到待添加的部分
+        .append("rect") // 待添加部分全部追加 rect(矩形) 元素
+        .attr("x", 20) // 设置 x 坐标
+        .attr("y", (d, i) => i * rectHeight) // 设置 y 坐标
+        // 之前是直接拿数据的值作为宽度 d => d，如果数字很大，矩形元素会撑出去
+        // 当使用比例尺之后再也不怕数据很大了
+        .attr("width", (d) => scaleLinear(d)) // 设置宽度
+        .attr("height", rectHeight - 5) // 设置高度
+        .attr("fill", "blue") // 设置填充色
+    </script>
+  </body>
+</html>
