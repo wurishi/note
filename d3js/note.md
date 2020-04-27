@@ -292,12 +292,20 @@ d3.select("body").append("br")
 
 # 8. 坐标轴
 
+新的知识点：call()
+
 ```javascript
 const xAxis = d3.axisBottom(scaleLinear) // 从 scaleLinear 比例尺创建出一个坐标轴, Bottom 表示刻度是在下面
 	.ticks(7) // 设置刻度数目
 
-g.call(xAxis) // 将 g 传给 xAxis 执行
+g.call(xAxis) // call 可以将 g 传给 xAxis 执行
 // 或者反过来也可以
 xAxis(g)
 ```
 
+# 9. 完整的柱状图
+
+一些新的知识点：
+
+- d3.scaleBand() : 根据长度等分区域
+- d3.range() : 返回等差数列，如：d3.range(5) 返回 [0,1,2,3,4]
