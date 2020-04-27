@@ -244,10 +244,10 @@ d3.select('body').select('#myP3').remove() // 选择 id='myP3' 的元素并删�
 
 # 6. 做一个简单的图表
 
-一些新的知识点：
+新的知识点：
 
 - svg: 是用来绘制矢量图的画布（对应的 canvas 是 js 用来绘制位图的画布）
-- rect: 是 d3 中在 svg 中绘制**矩形**的元素
+- rect: 是 D3.js 在 svg 中绘制**矩形**的元素
 - g: 分组时使用
 
 # 7. 比例尺的使用
@@ -305,7 +305,16 @@ xAxis(g)
 
 # 9. 完整的柱状图
 
-一些新的知识点：
+新的知识点：
 
 - d3.scaleBand() : 根据长度等分区域
 - d3.range() : 返回等差数列，如：d3.range(5) 返回 [0,1,2,3,4]
+
+# 10. 让图表动起来
+
+新的知识点：
+
+- .attr(xxx).transition().attr(xxx) : transition() 表示过渡，即从前一个属性过滤到后一个属性
+- .duration(2000) : 表示过渡时间持续2秒
+- .delay(500) : 表示延迟500毫秒
+- .ease(d3.easeElasticInOut) : 过渡方式
