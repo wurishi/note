@@ -335,3 +335,39 @@ xAxis(g)
 - mousedown
 - mouseup
 - dblclick
+
+# 12. 图形
+
+D3.js 中一些常见的图形：
+
+## 12.1 bubble 泡泡图
+
+![12-1](assets/12-1.jpg)
+
+## 12.2 packing 打包图
+
+![12-2](assets/12-2.jpg)
+
+## 12.3 bundling 捆图
+
+![12-3](assets/12-3.jpg)
+
+## 12.4 force 力导向图
+
+![12-4](assets/12-4.jpg)
+
+## 12.5 chord 弦图
+
+![12-5](assets/12-5.jpg)
+
+## 12.6 pie 饼状图
+
+![12-6](assets/12-6.jpg)
+
+## 12.7 tree 树状图
+
+![12-7](assets/12-7.jpg)
+
+## 12.8 中国地图
+
+![12-8](assets/12-8.jpg)
