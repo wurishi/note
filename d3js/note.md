@@ -425,3 +425,6 @@ D3.js 中一些常见的图形：
 - d3.tsvParse() : tsv转换
 - d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
 
+# Treemap
+
+[参考](https://observablehq.com/@d3/treemap)

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="./data.js"></script>
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="800"></svg>
+    <script>
+      // 1. 数据准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const dataset = [250, 210, 170, 130, 90] // 数据 这里用来对应每个矩形的宽度
+      const format = d3.format(",d")
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布，并创建分组
+      const svg = d3
+        .select("svg") //
+        .style("font", "10px sans-serif")
+      const g = svg
+        .append("g") //定义一个用来装下整个图表的分组
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")") // 设置位置
+      const width = svg.attr("width")
+      const height = svg.attr("height")
+
+      // 3. 设置tile
+      const tile = d3.treemapBinary
+      // const tile = d3.treemapDice // 竖切
+      // const tile = d3.treemapSlice // 横切
+      // const tile = d3.treemapSliceDice // 竖横切
+      // const tile = d3.treemapSquarify
+
+      // 4. 用 treemap 生成root
+      const treemap = d3
+        .treemap() //
+        .tile(tile) // 块的布局模式
+        .size([width, height])
+        .padding(1) // 块与块之前的间隔
+        .round(true)
+
+      // data 只有层级结构，但只有子节点才有value
+      // 用hierarchy转换后,会生成对应的Node数组,包含了计算好的 x0,x1,y0,y1,depth,height,parent,children等数据
+      const hierarchy = d3
+        .hierarchy(data) //
+        .sum((d) => d.value) // 后序遍历，使用子节点的value，父节点的value会sum(所有子节点的value)
+        .sort((a, b) => b.value - a.value) // sort 后可以将tile以从大到小的形式排列
+      // console.log(hierarchy)
+      // console.log("----------------")
+
+      const root = treemap(hierarchy)
+
+      // 5. 生成 leaf
+      const leaf = svg
+        .selectAll("g") //
+        .data(root.leaves()) // leaves 将树状结构转换到一个数组
+        .join("g")
+        .attr("transform", (d) => _t(d.x0, d.y0))
+
+      // 6. 给 leaf 增加标题
+      leaf
+        .append("title") //
+        .text(
+          (d) =>
+            `${d
+              .ancestors()
+              .reverse()
+              .map((d) => d.data.name)
+              .join("/")}\n${format(d.value)}`
+        )
+
+      // 7. 给 leaf 增加 rect
+      leaf
+        .append("rect") //
+        .attr("id", (d) => (d.leafUid = DOM.uid("leaf")).id)
+        .attr("fill", (d) => {
+          // 子节点颜色以根节点名字为准
+          while (d.depth > 1) d = d.parent
+          return color(d.data.name)
+        })
+        .attr("fill-opacity", 0.6)
+        .attr("width", (d) => d.x1 - d.x0)
+        .attr("height", (d) => d.y1 - d.y0)
+
+      // 8. 给 leaf 增加clippath
+      leaf
+        .append("clipPath") //
+        .attr("id", (d) => (d.clipUid = DOM.uid("clip")).id)
+        .append("use")
+        .attr("xlink:href", (d) => d.leafUid.href)
+
+      // 9. 给 leaf 增加 text
+      leaf
+        .append("text") //
+        .attr("clip-path", (d) => d.clipUid.id)
+        .selectAll("tspan")
+        .data((d) =>
+          d.data.name.split(/(?=[A-Z][a-z])|\s+/g).concat(format(d.value))
+        )
+        .join("tspan")
+        .attr("x", 3)
+        .attr(
+          "y",
+          (d, i, nodes) => (i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9 + "em"
+        )
+        .attr("fill-opacity", (d, i, nodes) =>
+          i === nodes.length - 1 ? 0.7 : null
+        )
+        .text((d) => d)
+    </script>
+  </body>
+</html>
