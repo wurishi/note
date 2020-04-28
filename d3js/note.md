@@ -380,3 +380,14 @@ D3.js 中一些常见的图形：
 - d3.pie() : 饼状图生成器
 - d3.arc().centroid() : 扇形区域的相对中心点
 - d3.schemeCategory10 : 离散的色彩
+
+# 14. 力导向图
+
+新的知识点：
+
+- d3.forceSimulation() : 新建一个力导向图
+- d3.forceSimulation().force() : 添加或者移除一个力
+- d3.forceSimulation().nodes() : 将输入的数组进行转换，添加上坐标等
+- d3.forceLink.links() : 对输入的数组（边集）进行转换
+- tick : 不断执行以用来更新节点和连线位置
+- d3.drag() : 拖动

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="600"></svg>
+    <script>
+      // 1. 数据准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 }
+      const svg = d3.select("svg")
+      const width = svg.attr("width")
+      const height = svg.attr("height")
+      const g = svg
+        .append("g")
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")")
+
+      const nodes = [
+        { name: "湖南邵阳" }, //0
+        { name: "山东莱州" }, //1
+        { name: "广东阳江" }, //2
+        { name: "山东枣庄" }, //3
+        { name: "泽" }, //4
+        { name: "恒" }, //5
+        { name: "鑫" }, //6
+        { name: "明山" }, //7
+        { name: "班长" }, //8
+      ]
+
+      const edges = [
+        { source: 0, target: 4, relation: "籍贯", value: 1.3 },
+        { source: 4, target: 5, relation: "舍友", value: 1 },
+        { source: 4, target: 6, relation: "舍友", value: 1 },
+        { source: 4, target: 7, relation: "舍友", value: 1 },
+        { source: 1, target: 6, relation: "籍贯", value: 2 },
+        { source: 2, target: 5, relation: "籍贯", value: 0.9 },
+        { source: 3, target: 7, relation: "籍贯", value: 1 },
+        { source: 5, target: 6, relation: "同学", value: 1.6 },
+        { source: 6, target: 7, relation: "朋友", value: 0.7 },
+        { source: 6, target: 8, relation: "职责", value: 2 },
+      ]
+
+      // 2. 设置一个颜色比例尺
+      const colorScale = d3
+        .scaleOrdinal()
+        .domain(d3.range(nodes.length))
+        .range(d3.schemeCategory10)
+
+      // 3. 新建一个力导向图
+      const forceSimulation = d3
+        .forceSimulation()
+        .force("link", d3.forceLink())
+        .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter()) // 控制图的整体中心点
+
+      // 4. 生成节点数据
+      forceSimulation.nodes(nodes).on("tick", ticked)
+
+      // 5. 生成边集数据
+      forceSimulation
+        .force("link")
+        .links(edges)
+        .distance((d) => d.value * 100) // 每条边的长度
+
+      // 6. 设置图形中心位置
+      forceSimulation
+        .force("center")
+        .x(width / 2)
+        .y(height / 2)
+
+      // 7. 输出顶点集和边集
+      // console.log(nodes)
+      // console.log('------------')
+      // console.log(edges)
+
+      // 8. 绘制边
+      const links = g
+        .append("g")
+        .selectAll("line")
+        .data(edges)
+        .enter()
+        .append("line")
+        .attr("stroke", (d, i) => colorScale(i))
+        .attr("stroke-width", 1)
+
+      // 9. 线边上的文字
+      const linksText = g
+        .append("g")
+        .selectAll("text")
+        .data(edges)
+        .enter()
+        .append("text")
+        .text((d) => d.relation)
+
+      // 10. 点上的节点和拖动
+      const gs = g
+        .selectAll(".circleText")
+        .data(nodes)
+        .enter()
+        .append("g")
+        .attr("transform", (d, i) => `translate(${d.x},${d.y})`)
+        .call(
+          d3
+            .drag() // 拖动
+            .on("start", started)
+            .on("drag", dragged)
+            .on("end", ended)
+        )
+
+      // 11. 绘制节点和文字
+      gs.append("circle") // 绘制圆
+        .attr("r", 10)
+        .attr("fill", (d, i) => colorScale(i))
+
+      gs.append("text") // 文字
+        .attr("x", -10)
+        .attr("y", -20)
+        .attr("dy", 10)
+        .text((d) => d.name)
+
+      // 12. ticked
+      function ticked() {
+        links // 线的位置
+          .attr("x1", (d) => d.source.x)
+          .attr("y1", (d) => d.source.y)
+          .attr("x2", (d) => d.target.x)
+          .attr("y2", (d) => d.target.y)
+
+        linksText // 线边文字
+          .attr("x", (d) => (d.source.x + d.target.x) / 2)
+          .attr("y", (d) => (d.source.y + d.target.y) / 2)
+
+        gs.attr("transform", (d) => `translate(${d.x},${d.y})`)
+      }
+
+      // 13. drag
+      function started(d) {
+        if (!d3.event.active) {
+          // 不设置衰减，拖动单个节点，其他节点将几乎不受影响
+          forceSimulation
+            .alphaTarget(0.8) // 设置衰减系数，对节点位置移动过程进行模拟，数值越高移动越快，范围[0,1]
+            .restart()
+          d.fx = d.x
+          d.fy = d.y
+        }
+      }
+      function dragged(d) {
+        d.fx = d3.event.x
+        d.fy = d3.event.y
+      }
+      function ended(d) {
+        if (!d3.event.active) {
+          forceSimulation.alphaTarget(0)
+        }
+        // fx,fy 表示固定位置，设置为空了，节点才会受相关节点的力的影响。
+        // 如果这里不设置为 null，拖动节点拖到指定位置后将不再受其他节点的影响
+        d.fx = null
+        d.fy = null
+      }
+    </script>
+  </body>
+</html>
