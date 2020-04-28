@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="./china.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="800" height="800"></svg>
+    <script>
+      // 1. 数据准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 }
+      const svg = d3.select("svg")
+      const width = svg.attr("width")
+      const height = svg.attr("height")
+
+      const g = svg
+        .append("g")
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")")
+
+      // console.log(china) from ./china.js
+
+      // 2. 投影方式
+      const projection = d3
+        .geoMercator()
+        .center([107, 31])
+        .scale(600)
+        .translate([width / 2, height / 2])
+
+      // 3. 投影的路径
+      const path = d3
+        .geoPath() //
+        .projection(projection)
+
+      // 4. 颜色比例尺
+      const colorScale = d3
+        .scaleOrdinal() //
+        .domain(10)
+        .range(d3.schemeCategory10)
+
+      // 5. 生成 g
+      const gs = svg
+        .selectAll("g") //
+        .data(china.features)
+        .enter()
+        .append("g")
+
+      // 6. 画path
+      gs.append("path") //
+        .attr("d", path)
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+        .attr("opacity", 0.6)
+        .attr("fill", (d, i) => colorScale(i))
+        .on("mouseover", function () {
+          d3.select(this).attr("opacity", 1)
+        })
+        .on("mouseout", function () {
+          d3.select(this).attr("opacity", 0.6)
+        })
+
+      // 7. 添加文本
+      gs.append("text") //
+        .attr("font-size", 12)
+        .attr("text-anchor", "middle")
+        .attr("x", (d) => projection(d.properties.centroid || [0, 0])[0])
+        .attr("y", (d) => projection(d.properties.centroid || [0, 0])[1])
+        .attr("dy", (d) => (d.properties.name.indexOf("澳门") >= 0 ? 15 : 0))
+        .text((d) => d.properties.name)
+    </script>
+  </body>
+</html>

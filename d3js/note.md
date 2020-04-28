@@ -404,3 +404,7 @@ D3.js 中一些常见的图形：
 - node.descendants() : 得到所有节点，已经是经过转换的数据
 - node.links() : 得到所有的边，已经是经过转换的数据
 - d3.linkHorizontal() : 创建一个贝塞尔曲线生成器，这个是水平的，还有垂直的 (d3.linkVertical())
+
+# 16. 中国地图
+
+[中国地图JSON数据源](http://datav.aliyun.com/tools/atlas)
