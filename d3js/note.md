@@ -408,3 +408,20 @@ D3.js 中一些常见的图形：
 # 16. 中国地图
 
 [中国地图JSON数据源](http://datav.aliyun.com/tools/atlas)
+
+# Animated Treemap
+
+[参考](https://observablehq.com/@d3/animated-treemap)
+
+新的知识点：
+
+- join() : 会自动让选择的元素集与数据源的个数相同。即自动完成了enter和exit，并返回合并后的元素集。也可以传入若干个方法来自定义enter, update, exit 的行为。如：`join(enter => enter.append(''), update => update, exit => exit.remove())`
+- Node.textContent : 可以直接访问到显示的文本，也可以直接设置修改显示的文本
+- d3.interpolate(a, b) : 会返回一个计算a到b之前插值的方法fn，通过调用这个方法fn(t)，t: 0-1，返回a到b之前的值
+- d3.interpolateRgb() : 返回二个颜色之前的插值函数
+- transition.tween(name, fn) : 自定义tween
+- d3.range(x, y, step) : 生成一个从 x 到 y 步长为 step 的区间数组
+- d3.csvParse() : csv转换
+- d3.tsvParse() : tsv转换
+- d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
+

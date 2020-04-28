@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="800"></svg>
+    <script>
+      const index = {
+        value: 1,
+      }
+      function _tstr(x, y) {
+        return `translate(${x}, ${y})`
+      }
+
+      const formatNumber = d3.format(",d")
+      const parseNumber = (str) => (str + "").replace(/,/g, "")
+
+      // 1. 数据准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+
+      const keys = d3.range(1790, 2000, 10) // 1790-2000 步长为10
+      const regions = d3.csvParse(source.regions) // csv转换
+      const states = d3.tsvParse(source.population, (d, i) =>
+        i === 0 // 第一行是name所以跳过
+          ? null
+          : {
+              name: d[""], // 第一列没有设置名称，所以用""才能拿到
+              values: keys.map((key) => +d[key].replace(/,/g, "") || 1e-6), // 源数据数字是xxx,xxx形式，将,去掉
+            }
+      )
+      const regionByState = new Map(regions.map((d) => [d.State, d.Region])) // key:d.State, value:d.Region
+      // console.log(regionByState)
+      const divisionByState = new Map(regions.map((d) => [d.State, d.Division]))
+      const data = {
+        keys,
+        children: nest(
+          states,
+          (d) => regionByState.get(d.name),
+          (d) => divisionByState.get(d.name)
+        ),
+      }
+
+      function nest(data, ...keys) {
+        const nest = d3.nest()
+        for (const key of keys) {
+          nest.key(key)
+        }
+
+        function hierarchy({ key, values }, depth) {
+          return {
+            name: key,
+            children:
+              depth < keys.length - 1
+                ? values.map((d) => hierarchy(d, depth + 1))
+                : values,
+          }
+        }
+        return nest
+          .entries(data) //
+          .map((d) => hierarchy(d, 0))
+      }
+
+      const sums = data.keys.map(
+        (d, i) =>
+          d3
+            .hierarchy(data)
+            .sum((d) => (d.values ? Math.round(d.values[i]) : 0)).value
+      )
+
+      const max = d3.max(sums)
+      // console.log(data)
+
+      // 2. 生成treemap
+      const svg = d3
+        .select("svg") //
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .style("overflow", "hidden")
+      const width = svg.attr("width")
+      const height = svg.attr("height")
+
+      const treemap = d3
+        .treemap()
+        .tile(d3.treemapResquarify)
+        .size([width, height])
+        .padding((d) => (d.height === 1 ? 1 : 0))
+        .round(true)
+
+      // 3. 生成root视图
+      const root = d3
+        .hierarchy(data) //
+        .sum((d) => (d.values ? d3.sum(d.values) : 0))
+        .sort((a, b) => b.value - a.value)
+      // console.log(root)
+
+      // 4. 生成box
+      const boxData = data.keys
+        .map((key, i) => {
+          const value = root.sum((d) => (d.values ? d.values[i] : 0)).value
+          return { key, value, i, k: Math.sqrt(value / max) }
+        })
+        .reverse()
+
+      // box所在的 g
+      const box = svg
+        .append("g") //
+        .selectAll("g")
+        .data(boxData)
+        .join("g")
+        .attr("transform", (d) =>
+          _tstr(((1 - d.k) / 2) * width, ((1 - d.k) / 2) * height)
+        )
+        .attr("opacity", index.value ? 1 : 0)
+
+      // 往box上增加文本
+      const boxText = box
+        .append("text") //
+        .attr("y", -6)
+        .attr("fill", "#777")
+        .selectAll("tspan")
+        .data(({ key, value }) => [key, formatNumber(value)])
+        .join("tspan")
+        .attr("font-weight", (d, i) => (i === 0 ? "bold" : null))
+        .text((d) => d)
+
+      // 给box画个矩形
+      const boxRect = box
+        .append("rect") //
+        .join("rect")
+        .attr("fill", "none")
+        .attr("stroke", "#ccc")
+        .attr("width", ({ k }) => k * width)
+        .attr("height", ({ k }) => k * height)
+
+      // 5. 生成 leaf
+
+      function layout(index) {
+        const k = Math.sqrt(
+          root.sum((d) => (d.values ? d.values[index] : 0)).value / max
+        )
+        const x = ((1 - k) / 2) * width
+        const y = ((1 - k) / 2) * height
+        return treemap
+          .size([width * k, height * k])(root) //
+          .each((d) => ((d.x0 += x), (d.x1 += x), (d.y0 += y), (d.y1 += y)))
+          .leaves()
+      }
+
+      const color = d3.scaleOrdinal(
+        data.children.map((d) => d.name),
+        d3.schemeCategory10.map((d) => d3.interpolateRgb(d, "white")(0.5))
+      )
+
+      const leaf = svg
+        .append("g") //
+        .selectAll("g")
+        .data(layout(index.value))
+        .join("g")
+        .attr("transform", (d) => _tstr(d.x0, d.y0))
+
+      // leaf 矩形
+      leaf
+        .append("rect") //
+        // .attr("id", (d) => (d.leafUid = DOM.uid("leaf")).id)
+        .attr("fill", (d) => {
+          while (d.depth > 1) {
+            d = d.parent
+          }
+          return color(d.data.name)
+        })
+        .attr("width", (d) => d.x1 - d.x0)
+        .attr("height", (d) => d.y1 - d.y0)
+
+      // leaf clippath
+      leaf
+        .append("clipPath") //
+        // .attr('id', d=> (d.clipUid = DOM.uid('cli')).id)
+        .append("use")
+      // .attr('xlink:href', d => d.leafUid.href)
+
+      // leaf text
+      leaf
+        .append("text") //
+        // .attr('clip-path', d => d.clipUid)
+        .selectAll("tspan")
+        .data((d) => [d.data.name, formatNumber(d.value) + ""])
+        .join("tspan")
+        .attr("x", 3)
+        .attr(
+          "y",
+          (d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`
+        )
+        .attr("fill-opacity", (d, i, nodes) =>
+          i === nodes.length - 1 ? 0.7 : null
+        )
+        .text((d) => d)
+
+      // leaf title
+      leaf
+        .append("title") //
+        .text((d) => d.data.name)
+
+      // update
+      function update(index) {
+        // box
+        box
+          .transition() //
+          .duration(2500)
+          .attr("opacity", ({ i }) => (i >= index ? 1 : 0))
+
+        // leaf
+        leaf
+          .data(layout(index)) //
+          .transition()
+          .duration(2500)
+          .ease(d3.easeLinear)
+          .attr("transform", (d) => _tstr(d.x0, d.y0))
+          .call((leaf) =>
+            leaf
+              .select("rect")
+              .attr("width", (d) => d.x1 - d.x0)
+              .attr("height", (d) => d.y1 - d.y0)
+          )
+          .call((leaf) =>
+            leaf
+              .select("text tspan:last-child") //
+              .tween("text", function (d) {
+                const i = d3.interpolate(parseNumber(this.textContent), d.value)
+                return function (t) {
+                  this.textContent = formatNumber(i(t))
+                }
+              })
+          )
+      }
+      setInterval(() => {
+        const tmp = Math.min(index.value++, keys.length - 1)
+        update(tmp)
+      }, 1000)
+    </script>
+  </body>
+</html>

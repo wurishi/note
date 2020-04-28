@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="600"></svg>
+    <script>
+      // 1. 数据准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const dataset = [250, 210, 170, 130, 90] // 数据 这里用来对应每个矩形的宽度
+
+      // 2. 获取svg画布，并创建分组
+      const svg = d3.select("svg")
+      const g = svg
+        .append("g") //定义一个用来装下整个图表的分组
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")") // 设置位置
+
+      const texts = g
+        .selectAll("text") //
+        .data(dataset)
+        .join("text")
+        .attr("y", (d, i) => i * 50)
+        .text((d) => 0)
+
+      // tween test
+      // document.body.addEventListener("click", () => {
+      //   texts
+      //     .transition() //
+      //     .call((text) => {
+      //       text.tween("text", function (d) {
+      //         // let tmp = {}
+      //         // let index = 0
+      //         // const fn = (o) => {
+      //         //   tmp[index + "_" + o] = Object.keys(o).join(",")
+      //         //   index++
+      //         //   if (o.__proto__) {
+      //         //     fn(o.__proto__)
+      //         //   }
+      //         // }
+      //         // fn(this)
+      //         // console.log(JSON.stringify(tmp))
+      //         // const keys = Object.keys(this.__proto__.__proto__)
+      //         // console.log(keys)
+      //         const i = d3.interpolate(this.textContent, d)
+      //         return function (t) {
+      //           this.textContent = i(t).toFixed()
+      //         }
+      //       })
+      //     })
+      // })
+
+      // nest test
+      const arr = [
+        { name: "张三", value: 100, lv: 1 },
+        { name: "李四", value: 80, lv: 1 },
+        { name: "小花", value: 99, lv: 1 },
+        { name: "王五", value: 68, lv: 1 },
+        { name: "小翠", value: 75, lv: 1 },
+        { name: "张三", value: 98, lv: 2 },
+        { name: "李四", value: 70, lv: 2 },
+        { name: "小花", value: 100, lv: 2 },
+        { name: "王五", value: 100, lv: 2 },
+        { name: "小翠", value: 100, lv: 2 },
+      ]
+      const entries = d3
+        .nest() //
+        .key((d) => d.name)
+        .key((d) => d.lv)
+        .entries(arr)
+      console.log(entries)
+    </script>
+  </body>
+</html>
