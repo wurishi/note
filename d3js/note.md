@@ -391,3 +391,16 @@ D3.js 中一些常见的图形：
 - d3.forceLink.links() : 对输入的数组（边集）进行转换
 - tick : 不断执行以用来更新节点和连线位置
 - d3.drag() : 拖动
+
+# 15. 树状图
+
+新的知识点
+
+- d3.hierarchy() : 层级布局，需要和 tree 生成器一起使用，来得到绘制树所需要的节点数据和边数据
+- d3.hierarchy().sum() : 后序遍历
+- d3.tree() : 创建一个树状图生成器
+- d3.tree().size() : 定义树的大小
+- d3.tree().separation() : 定义邻居节点的距离
+- node.descendants() : 得到所有节点，已经是经过转换的数据
+- node.links() : 得到所有的边，已经是经过转换的数据
+- d3.linkHorizontal() : 创建一个贝塞尔曲线生成器，这个是水平的，还有垂直的 (d3.linkVertical())

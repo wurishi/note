@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="https://d3js.org/d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="600"></svg>
+    <script>
+      // 1. 数据准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 }
+      const svg = d3.select("svg")
+      const width = svg.attr("width")
+      const height = svg.attr("height")
+
+      const g = svg
+        .append("g")
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")")
+
+      const scale = svg
+        .append("g")
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")")
+
+      const dataset = {
+        name: "中国",
+        children: [
+          {
+            name: "浙江",
+            children: [
+              { name: "杭州", value: 100 },
+              { name: "宁波", value: 100 },
+              { name: "温州", value: 100 },
+              { name: "绍兴", value: 100 },
+            ],
+          },
+          {
+            name: "广西",
+            children: [
+              {
+                name: "桂林",
+                children: [
+                  { name: "秀峰区", value: 100 },
+                  { name: "叠彩区", value: 100 },
+                  { name: "象山区", value: 100 },
+                  { name: "七星区", value: 100 },
+                ],
+              },
+              { name: "南宁", value: 100 },
+              { name: "柳州", value: 100 },
+              { name: "防城港", value: 100 },
+            ],
+          },
+          {
+            name: "黑龙江",
+            children: [
+              { name: "哈尔滨", value: 100 },
+              { name: "齐齐哈尔", value: 100 },
+              { name: "牡丹江", value: 100 },
+              { name: "大庆", value: 100 },
+            ],
+          },
+          {
+            name: "新疆",
+            children: [
+              { name: "乌鲁木齐" },
+              { name: "克拉玛依" },
+              { name: "吐鲁番" },
+              { name: "哈密" },
+            ],
+          },
+        ],
+      }
+
+      // 2. 创建一个层级布局
+      const hierarchyData = d3
+        .hierarchy(dataset)
+        // 累加子节点的value，并设置给父节点。
+        // sum 因为是后序遍历，所以会先遍历完子节点再遍历父节点
+        .sum((d) => d.value)
+      // console.log(hierarchyData)
+      // console.log("--------下面未sum, 会发现下面的父节点没有value值")
+      // console.log(d3.hierarchy(dataset))
+
+      // 3. 创建一个树状图
+      const tree = d3
+        .tree()
+        .size([width - 400, height - 200])
+        .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth)
+
+      // 4. 初始化树状图
+      const treeData = tree(hierarchyData)
+
+      // 5. 得到边和节点
+      const nodes = treeData.descendants()
+      const links = treeData.links()
+
+      // 6. 输出边和节点
+      console.log(nodes)
+      console.log(links)
+
+      // 7. 创建一个贝塞尔曲线生成器
+      const curveGenerator = d3
+        .linkHorizontal() //
+        .x((d) => d.y)
+        .y((d) => d.x)
+
+      //8. 绘制边
+      g.append("g") //
+        .selectAll("path")
+        .data(links)
+        .enter()
+        .append("path")
+        .attr("d", (d) => {
+          const start = { ...d.source }
+          const end = { ...d.target }
+          return curveGenerator({ source: start, target: end })
+        })
+        .attr("fill", "none")
+        .attr("stroke", "yellow")
+        .attr("stroke-width", 1)
+
+      // 9. 创建节点和文字的分组
+      const gs = g
+        .append("g") //
+        .selectAll("g")
+        .data(nodes)
+        .enter()
+        .append("g")
+        .attr("transform", (d) => `translate(${d.y},${d.x})`)
+
+      // 10. 绘制节点和文字
+      gs.append("circle") //
+        .attr("r", 6)
+        .attr("fill", "white")
+        .attr("stroke", "blue")
+        .attr("stroke-width", 1)
+
+      gs.append("text")
+        .attr("x", (d) => (d.children ? -40 : 8))
+        .attr("y", -5)
+        .attr("dy", 10)
+        .text((d) => d.data.name)
+    </script>
+  </body>
+</html>
