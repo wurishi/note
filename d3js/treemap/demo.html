@@ -60,7 +60,7 @@
         .map(({ key, values }) => ({ name: key, children: values }))
       // console.log(dataset)
       const data = {
-        keys: ["蜀", "魏", "吴"],
+        keys: ["蜀", "魏", "吴", "他"],
         children: dataset,
       }
 
@@ -69,7 +69,45 @@
         .hierarchy(data) //
         .sum((d) => d.武力)
 
-      console.log(hierarchy)
+      // 5. 定义treemap并将hierarchy转换成treemap使用的数据
+      const treemap = d3
+        .treemap() //
+        .tile(d3.treemapBinary)
+        .size([width, height])
+        .padding(1)
+        .round(true)
+
+      const root = treemap(hierarchy)
+
+      // 6. 生成 leaf
+      const leaf = svg
+        .selectAll("g") //
+        .data(root.leaves())
+        .join("g")
+        .attr("transform", (d) => _t(d.x0, d.y0))
+
+      // 7. 画矩形
+      leaf
+        .append("rect") //
+        .attr("fill", (d) => {
+          let tmp = d
+          while (tmp.depth > 1) {
+            tmp = tmp.parent
+          }
+          return color(tmp.data.name)
+        })
+        .attr("width", (d) => d.x1 - d.x0)
+        .attr("height", (d) => d.y1 - d.y0)
+
+      // 8. 写文字
+      leaf
+        .append("text") //
+        .selectAll("tspan")
+        .data((d) => [d.data.名字, d.data.武力])
+        .join("tspan")
+        .attr("x", 3)
+        .attr("y", (d, i) => i * 1.1 + 5 + "em")
+        .text((d) => d)
     </script>
   </body>
 </html>
