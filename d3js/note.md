@@ -154,7 +154,7 @@ data 其实就是遍历数组并分别绑到 p 元素上
 
 ## 5.1 选择元素
 
-### (1)
+### (1) 例子一
 
 ```html
 <body>
@@ -177,7 +177,7 @@ d3.select('body').select('p').style('color', 'red')
 d3.select('body').selectAll('p').style('color', 'red')
 ```
 
-### (2)
+### (2) 例子二
 
 ```html
 <body>
@@ -200,7 +200,7 @@ d3.select('body').selectAll('.myP2').style('color', 'red')
 d3.select('body').select('#myP3').style('color', 'red')
 ```
 
-### (3)
+### (3) 例子三
 
 ```html
 <body>
@@ -218,6 +218,7 @@ d3.select('body').select('#myP3').style('color', 'red')
         .text(function (d, i) {
             if (i == 3) {
                 // this 只能通过 function 正常获取，意味着 () => {} 不能在这里使用，后续会继续研究有没有解决这个问题的方案
+                // 目前来看只能在需要使用本节点的地方使用 function() 定义函数
                 d3.select(this).style("color", "red")
             }
             return d
@@ -409,13 +410,33 @@ D3.js 中一些常见的图形：
 
 [中国地图JSON数据源](http://datav.aliyun.com/tools/atlas)
 
+# Treemap
+
+[参考](https://observablehq.com/@d3/treemap)
+
+新的知识点：
+
+- join() : 会自动让选择的元素集与数据源的个数相同。即自动完成了enter和exit，并返回合并后的元素集。也可以传入若干个方法来自定义enter, update, exit 的行为。如：`join(enter => enter.append(''), update => update, exit => exit.remove())`
+- d3.format(",d") : 将数字 1000 格式化为 1,000
+- d3.treemap() : 生成一个treemap
+- d3.treemap().tile(tile) : 块的布局模式
+  - d3.treemapBinary : 常用的模式
+  - d3.treemapSquarify : 常用的模式
+  - d3.treemapDice : 竖切
+  - d3.treemapSlice : 横切
+  - d3.treemapSliceDice : 横竖切
+- d3.hierarchy(data) : 根据 data 生成层级布局的数据，会有 parent, children, height, depth 等信息
+- d3.hierarchy().sum(d => d.value) : 后序遍历，即从子节点开始往根节点遍历，一般用来统计每个父节点的权重值(value)，权重值是sum这个节点所有子节点指定的(value)
+- treemap(hierarchy) : 将层级布局数据转换成 treemap 数据，会多出 x0,x1,y0,y1 四个属性，表示每个节点所占 tile 的大小
+- treemap().leaves() : 获取所有叶子节点
+- Node.ancestors() : 获取从节点到根节点的继承链，是一个数组
+
 # Animated Treemap
 
 [参考](https://observablehq.com/@d3/animated-treemap)
 
 新的知识点：
 
-- join() : 会自动让选择的元素集与数据源的个数相同。即自动完成了enter和exit，并返回合并后的元素集。也可以传入若干个方法来自定义enter, update, exit 的行为。如：`join(enter => enter.append(''), update => update, exit => exit.remove())`
 - Node.textContent : 可以直接访问到显示的文本，也可以直接设置修改显示的文本
 - d3.interpolate(a, b) : 会返回一个计算a到b之前插值的方法fn，通过调用这个方法fn(t)，t: 0-1，返回a到b之前的值
 - d3.interpolateRgb() : 返回二个颜色之前的插值函数
@@ -425,6 +446,3 @@ D3.js 中一些常见的图形：
 - d3.tsvParse() : tsv转换
 - d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
 
-# Treemap
-
-[参考](https://observablehq.com/@d3/treemap)

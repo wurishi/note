@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <svg width="960" height="800"></svg>
+    <script>
+      // 1. 基本准备
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(",d")
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布，并创建分组
+      const svg = d3
+        .select("svg") //
+        .style("font", "10px sans-serif")
+      const g = svg
+        .append("g") //定义一个用来装下整个图表的分组
+        .attr("transform", "translate(" + marge.top + "," + marge.left + ")") // 设置位置
+      const width = svg.attr("width")
+      const height = svg.attr("height")
+
+      // 3. 数据准备
+      const arr = [
+        { 国家: "蜀", 名字: "刘备", 武力: 78 },
+        { 国家: "蜀", 名字: "关羽", 武力: 99 },
+        { 国家: "蜀", 名字: "张飞", 武力: 99 },
+        { 国家: "蜀", 名字: "赵云", 武力: 99 },
+        { 国家: "蜀", 名字: "黄忠", 武力: 99 },
+        { 国家: "蜀", 名字: "马超", 武力: 99 },
+        { 国家: "蜀", 名字: "魏延", 武力: 94 },
+        { 国家: "蜀", 名字: "关平", 武力: 92 },
+        { 国家: "魏", 名字: "曹操", 武力: 86 },
+        { 国家: "魏", 名字: "典韦", 武力: 99 },
+        { 国家: "魏", 名字: "许诸", 武力: 98 },
+        { 国家: "魏", 名字: "夏候惇", 武力: 95 },
+        { 国家: "魏", 名字: "夏候渊", 武力: 91 },
+        { 国家: "魏", 名字: "李典", 武力: 88 },
+        { 国家: "魏", 名字: "徐晃", 武力: 90 },
+        { 国家: "魏", 名字: "张郃", 武力: 91 },
+        { 国家: "吴", 名字: "孙坚", 武力: 89 },
+        { 国家: "吴", 名字: "孙策", 武力: 97 },
+        { 国家: "吴", 名字: "孙权", 武力: 80 },
+        { 国家: "吴", 名字: "甘宁", 武力: 93 },
+        { 国家: "吴", 名字: "吕蒙", 武力: 93 },
+        { 国家: "吴", 名字: "黄盖", 武力: 88 },
+        { 国家: "吴", 名字: "陆逊", 武力: 87 },
+        { 国家: "吴", 名字: "周瑜", 武力: 88 },
+      ]
+
+      // 用 nest 根据国家重组
+      const dataset = d3
+        .nest()
+        .key((d) => d.国家)
+        .entries(arr)
+        .map(({ key, values }) => ({ name: key, children: values }))
+      // console.log(dataset)
+      const data = {
+        keys: ["蜀", "魏", "吴"],
+        children: dataset,
+      }
+
+      // 4. 转换成 hierarchy
+      const hierarchy = d3
+        .hierarchy(data) //
+        .sum((d) => d.武力)
+
+      console.log(hierarchy)
+    </script>
+  </body>
+</html>

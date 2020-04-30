@@ -42,22 +42,33 @@
         .round(true)
 
       // data 只有层级结构，但只有子节点才有value
-      // 用hierarchy转换后,会生成对应的Node数组,包含了计算好的 x0,x1,y0,y1,depth,height,parent,children等数据
+      // 用hierarchy转换后,会生成对应的Node数组,
+      // 包含了计算好的 parent, children, height, depth, 一般也会用sum将父节点的value值也计算好
       const hierarchy = d3
         .hierarchy(data) //
-        .sum((d) => d.value) // 后序遍历，使用子节点的value，父节点的value会sum(所有子节点的value)
+        .sum((d) => d.value) // 后序遍历，为父节点计算一个value, 这个value是后序遍历所有子节点的value的和
         .sort((a, b) => b.value - a.value) // sort 后可以将tile以从大到小的形式排列
       // console.log(hierarchy)
-      // console.log("----------------")
 
+      // 根据 hierarchy 的基础上计算出 x0,x1,y0,y1 即每个节点所占大小
       const root = treemap(hierarchy)
+      // console.log(root)
+      // console.log("以上是root")
+      // const ttt = d3
+      //   .hierarchy(data) //
+      //   .sum((d) => d.value)
+      //   .sort((a, b) => b.value - a.value)
+      // console.log(ttt)
+      // debugger
 
       // 5. 生成 leaf
       const leaf = svg
         .selectAll("g") //
-        .data(root.leaves()) // leaves 将树状结构转换到一个数组
+        .data(root.leaves()) // 获得所有叶子节点
         .join("g")
         .attr("transform", (d) => _t(d.x0, d.y0))
+
+      // console.log(root.leaves())
 
       // 6. 给 leaf 增加标题
       leaf
@@ -65,10 +76,10 @@
         .text(
           (d) =>
             `${d
-              .ancestors()
+              .ancestors() // 获取继承链，由一个数组表示
               .reverse()
               .map((d) => d.data.name)
-              .join("/")}\n${format(d.value)}`
+              .join("/")}\n${format(d.value)} : ${d.depth}`
         )
 
       // 7. 给 leaf 增加 rect
