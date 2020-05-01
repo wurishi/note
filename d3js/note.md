@@ -18,13 +18,12 @@ npm i d3
 
 ```html
 <body>
-    <p>    </p>
-    <p>    </p>
-    <script>
-    	const p = d3.select('body')
-        	.selectAll('p')
-        p.text('Hello World')
-    </script>
+  <p></p>
+  <p></p>
+  <script>
+    const p = d3.select("body").selectAll("p")
+    p.text("Hello World")
+  </script>
 </body>
 ```
 
@@ -38,15 +37,15 @@ npm i d3
 - d3.selectAll()
 
 ```javascript
-const body = d3.select('body') // 选择文档中的 body 元素
-const svg = body.select('svg') // 选择 body 中的 svg 元素
-const p = body.selectAll('p') // 选择 body 中的所有 p 元素
-const p1 = body.select('p') // 选择 body 中第一个 p 元素
+const body = d3.select("body") // 选择文档中的 body 元素
+const svg = body.select("svg") // 选择 body 中的 svg 元素
+const p = body.selectAll("p") // 选择 body 中的所有 p 元素
+const p1 = body.select("p") // 选择 body 中第一个 p 元素
 ```
 
 ## 3.2 绑定数据
 
-D3.js 能将数据绑定到  DOM 上，绑定后，未来可以很方便的通过这个数据来操作对应的元素。
+D3.js 能将数据绑定到 DOM 上，绑定后，未来可以很方便的通过这个数据来操作对应的元素。
 
 - data() : 将一个数组绑定到选择集上，数组各项和选择集中各元素绑定，也就是一一对应的关系。
 - datum() : 将一个数据绑定到所有选择集上。
@@ -57,16 +56,16 @@ datum() 的使用
 
 ```html
 <body>
-    <p>dog</p>
-    <p>cat</p>
-    <p>pig</p>
+  <p>dog</p>
+  <p>cat</p>
+  <p>pig</p>
 
-    <script>
-        const str = "is an animal"
-        const p = d3.select("body").selectAll("p")
+  <script>
+    const str = "is an animal"
+    const p = d3.select("body").selectAll("p")
 
-        p.datum(str).text((d, i) => `第${i}个元素:${d}`)
-    </script>
+    p.datum(str).text((d, i) => `第${i}个元素:${d}`)
+  </script>
 </body>
 ```
 
@@ -76,16 +75,16 @@ data() 的使用
 
 ```html
 <body>
-    <p>dog</p>
-    <p>cat</p>
-    <p>pig</p>
+  <p>dog</p>
+  <p>cat</p>
+  <p>pig</p>
 
-    <script>
-        const arr = ["so cute", "cute", "fat"]
-        const p = d3.select("body").selectAll("p")
+  <script>
+    const arr = ["so cute", "cute", "fat"]
+    const p = d3.select("body").selectAll("p")
 
-        p.data(arr).text((d, i) => `第${i}个动物:${d}`)
-    </script>
+    p.data(arr).text((d, i) => `第${i}个动物:${d}`)
+  </script>
 </body>
 ```
 
@@ -93,7 +92,7 @@ data 其实就是遍历数组并分别绑到 p 元素上
 
 # 4. 理解 Update、Enter、Exit
 
-图表操作大部分情况下其实就是将数据源（数组）中的数据，一一对应的用图形（可以是文字，可以是矩形，可以是线等等）表现出来，因为数据源里的数据个数是可变的，那么在和图形一一对应时，必然会出现数据多图形元素少，或者数据少图形元素多的情况，在 D3.js 中分别是用 Update、Enter、Exit来表现的
+图表操作大部分情况下其实就是将数据源（数组）中的数据，一一对应的用图形（可以是文字，可以是矩形，可以是线等等）表现出来，因为数据源里的数据个数是可变的，那么在和图形一一对应时，必然会出现数据多图形元素少，或者数据少图形元素多的情况，在 D3.js 中分别是用 Update、Enter、Exit 来表现的
 
 在使用 data() 时，如果数组数量与元素集的数量不匹配时，就会涉及 Enter、Exit。
 
@@ -103,26 +102,26 @@ data 其实就是遍历数组并分别绑到 p 元素上
 
 ```html
 <body>
-    <p>dog</p>
-    <p>cat</p>
-    <p>pig</p>
+  <p>dog</p>
+  <p>cat</p>
+  <p>pig</p>
 
-    <script>
-        const dataset = [3, 6, 9, 12, 15]
-        const p = d3.select("body").selectAll("p")
+  <script>
+    const dataset = [3, 6, 9, 12, 15]
+    const p = d3.select("body").selectAll("p")
 
-        const update = p.data(dataset) // 绑定数据，并得到 update 部分
-        const enter = update.enter() // 得到 enter 部分
+    const update = p.data(dataset) // 绑定数据，并得到 update 部分
+    const enter = update.enter() // 得到 enter 部分
 
-        // 对 update 的处理
-        update.text((d, i) => `update: ${d}, index: ${i}`)
+    // 对 update 的处理
+    update.text((d, i) => `update: ${d}, index: ${i}`)
 
-        // 对 enter 的处理
-        // 要先添加足够多的 p 标签
-        const pEnter = enter.append("p")
-        // 然后再添加文本
-        pEnter.text((d, i) => `enter: ${d}, index: ${i}`)
-    </script>
+    // 对 enter 的处理
+    // 要先添加足够多的 p 标签
+    const pEnter = enter.append("p")
+    // 然后再添加文本
+    pEnter.text((d, i) => `enter: ${d}, index: ${i}`)
+  </script>
 </body>
 ```
 
@@ -130,23 +129,23 @@ data 其实就是遍历数组并分别绑到 p 元素上
 
 ```html
 <body>
-    <p>dog</p>
-    <p>cat</p>
-    <p>pig</p>
-    <p>rat</p>
+  <p>dog</p>
+  <p>cat</p>
+  <p>pig</p>
+  <p>rat</p>
 
-    <script>
-        const dataset = [3, 6]
-        const p = d3.select("body").selectAll("p")
+  <script>
+    const dataset = [3, 6]
+    const p = d3.select("body").selectAll("p")
 
-        const update = p.data(dataset) // 绑定数据，并得到 update 部分
-        // 对 update 的处理
-        update.text((d, i) => `update: ${d}, index: ${i}`)
+    const update = p.data(dataset) // 绑定数据，并得到 update 部分
+    // 对 update 的处理
+    update.text((d, i) => `update: ${d}, index: ${i}`)
 
-        const exit = update.exit() // 得到 exit 部分
-        // 对 exit 的处理
-        exit.text((d, i) => "exit")
-    </script>
+    const exit = update.exit() // 得到 exit 部分
+    // 对 exit 的处理
+    exit.text((d, i) => "exit")
+  </script>
 </body>
 ```
 
@@ -158,72 +157,72 @@ data 其实就是遍历数组并分别绑到 p 元素上
 
 ```html
 <body>
-    <p>dog</p>
-    <p>cat</p>
-    <p>pig</p>
-    <p>rat</p>
+  <p>dog</p>
+  <p>cat</p>
+  <p>pig</p>
+  <p>rat</p>
 </body>
 ```
 
 选择第一个 p 元素并将字体颜色设置为红色：
 
 ```javascript
-d3.select('body').select('p').style('color', 'red')
+d3.select("body").select("p").style("color", "red")
 ```
 
 选择全部 p 元素并将字体颜色设置为红色
 
 ```javascript
-d3.select('body').selectAll('p').style('color', 'red')
+d3.select("body").selectAll("p").style("color", "red")
 ```
 
 ### (2) 例子二
 
 ```html
 <body>
-    <p>dog</p>
-    <p class='myP2'>cat</p>
-    <p id='myP3'>pig</p>
-    <p>rat</p>
+  <p>dog</p>
+  <p class="myP2">cat</p>
+  <p id="myP3">pig</p>
+  <p>rat</p>
 </body>
 ```
 
 选择 class='myP2' 的元素并将字体颜色设置为红色
 
 ```javascript
-d3.select('body').selectAll('.myP2').style('color', 'red')
+d3.select("body").selectAll(".myP2").style("color", "red")
 ```
 
 选择 id='myP3' 的元素并将字体颜色设置为红色
 
 ```javascript
-d3.select('body').select('#myP3').style('color', 'red')
+d3.select("body").select("#myP3").style("color", "red")
 ```
 
 ### (3) 例子三
 
 ```html
 <body>
-    <p>dog</p>
-    <p>cat</p>
-    <p>pig</p>
-    <p>rat</p>
+  <p>dog</p>
+  <p>cat</p>
+  <p>pig</p>
+  <p>rat</p>
 
-    <script>
-        const dataset = [3, 6, 9, 12]
-        const p = d3
-        .select("body")
-        .selectAll("p")
-        .data(dataset)
-        .text(function (d, i) {
-            if (i == 3) {
-                // this 只能通过 function 正常获取，意味着 () => {} 不能在这里使用，后续会继续研究有没有解决这个问题的方案
-                // 目前来看只能在需要使用本节点的地方使用 function() 定义函数
-                d3.select(this).style("color", "red")
-            }
-            return d
-        })
-    </script>
+  <script>
+    const dataset = [3, 6, 9, 12]
+    const p = d3
+      .select("body")
+      .selectAll("p")
+      .data(dataset)
+      .text(function (d, i) {
+        if (i == 3) {
+          // this 只能通过 function 正常获取，意味着 () => {} 不能在这里使用，后续会继续研究有没有解决这个问题的方案
+          // 目前来看只能在需要使用本节点的地方使用 function() 定义函数
+          d3.select(this).style("color", "red")
+        }
+        return d
+      })
+  </script>
 </body>
 ```
 
@@ -233,14 +232,14 @@ d3.select('body').select('#myP3').style('color', 'red')
 - insert() : 在选择集前面插入元素
 
 ```javascript
-d3.select('body').append('p').text('another animal') // 在最后添加一个新的 p 元素
-d3.select('body').insert('p', '#myP3').text('insert an animal') // 在 id='myP3' 的元素前插入一个新的 p 元素
+d3.select("body").append("p").text("another animal") // 在最后添加一个新的 p 元素
+d3.select("body").insert("p", "#myP3").text("insert an animal") // 在 id='myP3' 的元素前插入一个新的 p 元素
 ```
 
 ## 5.3 删除元素
 
 ```javascript
-d3.select('body').select('#myP3').remove() // 选择 id='myP3' 的元素并删除
+d3.select("body").select("#myP3").remove() // 选择 id='myP3' 的元素并删除
 ```
 
 # 6. 做一个简单的图表
@@ -296,8 +295,9 @@ d3.select("body").append("br")
 新的知识点：call()
 
 ```javascript
-const xAxis = d3.axisBottom(scaleLinear) // 从 scaleLinear 比例尺创建出一个坐标轴, Bottom 表示刻度是在下面
-	.ticks(7) // 设置刻度数目
+const xAxis = d3
+  .axisBottom(scaleLinear) // 从 scaleLinear 比例尺创建出一个坐标轴, Bottom 表示刻度是在下面
+  .ticks(7) // 设置刻度数目
 
 g.call(xAxis) // call 可以将 g 传给 xAxis 执行
 // 或者反过来也可以
@@ -316,8 +316,8 @@ xAxis(g)
 新的知识点：
 
 - .attr(xxx).transition().attr(xxx) : transition() 表示过渡，即从前一个属性过滤到后一个属性
-- .duration(2000) : 表示过渡时间持续2秒
-- .delay(500) : 表示延迟500毫秒
+- .duration(2000) : 表示过渡时间持续 2 秒
+- .delay(500) : 表示延迟 500 毫秒
 - .ease(d3.easeElasticInOut) : 过渡方式
 
 # 11. 交互式操作
@@ -343,27 +343,27 @@ D3.js 中一些常见的图形：
 
 ## 12.1 bubble 泡泡图
 
-![12-1](assets/12-1.jpg)
+![12-1](/12-1.jpg)
 
 ## 12.2 packing 打包图
 
-![12-2](assets/12-2.jpg)
+![12-2](/12-2.jpg)
 
 ## 12.3 bundling 捆图
 
-![12-3](assets/12-3.jpg)
+![12-3](/12-3.jpg)
 
 ## 12.4 force 力导向图
 
-![12-4](assets/12-4.jpg)
+![12-4](/12-4.jpg)
 
 ## 12.5 chord 弦图
 
-![12-5](assets/12-5.jpg)
+![12-5](/12-5.jpg)
 
 ## 12.6 pie 饼状图
 
-![12-6](assets/12-6.jpg)
+![12-6](/12-6.jpg)
 
 ## 12.7 tree 树状图
 
@@ -408,17 +408,21 @@ D3.js 中一些常见的图形：
 
 # 16. 中国地图
 
-[中国地图JSON数据源](http://datav.aliyun.com/tools/atlas)
+[中国地图 JSON 数据源](http://datav.aliyun.com/tools/atlas)
 
-# Treemap
+# https://observablehq.com/@d3/gallery
+
+# Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
 
+![treemap](assets/treemap.png)
+
 新的知识点：
 
-- join() : 会自动让选择的元素集与数据源的个数相同。即自动完成了enter和exit，并返回合并后的元素集。也可以传入若干个方法来自定义enter, update, exit 的行为。如：`join(enter => enter.append(''), update => update, exit => exit.remove())`
+- join() : 会自动让选择的元素集与数据源的个数相同。即自动完成了 enter 和 exit，并返回合并后的元素集。也可以传入若干个方法来自定义 enter, update, exit 的行为。如：`join(enter => enter.append(''), update => update, exit => exit.remove())`
 - d3.format(",d") : 将数字 1000 格式化为 1,000
-- d3.treemap() : 生成一个treemap
+- d3.treemap() : 生成一个 treemap
 - d3.treemap().tile(tile) : 块的布局模式
   - d3.treemapBinary : 常用的模式
   - d3.treemapSquarify : 常用的模式
@@ -426,10 +430,16 @@ D3.js 中一些常见的图形：
   - d3.treemapSlice : 横切
   - d3.treemapSliceDice : 横竖切
 - d3.hierarchy(data) : 根据 data 生成层级布局的数据，会有 parent, children, height, depth 等信息
-- d3.hierarchy().sum(d => d.value) : 后序遍历，即从子节点开始往根节点遍历，一般用来统计每个父节点的权重值(value)，权重值是sum这个节点所有子节点指定的(value)
+- d3.hierarchy().sum(d => d.value) : 后序遍历，即从子节点开始往根节点遍历，一般用来统计每个父节点的权重值(value)，权重值是 sum 这个节点所有子节点指定的(value)
 - treemap(hierarchy) : 将层级布局数据转换成 treemap 数据，会多出 x0,x1,y0,y1 四个属性，表示每个节点所占 tile 的大小
 - treemap().leaves() : 获取所有叶子节点
 - Node.ancestors() : 获取从节点到根节点的继承链，是一个数组
+
+# Hierarchies - Cascaded Treemap
+
+[参考](https://observablehq.com/@d3/cascaded-treemap)
+
+![cascaded-treemap](assets/cascaded-treemap.png)
 
 # Animated Treemap
 
@@ -438,11 +448,10 @@ D3.js 中一些常见的图形：
 新的知识点：
 
 - Node.textContent : 可以直接访问到显示的文本，也可以直接设置修改显示的文本
-- d3.interpolate(a, b) : 会返回一个计算a到b之前插值的方法fn，通过调用这个方法fn(t)，t: 0-1，返回a到b之前的值
+- d3.interpolate(a, b) : 会返回一个计算 a 到 b 之前插值的方法 fn，通过调用这个方法 fn(t)，t: 0-1，返回 a 到 b 之前的值
 - d3.interpolateRgb() : 返回二个颜色之前的插值函数
-- transition.tween(name, fn) : 自定义tween
+- transition.tween(name, fn) : 自定义 tween
 - d3.range(x, y, step) : 生成一个从 x 到 y 步长为 step 的区间数组
-- d3.csvParse() : csv转换
-- d3.tsvParse() : tsv转换
+- d3.csvParse() : csv 转换
+- d3.tsvParse() : tsv 转换
 - d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
-
