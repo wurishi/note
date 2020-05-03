@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 20, bottom: 30, left: 40, right: 30 } // 设置边距
+      const format = d3.format(",d")
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select("svg") //
+        .style("font", "10px sans-serif")
+        .attr("viewBox", [0, 0, width, height])
+
+      // 3. 准备 data
+      const data = Object.assign(
+        d3
+          .csvParse(source.aapl, d3.autoType)
+          .map(({ date, close }) => ({ date, value: close })),
+        { y: "$ Close" }
+      )
+
+      // 4. x, y 比例尺
+      const x = d3
+        .scaleUtc() // 按季度将一年划分成四份
+        .domain(d3.extent(data, (d) => d.date)) // 数据中日期的最大范围区间
+        .range([margin.left, width - margin.right])
+
+      const y = d3
+        .scaleLinear() //
+        .domain([0, d3.max(data, (d) => d.value)])
+        .nice()
+        .range([height - margin.bottom, margin.top])
+
+      // 5. xAxis yAxis
+      svg.append("g").call(xAxis)
+      svg.append("g").call(yAxis)
+
+      function xAxis(g) {
+        g.attr("transform", _t(0, height - margin.bottom)).call(
+          d3
+            .axisBottom(x)
+            .ticks(width / 80) // 刻度间隔
+            .tickSizeOuter(0) // 标尺起点到终点的刻度大小
+        )
+      }
+
+      function yAxis(g) {
+        g.attr("transform", _t(margin.left, 0)) //
+          .call(d3.axisLeft(y))
+          .call((g) => g.select(".domain").remove()) // .domain 就是标尺线
+          .call((g) =>
+            g
+              .select(".tick:last-of-type text")
+              .clone()
+              .attr("x", 3)
+              .attr("text-anchor", "start")
+              .attr("font-weight", "bold")
+              .text(data.y)
+          )
+      }
+
+      // 6. line
+      const line = d3
+        .line() //
+        .defined((d) => !isNaN(d.value))
+        .x((d) => x(d.date))
+        .y((d) => y(d.value))
+
+      svg
+        .append("path") //
+        .datum(data) // 作为一整个数据塞入
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("d", line)
+    </script>
+  </body>
+</html>

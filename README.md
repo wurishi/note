@@ -1,6 +1,6 @@
 # d3js
 
-参考资料: [D3.js 的 v5 版本入门教程](https://blog.csdn.net/qq_34414916/article/details/80026029) _(进行中 17/17)_
+参考资料: [D3.js 的 v5 版本入门教程](https://blog.csdn.net/qq_34414916/article/details/80026029) _(完成 追加一些 Example)_
 
 # javascriptbook
 

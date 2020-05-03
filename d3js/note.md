@@ -412,6 +412,20 @@ D3.js 中一些常见的图形：
 
 # https://observablehq.com/@d3/gallery
 
+# Lines - Line Chart
+
+[参考](https://observablehq.com/@d3/line-chart)
+
+![line-chart](assets/line-chart.png)
+
+新的知识点：
+
+- d3.scaleUtc() : 时间比例尺
+- d3.extent() : 区间范围，比例给定一组日期数据，会返回这组数据的日期范围
+- d3.scaleLinear().nice() : 标尺可以更有头有尾，即原来如果是25-618 的数据，使用 nice 后会给出 0-650 范围
+- d3.axisBottom().ticks() : 刻度间隔
+- d3.axisLeft().tickSizeOuter() : 标尺起点与终点的刻度大小
+
 # Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
