@@ -343,27 +343,27 @@ D3.js 中一些常见的图形：
 
 ## 12.1 bubble 泡泡图
 
-![12-1](/12-1.jpg)
+![12-1](assets/12-1.jpg)
 
 ## 12.2 packing 打包图
 
-![12-2](/12-2.jpg)
+![12-2](assets/12-2.jpg)
 
 ## 12.3 bundling 捆图
 
-![12-3](/12-3.jpg)
+![12-3](assets/12-3.jpg)
 
 ## 12.4 force 力导向图
 
-![12-4](/12-4.jpg)
+![12-4](assets/12-4.jpg)
 
 ## 12.5 chord 弦图
 
-![12-5](/12-5.jpg)
+![12-5](assets/12-5.jpg)
 
 ## 12.6 pie 饼状图
 
-![12-6](/12-6.jpg)
+![12-6](assets/12-6.jpg)
 
 ## 12.7 tree 树状图
 
@@ -455,7 +455,7 @@ D3.js 中一些常见的图形：
 
 ![cascaded-treemap](assets/cascaded-treemap.png)
 
-# Animated Treemap
+# Animation - Animated Treemap
 
 [参考](https://observablehq.com/@d3/animated-treemap)
 
@@ -469,3 +469,13 @@ D3.js 中一些常见的图形：
 - d3.csvParse() : csv 转换
 - d3.tsvParse() : tsv 转换
 - d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
+
+# Animation - Connected Scatterplot
+
+[参考](https://observablehq.com/@d3/connected-scatterplot)
+
+![connected-scatterplot](assets/connected-scatterplot.png)
+
+新的知识点：
+
+d3.curve(d3.curveCatmullRom) : 画弧线

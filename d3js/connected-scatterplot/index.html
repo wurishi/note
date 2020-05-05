@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 800
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(",d")
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select("svg") //
+        // .style("font", "10px sans-serif")
+        .attr("viewBox", [0, 0, width, height])
+
+      // 3. 准备 data
+      const data = d3.csvParse(
+        source.driving,
+        ({ side, year, miles, gas }) => ({
+          orient: side,
+          name: year,
+          x: +miles,
+          y: +gas,
+        })
+      )
+      data.x = "Miles per person per year"
+      data.y = "Cost per gallon"
+      // console.log(data)
+
+      // 4. 创建 x, y 比例尺
+      const x = d3
+        .scaleLinear() //
+        .domain(d3.extent(data, (d) => d.x))
+        .nice()
+        .range([marge.left, width - marge.right])
+
+      const y = d3
+        .scaleLinear() //
+        .domain(d3.extent(data, (d) => d.y))
+        .nice()
+        .range([height - marge.bottom, marge.top])
+
+      // 5. 准备 line, 计算 l (length)
+      function length(path) {
+        return d3
+          .create("svg:path") //
+          .datum(data)
+          .attr("d", path)
+          .node()
+          .getTotalLength()
+      }
+
+      function line() {
+        return d3
+          .line() //
+          .curve(d3.curveCatmullRom)
+          .x((d) => x(d.x))
+          .y((d) => y(d.y))
+      }
+
+      const l = length(line(data))
+
+      // console.log(l)
+
+      // 6. 创建 xAxis, yAxis
+      svg.append("g").call(xAxis)
+      svg.append("g").call(yAxis)
+
+      function halo(text) {
+        text
+          .select(function () {
+            return this.parentNode.insertBefore(this.cloneNode(true), this)
+          })
+          .attr("fill", "none")
+          .attr("stroke", "white")
+          .attr("stroke-width", 4)
+          .attr("stroke-linejoin", "round")
+      }
+
+      function xAxis(g) {
+        g.attr("transform", _t(0, height - marge.bottom)) //
+          .call(d3.axisBottom(x).ticks(width / 80))
+          .call((g) => g.select(".domain").remove())
+          .call((g) =>
+            g
+              .selectAll(".tick line")
+              .clone() //
+              .attr("y2", -height)
+              .attr("stroke-opacity", 0.1)
+          )
+          .call((g) =>
+            g
+              .append("text") //
+              .attr("x", width - 4)
+              .attr("y", -4)
+              .attr("font-weight", "bold")
+              .attr("text-anchor", "end")
+              .attr("fill", "black")
+              .text(data.x)
+              .call(halo)
+          )
+      }
+
+      function yAxis(g) {
+        g.attr("transform", _t(marge.left, 0)) //
+          .call(d3.axisLeft(y).ticks(null, "$.2f"))
+          .call((g) => g.select(".domain").remove())
+          .call((g) =>
+            g
+              .selectAll(".tick line")
+              .clone() //
+              .attr("x2", width)
+              .attr("stroke-opacity", 0.1)
+          )
+          .call((g) =>
+            g
+              .select(".tick:last-of-type text")
+              .clone() //
+              .attr("x", 4)
+              .attr("text-anchor", "start")
+              .attr("font-weight", "bold")
+              .attr("fill", "black")
+              .text(data.y)
+              .call(halo)
+          )
+      }
+
+      // 7. 创建 path
+      svg
+        .append("path") //
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 2.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-dasharray", `0,${l}`)
+        .attr("d", line(data))
+        .transition()
+        .duration(5000)
+        .ease(d3.easeLinear)
+        .attr("stroke-dasharray", `${l}, ${l}`)
+
+      // 8. 画点
+      svg
+        .append("g") //
+        .attr("fill", "white")
+        .attr("stroke", "black")
+        .attr("stroke-width", 2)
+        .selectAll("circle")
+        .data(data)
+        .join("circle")
+        .attr("cx", (d) => x(d.x))
+        .attr("cy", (d) => y(d.y))
+        .attr("r", 3)
+
+      // 9. label
+      const label = svg
+        .append("g") //
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .selectAll("g")
+        .data(data)
+        .join("g")
+        .attr("transform", (d) => _t(x(d.x), y(d.y)))
+        .attr("opacity", 0)
+
+      label
+        .append("text") //
+        .text((d) => d.name)
+        .each(function (d) {
+          const t = d3.select(this)
+          switch (d.orient) {
+            case "top":
+              t.attr("text-anchor", "middle").attr("dy", "-0.7em")
+              break
+            case "right":
+              t.attr("dx", "0.5em")
+                .attr("dy", "0.32em")
+                .attr("text-anchor", "start")
+              break
+            case "bottom":
+              t.attr("text-anchor", "middle").attr("dy", "1.4em")
+              break
+            case "left":
+              t.attr("dx", "-0.5em")
+                .attr("dy", "0.32em")
+                .attr("text-anchor", "end")
+              break
+          }
+        })
+        .call(halo)
+
+      label
+        .transition() //
+        .delay(
+          (d, i) => (length(line(data.slice(0, i + 1))) / l) * (5000 - 125)
+        )
+        .attr("opacity", 1)
+    </script>
+  </body>
+</html>
