@@ -426,6 +426,14 @@ D3.js 中一些常见的图形：
 - d3.axisBottom().ticks() : 刻度间隔
 - d3.axisLeft().tickSizeOuter() : 标尺起点与终点的刻度大小
 
+# Lines - Line with Missing Data
+
+[参考](https://observablehq.com/@d3/line-with-missing-data)
+
+![line-with-missing-data](assets/line-with-missing-data.png)
+
+思路：过滤掉只有日期但没有值的数据，根据这组数据画灰线，没有值的地方会直接连线。然后画完整数据，有日期但没有值的地方将不绘制线段。
+
 # Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)

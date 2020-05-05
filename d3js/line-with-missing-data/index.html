@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 500
+      const height = 500
+      const marge = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(",d")
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select("svg") //
+        .style("font", "10px sans-serif")
+        .attr("viewBox", [0, 0, width, height])
+        .attr("fill", "none")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+
+      // 3. 准备 data
+      const data = d3
+        .csvParse(source.aapl, d3.autoType) //
+        .map(({ date, close }) => ({
+          date,
+          value: date.getMonth() < 3 ? undefined : close,
+        }))
+      data.y = "$ Close"
+
+      // 4. x, y Axis
+      const x = d3
+        .scaleUtc() //
+        .domain(d3.extent(data, (d) => d.date))
+        .range([marge.left, width - marge.right])
+
+      const y = d3
+        .scaleLinear() //
+        .domain([0, d3.max(data, (d) => d.value)])
+        .nice()
+        .range([height - marge.bottom, marge.top])
+
+      function xAxis(g) {
+        const axis = d3
+          .axisBottom(x) //
+          .ticks(width / 80)
+          .tickSizeOuter(0)
+        axis(g.attr("transform", _t(0, height - marge.bottom)))
+      }
+
+      function yAxis(g) {
+        g.attr("transform", _t(marge.left, 0)) //
+          .call(d3.axisLeft(y))
+          .call((g) => g.select(".domain").remove())
+          .call((g) =>
+            g
+              .select(".tick:last-of-type text")
+              .clone() //
+              .attr("x", 3)
+              .attr("text-anchor", "start")
+              .attr("font-weight", "bold")
+              .text(data.y)
+          )
+      }
+
+      svg.append("g").call(xAxis)
+      svg.append("g").call(yAxis)
+
+      // 5. line
+      const line = d3
+        .line() //
+        .defined((d) => !isNaN(d.value))
+        .x((d) => x(d.date))
+        .y((d) => y(d.value))
+
+      // console.log(data)
+      // console.log("---------")
+      // console.log(data.filter(line.defined()))
+      // 6. draw path
+      svg
+        .append("path") //
+        .datum(data.filter(line.defined()))
+        .attr("stroke", "#ccc")
+        .attr("d", line)
+
+      // 7. draw path only have data
+      svg
+        .append("path") //
+        .datum(data)
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("d", line)
+    </script>
+  </body>
+</html>
