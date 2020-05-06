@@ -449,6 +449,16 @@ D3.js 中一些常见的图形：
 
 [参考](https://observablehq.com/@d3/change-line-chart)
 
+![change-line-chart](assets/change-line-chart.png)
+
+# Lines - Marey's Trains
+
+[参考](https://observablehq.com/@mbostock/mareys-trains)
+
+![mareys-trains](assets/mareys-trains.png)
+
+tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, mouseout 的区域
+
 # Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
