@@ -423,6 +423,17 @@ D3.js 中一些常见的图形：
 - d3.scaleLinear().ticks() : 返回刻度列表，可以以这个列表作为数据继续操作
 - circle : 圆形、点元素
 
+# Dots - Scatterplot with Shapes
+
+[参考](https://observablehq.com/@d3/scatterplot-with-shapes)
+
+![scatterplot-with-shapes](assets/scatterplot-with-shapes.png)
+
+新的知识点：
+
+- d3.symbols() : 获取 d3 默认提供的一批符号 shapes
+- d3.symbol().type()() : 创建一个符号 shape
+
 # Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
