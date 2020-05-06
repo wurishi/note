@@ -412,6 +412,17 @@ D3.js 中一些常见的图形：
 
 # https://observablehq.com/@d3/gallery
 
+# Dots - Scatterplot
+
+[参考](https://observablehq.com/@d3/scatterplot)
+
+![scatterplot](assets/scatterplot.png)
+
+新的知识点：
+
+- d3.scaleLinear().ticks() : 返回刻度列表，可以以这个列表作为数据继续操作
+- circle : 圆形、点元素
+
 # Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
