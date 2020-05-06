@@ -459,6 +459,17 @@ D3.js 中一些常见的图形：
 
 tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, mouseout 的区域
 
+# Bars - Bar Chart
+
+[参考](https://observablehq.com/@d3/bar-chart)
+
+![bar-chart](assets/bar-chart.png)
+
+新的知识点：
+
+- d3.scaleBand() : 波段比例尺
+- bandwidth() : 获得波段平均分配的宽度
+
 # Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
