@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(",d")
+      // const color = d3.scaleOrdinal(d3.schemeCategory10)
+      const color = d3.scaleSequential([8, 0], d3.interpolateMagma)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select("svg") //
+        .style("font", "10px sans-serif")
+        .attr("text-anchor", "middle")
+        .attr("viewBox", [0, 0, width, height])
+
+      // 3. 准备 root
+      const root = pack(source.json)
+
+      function pack(data) {
+        return d3
+          .pack() //
+          .size([width - 2, height - 2])
+          .padding(3)(
+          d3
+            .hierarchy(data)
+            .sum((d) => d.value)
+            .sort((a, b) => b.value - a.value)
+        )
+      }
+      // console.log(root)
+
+      // 4. shadow filter
+      const shadow = DOM.uid("shadow")
+
+      svg
+        .append("filter") //
+        .attr("id", shadow.id)
+        .append("feDropShadow")
+        .attr("flood-opacity", 0.3)
+        .attr("dx", 0)
+        .attr("dy", 1)
+
+      // 5. node
+
+      const node = svg
+        .selectAll("g") //
+        .data(root.descendants())
+        .join("g")
+        .attr("transform", (d) => _t(d.x, d.y))
+
+      // console.log(root.descendants())
+
+      // console.log("-----------")
+
+      // console.log(
+      //   d3
+      //     .nest()
+      //     .key((d) => d.height)
+      //     .entries(root.descendants())
+      // )
+      // 6. draw circle
+
+      node
+        .append("circle") //
+        .attr("r", (d) => d.r)
+        .attr("stroke", (d) => (d.children ? "#bbb" : "none"))
+        .attr("fill", (d) => (d.children ? "none" : "#ddd"))
+
+      // 7. leaf
+
+      const leaf = node.filter((d) => !d.children)
+      leaf.select("circle") //
+
+      leaf
+        .append("text") //
+        .selectAll("tspan")
+        .data((d) => d.data.name.split(/(?=[A-Z][a-z])|\s+/g))
+        .join("tspan")
+        .attr("x", 0)
+        .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.8}em`)
+        .text((d) => d)
+
+      // 8. title
+      node
+        .append("title") //
+        .text(
+          (d) =>
+            d
+              .ancestors()
+              .map((d) => d.data.name)
+              .reverse()
+              .join("/") +
+            "\n" +
+            format(d.value)
+        )
+    </script>
+  </body>
+</html>

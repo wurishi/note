@@ -551,6 +551,12 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 - filter : 定义好一个 filter 元素并指定一个 id 后，要使用这个滤镜的元素只需要设置 filter 属性为 url(#id) 即可生效
 
+## Hierarchies - Circle Packing (monochrome)
+
+[参考](https://observablehq.com/@d3/circle-packing-monochrome)
+
+![circle-packing-monochrome](assets/circle-packing-monochrome.jpg)
+
 ## Animation - Animated Treemap
 
 [参考](https://observablehq.com/@d3/animated-treemap)
