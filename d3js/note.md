@@ -504,6 +504,14 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 - d3.arc() : 用 innerRadius 和 outerRadius 确定内半径和外半径，当 innerRadius(0) 时，表示饼图，其他数值为环形图
 
+## Radial - Donut Chart
+
+[参考](https://observablehq.com/@d3/donut-chart)
+
+![donut-chart](assets/donut-chart.jpg)
+
+和 Pie Chart 的唯一区别就是 arc 的 innerRadius
+
 ## Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
