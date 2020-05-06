@@ -434,6 +434,17 @@ D3.js 中一些常见的图形：
 
 思路：过滤掉只有日期但没有值的数据，根据这组数据画灰线，没有值的地方会直接连线。然后画完整数据，有日期但没有值的地方将不绘制线段。
 
+# Lines - Multi Line Chart
+
+[参考](https://observablehq.com/@d3/multi-line-chart)
+
+![multi-line-chart](assets/multi-line-chart.png)
+
+新的知识点：
+
+- path.filter().raise() : 按 filter 将过滤后的线段提升到最上层，一般用于有多条线的图
+- style('mix-blend-mode', 'multiply') : 重合区域的混合模式， multiply 将会让重合区域加深
+
 # Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
