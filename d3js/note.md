@@ -557,6 +557,16 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 ![circle-packing-monochrome](assets/circle-packing-monochrome.jpg)
 
+## Hierarchies - Indented Tree
+
+[参考](https://observablehq.com/@d3/indented-tree)
+
+![indented-tree](assets/indented-tree.jpg)
+
+新的知识点：
+
+- d3.hierarchy().copy() : 拷贝一份数据，用于做一些额外运算而不会影响源数据
+
 ## Animation - Animated Treemap
 
 [参考](https://observablehq.com/@d3/animated-treemap)
