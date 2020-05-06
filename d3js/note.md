@@ -445,6 +445,10 @@ D3.js 中一些常见的图形：
 - path.filter().raise() : 按 filter 将过滤后的线段提升到最上层，一般用于有多条线的图
 - style('mix-blend-mode', 'multiply') : 重合区域的混合模式， multiply 将会让重合区域加深
 
+# Lines - Change Line Chart
+
+[参考](https://observablehq.com/@d3/change-line-chart)
+
 # Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)

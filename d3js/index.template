@@ -13,17 +13,17 @@
       // 1. 基本准备
       const width = 960
       const height = 640
-      const marge = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
       const format = d3.format(",d")
       const color = d3.scaleOrdinal(d3.schemeCategory10)
 
-      // 2. 获取svg画布，并创建分组
+      // 2. 获取svg画布
       const svg = d3
         .select("svg") //
         .style("font", "10px sans-serif")
         .attr("viewBox", [0, 0, width, height])
 
-      // 3. 准备 treemap data
+      // 3. 准备 data
     </script>
   </body>
 </html>
