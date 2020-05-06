@@ -410,9 +410,11 @@ D3.js 中一些常见的图形：
 
 [中国地图 JSON 数据源](http://datav.aliyun.com/tools/atlas)
 
-# https://observablehq.com/@d3/gallery
+# 各种图例：
 
-# Dots - Scatterplot
+## https://observablehq.com/@d3/gallery
+
+## Dots - Scatterplot
 
 [参考](https://observablehq.com/@d3/scatterplot)
 
@@ -423,7 +425,7 @@ D3.js 中一些常见的图形：
 - d3.scaleLinear().ticks() : 返回刻度列表，可以以这个列表作为数据继续操作
 - circle : 圆形、点元素
 
-# Dots - Scatterplot with Shapes
+## Dots - Scatterplot with Shapes
 
 [参考](https://observablehq.com/@d3/scatterplot-with-shapes)
 
@@ -434,7 +436,7 @@ D3.js 中一些常见的图形：
 - d3.symbols() : 获取 d3 默认提供的一批符号 shapes
 - d3.symbol().type()() : 创建一个符号 shape
 
-# Lines - Line Chart
+## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
 
@@ -448,7 +450,7 @@ D3.js 中一些常见的图形：
 - d3.axisBottom().ticks() : 刻度间隔
 - d3.axisLeft().tickSizeOuter() : 标尺起点与终点的刻度大小
 
-# Lines - Line with Missing Data
+## Lines - Line with Missing Data
 
 [参考](https://observablehq.com/@d3/line-with-missing-data)
 
@@ -456,7 +458,7 @@ D3.js 中一些常见的图形：
 
 思路：过滤掉只有日期但没有值的数据，根据这组数据画灰线，没有值的地方会直接连线。然后画完整数据，有日期但没有值的地方将不绘制线段。
 
-# Lines - Multi Line Chart
+## Lines - Multi Line Chart
 
 [参考](https://observablehq.com/@d3/multi-line-chart)
 
@@ -467,13 +469,13 @@ D3.js 中一些常见的图形：
 - path.filter().raise() : 按 filter 将过滤后的线段提升到最上层，一般用于有多条线的图
 - style('mix-blend-mode', 'multiply') : 重合区域的混合模式， multiply 将会让重合区域加深
 
-# Lines - Change Line Chart
+## Lines - Change Line Chart
 
 [参考](https://observablehq.com/@d3/change-line-chart)
 
 ![change-line-chart](assets/change-line-chart.jpg)
 
-# Lines - Marey's Trains
+## Lines - Marey's Trains
 
 [参考](https://observablehq.com/@mbostock/mareys-trains)
 
@@ -481,7 +483,7 @@ D3.js 中一些常见的图形：
 
 tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, mouseout 的区域
 
-# Bars - Bar Chart
+## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
 
@@ -492,7 +494,17 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 - d3.scaleBand() : 波段比例尺
 - bandwidth() : 获得波段平均分配的宽度
 
-# Hierarchies - Treemap
+## Radial - Pie Chart
+
+[参考](https://observablehq.com/@d3/pie-chart)
+
+![pie-chart](assets/pie-chart.jpg)
+
+新的知识点：
+
+- d3.arc() : 用 innerRadius 和 outerRadius 确定内半径和外半径，当 innerRadius(0) 时，表示饼图，其他数值为环形图
+
+## Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
 
@@ -515,13 +527,13 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 - treemap().leaves() : 获取所有叶子节点
 - Node.ancestors() : 获取从节点到根节点的继承链，是一个数组
 
-# Hierarchies - Cascaded Treemap
+## Hierarchies - Cascaded Treemap
 
 [参考](https://observablehq.com/@d3/cascaded-treemap)
 
 ![cascaded-treemap](assets/cascaded-treemap.jpg)
 
-# Animation - Animated Treemap
+## Animation - Animated Treemap
 
 [参考](https://observablehq.com/@d3/animated-treemap)
 
@@ -536,7 +548,7 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 - d3.tsvParse() : tsv 转换
 - d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
 
-# Animation - Connected Scatterplot
+## Animation - Connected Scatterplot
 
 [参考](https://observablehq.com/@d3/connected-scatterplot)
 
