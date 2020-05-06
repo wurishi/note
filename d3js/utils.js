@@ -3,9 +3,13 @@ window._t = (x, y) => `translate(${x},${y})`
 const DOM = {
   tmp: 0,
 }
-DOM.uid = (prefix) => ({
-  id: prefix + "_" + Date.now() + "_" + DOM.tmp++,
-  href: "href",
-})
+DOM.uid = (prefix) => {
+  const id = prefix + "_" + Date.now() + "_" + DOM.tmp++
+  return {
+    id,
+    href: "http://xxxxx",
+    url: `url(#${id})`,
+  }
+}
 
 window.DOM = DOM

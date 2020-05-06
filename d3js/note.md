@@ -541,6 +541,16 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 ![cascaded-treemap](assets/cascaded-treemap.jpg)
 
+## Hierarchies - Circle Packing
+
+[参考](https://observablehq.com/@d3/circle-packing)
+
+![circle-packing](assets/circle-packing.jpg)
+
+新的知识点：
+
+- filter : 定义好一个 filter 元素并指定一个 id 后，要使用这个滤镜的元素只需要设置 filter 属性为 url(#id) 即可生效
+
 ## Animation - Animated Treemap
 
 [参考](https://observablehq.com/@d3/animated-treemap)
