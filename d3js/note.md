@@ -416,7 +416,7 @@ D3.js 中一些常见的图形：
 
 [参考](https://observablehq.com/@d3/scatterplot)
 
-![scatterplot](assets/scatterplot.png)
+![scatterplot](assets/scatterplot.jpg)
 
 新的知识点：
 
@@ -427,7 +427,7 @@ D3.js 中一些常见的图形：
 
 [参考](https://observablehq.com/@d3/scatterplot-with-shapes)
 
-![scatterplot-with-shapes](assets/scatterplot-with-shapes.png)
+![scatterplot-with-shapes](assets/scatterplot-with-shapes.jpg)
 
 新的知识点：
 
@@ -438,7 +438,7 @@ D3.js 中一些常见的图形：
 
 [参考](https://observablehq.com/@d3/line-chart)
 
-![line-chart](assets/line-chart.png)
+![line-chart](assets/line-chart.jpg)
 
 新的知识点：
 
@@ -452,7 +452,7 @@ D3.js 中一些常见的图形：
 
 [参考](https://observablehq.com/@d3/line-with-missing-data)
 
-![line-with-missing-data](assets/line-with-missing-data.png)
+![line-with-missing-data](assets/line-with-missing-data.jpg)
 
 思路：过滤掉只有日期但没有值的数据，根据这组数据画灰线，没有值的地方会直接连线。然后画完整数据，有日期但没有值的地方将不绘制线段。
 
@@ -460,7 +460,7 @@ D3.js 中一些常见的图形：
 
 [参考](https://observablehq.com/@d3/multi-line-chart)
 
-![multi-line-chart](assets/multi-line-chart.png)
+![multi-line-chart](assets/multi-line-chart.jpg)
 
 新的知识点：
 
@@ -471,13 +471,13 @@ D3.js 中一些常见的图形：
 
 [参考](https://observablehq.com/@d3/change-line-chart)
 
-![change-line-chart](assets/change-line-chart.png)
+![change-line-chart](assets/change-line-chart.jpg)
 
 # Lines - Marey's Trains
 
 [参考](https://observablehq.com/@mbostock/mareys-trains)
 
-![mareys-trains](assets/mareys-trains.png)
+![mareys-trains](assets/mareys-trains.jpg)
 
 tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, mouseout 的区域
 
@@ -496,7 +496,7 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 [参考](https://observablehq.com/@d3/treemap)
 
-![treemap](assets/treemap.png)
+![treemap](assets/treemap.jpg)
 
 新的知识点：
 
@@ -519,7 +519,7 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 [参考](https://observablehq.com/@d3/cascaded-treemap)
 
-![cascaded-treemap](assets/cascaded-treemap.png)
+![cascaded-treemap](assets/cascaded-treemap.jpg)
 
 # Animation - Animated Treemap
 
@@ -540,7 +540,7 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 [参考](https://observablehq.com/@d3/connected-scatterplot)
 
-![connected-scatterplot](assets/connected-scatterplot.png)
+![connected-scatterplot](assets/connected-scatterplot.jpg)
 
 新的知识点：
 
