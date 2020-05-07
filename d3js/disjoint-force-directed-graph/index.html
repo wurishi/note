@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      // const format = d3.format(",d")
+      // const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select("svg") //
+        .style("font", "10px sans-serif")
+        .attr("viewBox", [-width / 2, -height / 2, width, height])
+
+      // 3. 准备 data
+
+      const data = source.json
+
+      const c_scale = d3.scaleOrdinal(d3.schemeCategory10)
+      const color = (d) => c_scale(d.group)
+
+      // 4. links, nodes
+      const links = data.links.map((d) => Object.create(d))
+      const nodes = data.nodes.map((d) => Object.create(d))
+
+      // 5. simulation
+      const simulation = d3
+        .forceSimulation(nodes) //
+        .force(
+          "link",
+          d3.forceLink(links).id((d) => d.id)
+        )
+        .force("charge", d3.forceManyBody())
+        .force("x", d3.forceX())
+        .force("y", d3.forceY())
+      // 6. draw link
+      const link = svg
+        .append("g") //
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(links)
+        .join("line")
+        .attr("stroke-width", (d) => Math.sqrt(d.value))
+
+      // 7. draw node
+
+      const node = svg
+        .append("g") //
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .selectAll("circle")
+        .data(nodes)
+        .join("circle")
+        .attr("r", 5)
+        .attr("fill", color)
+        .call(drag(simulation))
+
+      node.append("title").text((d) => d.id)
+      // 8. tick
+      simulation.on("tick", () => {
+        link
+          .attr("x1", (d) => d.source.x)
+          .attr("y1", (d) => d.source.y)
+          .attr("x2", (d) => d.target.x)
+          .attr("y2", (d) => d.target.y)
+
+        node.attr("cx", (d) => d.x).attr("cy", (d) => d.y)
+      })
+
+      // 9. drag
+
+      function drag(simulation) {
+        function dragstarted(d) {
+          if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+          d.fx = d.x
+          d.fy = d.y
+        }
+
+        function dragged(d) {
+          d.fx = d3.event.x
+          d.fy = d3.event.y
+        }
+
+        function dragended(d) {
+          if (!d3.event.active) simulation.alphaTarget(0)
+          d.fx = null
+          d.fy = null
+        }
+
+        return d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended)
+      }
+    </script>
+  </body>
+</html>

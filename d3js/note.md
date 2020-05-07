@@ -500,6 +500,12 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 ![force-directed-graph](assets/force-directed-graph.jpg)
 
+## Networks - Disjoint Force-Directed Graph
+
+[参考](https://observablehq.com/@d3/disjoint-force-directed-graph)
+
+![disjoint-force-directed-graph](assets/disjoint-force-directed-graph.jpg)
+
 ## Radial - Pie Chart
 
 [参考](https://observablehq.com/@d3/pie-chart)
