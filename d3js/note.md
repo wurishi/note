@@ -512,6 +512,16 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 和 Pie Chart 的唯一区别就是 arc 的 innerRadius
 
+## Radial - Radial Area Chart
+
+[参考](https://observablehq.com/@d3/radial-area-chart)
+
+![radial-area-chart](assets/radial-area-chart.jpg)
+
+新的知识点：
+
+- textPath : 指定 xlink:href #id 即可定位到指定 id 的元素
+
 ## Radial - Radial Stacked Bar Chart
 
 [参考](https://observablehq.com/@d3/radial-stacked-bar-chart)

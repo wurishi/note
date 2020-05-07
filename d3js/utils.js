@@ -8,7 +8,7 @@ DOM.uid = (prefix) => {
   const id = prefix + "_" + Date.now() + "_" + DOM.tmp++
   return {
     id,
-    href: "http://xxxxx",
+    href: `#${id}`,
     url: `url(#${id})`,
   }
 }
