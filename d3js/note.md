@@ -512,6 +512,16 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 和 Pie Chart 的唯一区别就是 arc 的 innerRadius
 
+## Radial - Radial Stacked Bar Chart
+
+[参考](https://observablehq.com/@d3/radial-stacked-bar-chart)
+
+![radial-stacked-bar-chart](assets/radial-stacked-bar-chart.jpg)
+
+新的知识点：
+
+- transform : rotate 和 translate 的先后顺序非常重要
+
 ## Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)

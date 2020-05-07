@@ -1,4 +1,5 @@
 window._t = (x, y) => `translate(${x},${y})`
+window._r = (r) => `rotate(${r})`
 
 const DOM = {
   tmp: 0,
