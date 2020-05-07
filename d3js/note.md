@@ -540,6 +540,12 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 和上一个最大的改动就是数据从大到小排了个序
 
+## Annotation - Inline Labels
+
+[参考](https://observablehq.com/@d3/inline-labels)
+
+![inline-labels](assets/inline-labels.jpg)
+
 ## Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)

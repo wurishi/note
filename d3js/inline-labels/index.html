@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(",d")
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select("svg") //
+        .style("font", "10px sans-serif")
+        .attr("viewBox", [0, 0, width, height])
+
+      // 3. 准备 data
+
+      const data = d3.tsvParse(
+        source.tsv,
+        (d) => ((d3.autoType(d).date = new Date(Date.UTC(d.date, 0, 1))), d)
+      )
+      // console.log(data)
+
+      const series = data.columns
+        .slice(1)
+        .map((key) =>
+          data.map(({ [key]: value, date }) => ({ key, date, value }))
+        )
+
+      // 4. x, y 比例尺
+      const x = d3
+        .scaleUtc()
+        .domain([data[0].date, data[data.length - 1].date])
+        .range([margin.left, width - margin.right])
+
+      const y = d3
+        .scaleLinear()
+        .domain([0, d3.max(series, (s) => d3.max(s, (d) => d.value))])
+        .range([height - margin.bottom, margin.top])
+
+      const z = d3.scaleOrdinal(data.columns.slice(1), d3.schemeCategory10)
+      // 5. axis
+      const xAxis = (g) =>
+        g //
+          .attr("transform", _t(0, height - margin.bottom))
+          .call(
+            d3
+              .axisBottom(x)
+              .ticks(width / 80)
+              .tickSizeOuter(0)
+          )
+
+      svg.append("g").call(xAxis)
+      // 6. serie
+      const serie = svg
+        .append("g") //
+        .selectAll("g")
+        .data(series)
+        .join("g")
+
+      // 画线
+      serie
+        .append("path") //
+        .attr("fill", "none")
+        .attr("stroke", (d) => z(d[0].key))
+        .attr("stroke-width", 1.5)
+        .attr(
+          "d",
+          d3
+            .line() //
+            .x((d) => x(d.date))
+            .y((d) => y(d.value))
+        )
+      // 7. 增加文本
+      serie
+        .append("g") //
+        .attr("stroke-linecap", "round")
+        .attr("stroke-linejoin", "round")
+        .attr("text-anchor", "middle")
+        .selectAll("text")
+        .data((d) => d)
+        .join("text")
+        .text((d) => d.value)
+        .attr("dy", "0.35em")
+        // .attr("transform", (d) => _t(x(d.date), y(d.value)))
+        .attr("x", (d) => x(d.date))
+        .attr("y", (d) => y(d.value))
+        .call((text) =>
+          text //
+            .filter((d, i, data) => i === data.length - 1)
+            .append("tspan")
+            .attr("font-weight", "bold")
+            .text((d) => ` ${d.key}`)
+        )
+        .clone(true)
+        .lower()
+        .attr("fill", "none")
+        .attr("stroke", "white")
+        .attr("stroke-width", 6)
+    </script>
+  </body>
+</html>
