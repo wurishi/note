@@ -532,6 +532,14 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 - transform : rotate 和 translate 的先后顺序非常重要
 
+## Radial - Radial Stacked Bar Chart 2
+
+[参考](https://observablehq.com/@d3/radial-stacked-bar-chart-ii)
+
+![radial-stacked-bar-chart-2](assets/radial-stacked-bar-chart-2.jpg)
+
+和上一个最大的改动就是数据从大到小排了个序
+
 ## Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
