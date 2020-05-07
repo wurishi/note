@@ -494,6 +494,12 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 - d3.scaleBand() : 波段比例尺
 - bandwidth() : 获得波段平均分配的宽度
 
+## Networks - Force-Directed Graph
+
+[参考](https://observablehq.com/@d3/force-directed-graph)
+
+![force-directed-graph](assets/force-directed-graph.jpg)
+
 ## Radial - Pie Chart
 
 [参考](https://observablehq.com/@d3/pie-chart)
