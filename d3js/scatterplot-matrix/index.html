@@ -6,6 +6,7 @@
     <script src="../utils.js"></script>
     <script src="../d3.v5.js"></script>
     <script src="./data.js"></script>
+    <!-- <script src="../color-legend.js"></script> -->
   </head>
   <body>
     <svg></svg>
@@ -102,7 +103,7 @@
         .join("g")
         .attr("transform", ([i, j]) => _t(i * size, j * size))
 
-      console.log(d3.cross([1, 2], [3, 4]))
+      // console.log(d3.cross([1, 2], [3, 4]))
 
       cell
         .append("rect")
@@ -140,6 +141,9 @@
         .attr("y", padding)
         .attr("dy", ".71em")
         .text((d) => d)
+
+      // 9. swatches
+      // swatches({ color: z })
     </script>
   </body>
 </html>
