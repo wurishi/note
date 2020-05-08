@@ -512,6 +512,18 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 ![mobile-patent-suits](assets/mobile-patent-suits.jpg)
 
+## Networks - Arc Diagram
+
+[参考](https://observablehq.com/@d3/arc-diagram)
+
+![arc-diagram](assets/arc-diagram.jpg)
+
+新的知识点：
+
+- pointer-events : 对于空的元素，如果要让它响应鼠标事件，需要设置这个属于为 'all'
+- classed : 可以对元素设置样式 class
+- order() : 因为 raise() 而置顶过的元素，可以让整批元素调用 order() 重新排序
+
 ## Radial - Pie Chart
 
 [参考](https://observablehq.com/@d3/pie-chart)
