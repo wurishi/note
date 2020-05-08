@@ -436,6 +436,16 @@ D3.js 中一些常见的图形：
 - d3.symbols() : 获取 d3 默认提供的一批符号 shapes
 - d3.symbol().type()() : 创建一个符号 shape
 
+## Dots - Scatterplot Matrix
+
+[参考](https://observablehq.com/@d3/scatterplot-matrix)
+
+![scatterplot-matrix](assets/scatterplot-matrix.jpg)
+
+新的知识点：
+
+- d3.cross() : 将二个数组的值交叉组成一个数组，如 [1,2],[3,4] 将组成 [1,3],[1,4],[2,3],[2,4]
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
