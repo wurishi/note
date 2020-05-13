@@ -586,6 +586,12 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 ![inline-labels](assets/inline-labels.jpg)
 
+## Analysis - Moving Average
+
+[参考](https://observablehq.com/@d3/moving-average)
+
+![moving-average](assets/moving-average.jpg)
+
 ## Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
