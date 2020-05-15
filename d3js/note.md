@@ -519,6 +519,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 - stop : 线性渐变的关键颜色点
 - stop-color : 关键点的颜色
 
+## Lines - Threshold Encoding
+
+[参考](https://observablehq.com/@d3/threshold-encoding)
+
+![threshold-encoding](assets/threshold-encoding.jpg)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
