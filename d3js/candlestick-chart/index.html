@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(',d')
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height])
+
+      // 3. 准备 data
+
+      const parseDate = d3.utcParse('%Y-%m-%d')
+
+      const data = d3
+        .csvParse(source.csv, (d) => {
+          const date = parseDate(d['Date'])
+          return {
+            date,
+            high: +d['High'],
+            low: +d['Low'],
+            open: +d['Open'],
+            close: +d['Close'],
+          }
+        })
+        .slice(-120)
+
+      // 4. x, y
+      const x = d3
+        .scaleBand() //
+        .domain(
+          d3.utcDay //
+            .range(data[0].date, +data[data.length - 1].date + 1)
+            .filter((d) => d.getUTCDay() !== 0 && d.getUTCDay() !== 6)
+        )
+        .range([margin.left, width - margin.right])
+        .padding(0.2)
+
+      const y = d3
+        .scaleLog() //
+        .domain([d3.min(data, (d) => d.low), d3.max(data, (d) => d.high)])
+        .rangeRound([height - margin.bottom, margin.top])
+
+      // 5. axis
+
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(
+            d3
+              .axisBottom(x) //
+              .tickValues(
+                d3.utcMonday
+                  .every(width > 720 ? 1 : 2)
+                  .range(data[0].date, data[data.length - 1].date)
+              )
+              .tickFormat(d3.utcFormat('%-m/%-d'))
+          )
+          .call((g) =>
+            g //
+              .select('.domain')
+              .remove()
+          )
+
+      svg.append('g').call(xAxis)
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(
+            d3
+              .axisLeft(y)
+              .tickFormat(d3.format('$~f'))
+              .tickValues(d3.scaleLinear().domain(y.domain()).ticks())
+          )
+          .call((g) =>
+            g
+              .selectAll('.tick line')
+              .clone()
+              .attr('stroke-opacity', 0.2)
+              .attr('x2', width - margin.left - margin.right)
+          )
+          .call((g) => g.select('.domain').remove())
+
+      svg.append('g').call(yAxis)
+      // 6. create g
+      const g = svg
+        .append('g')
+        .attr('stroke-linecap', 'round')
+        .attr('stroke', 'black')
+        .selectAll('g')
+        .data(data)
+        .join('g')
+        .attr('transform', (d) => _t(x(d.date), 0))
+      // 7. draw line1
+      g.append('line')
+        .attr('y1', (d) => y(d.low))
+        .attr('y2', (d) => y(d.high))
+      // 8. draw line2
+      g.append('line')
+        .attr('y1', (d) => y(d.open))
+        .attr('y2', (d) => y(d.close))
+        .attr('stroke-width', x.bandwidth())
+        .attr('stroke', (d) =>
+          d.open > d.close
+            ? d3.schemeSet1[0]
+            : d.close > d.open
+            ? d3.schemeSet1[2]
+            : d3.schemeSet1[8]
+        )
+      // 9. title
+      const formatDate = d3.utcFormat('%B %-d, %Y')
+      const formatValue = d3.format('.2f')
+      const formatChange = (() => {
+        const f = d3.format('+.2%')
+        return (y0, y1) => f((y1 - y0) / y0)
+      })()
+
+      g.append('title').text(
+        (d) => `${formatDate(d.date)}
+Open: ${formatValue(d.open)}
+Close: ${formatValue(d.close)} (${formatChange(d.open, d.close)})
+Low: ${formatValue(d.low)}
+High: ${formatValue(d.high)}`
+      )
+    </script>
+  </body>
+</html>

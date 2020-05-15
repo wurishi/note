@@ -493,6 +493,20 @@ D3.js 中一些常见的图形：
 
 tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, mouseout 的区域
 
+## Lines - Candlestick Chart
+
+[参考](https://observablehq.com/@d3/candlestick-chart)
+
+![candlestick-chart](assets/candlestick-chart.jpg)
+
+## Lines - Variable Color Line
+
+[参考](https://observablehq.com/@d3/variable-color-line)
+
+![variable-color-line](assets/variable-color-line.jpg)
+
+注意: linearGradient 可以指定给 path 的 stroke
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
