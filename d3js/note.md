@@ -525,6 +525,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![threshold-encoding](assets/threshold-encoding.jpg)
 
+## Lines - Parallel Coordinates
+
+[参考](https://observablehq.com/@d3/parallel-coordinates)
+
+![parallel-coordinates](assets/parallel-coordinates.jpg)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
