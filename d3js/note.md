@@ -505,7 +505,19 @@ tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, 
 
 ![variable-color-line](assets/variable-color-line.jpg)
 
-注意: linearGradient 可以指定给 path 的 stroke
+## Lines - Gradient Encoding
+
+[参考](https://observablehq.com/@d3/gradient-encoding)
+
+![gradient-encoding](assets/gradient-encoding.jpg)
+
+linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stroke  与 linearGradient 关联
+
+新的知识点：
+
+- linearGradient : 线性渐变元素
+- stop : 线性渐变的关键颜色点
+- stop-color : 关键点的颜色
 
 ## Bars - Bar Chart
 

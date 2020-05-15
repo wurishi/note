@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      // const format = d3.format(",d")
+      // const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height])
+
+      // 3. 准备 data
+      const gradient = DOM.uid()
+
+      const data = Object.assign(
+        d3
+          .csvParse(source.csv, d3.autoType)
+          .map(({ date, temperature }) => ({ date, value: temperature })),
+        { title: 'Temperature °F', y: ' °F' }
+      )
+
+      // 4. x,y,color
+      const x = d3
+        .scaleUtc() //
+        .domain(d3.extent(data, (d) => d.date))
+        .range([margin.left, width - margin.right])
+
+      const y = d3
+        .scaleLinear() //
+        .domain(d3.extent(data, (d) => d.value))
+        .nice()
+        .range([height - margin.bottom, margin.top])
+
+      const color = d3.scaleSequential(y.domain(), d3.interpolateTurbo)
+
+      // 5. axis
+
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(
+            d3
+              .axisBottom(x)
+              .ticks(width / 80)
+              .tickSizeOuter(0)
+          )
+          .call((g) => g.select('.domain').remove())
+
+      svg.append('g').call(xAxis)
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(d3.axisLeft(y))
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g.select('.tick:last-of-type text').append('tspan').text(data.y)
+          )
+
+      svg.append('g').call(yAxis)
+
+      // 6. linearGradient
+
+      svg
+        .append('linearGradient')
+        .attr('id', gradient.id)
+        .attr('gradientUnits', 'userSpaceOnUse')
+        .attr('x1', 0)
+        .attr('y1', height - margin.bottom)
+        .attr('x2', 0)
+        .attr('y2', margin.top)
+        .selectAll('stop')
+        .data(d3.ticks(0, 1, 10))
+        .join('stop')
+        .attr('offset', (d) => d)
+        .attr('stop-color', color.interpolator())
+
+      // 7. path
+
+      const line = d3
+        .line() //
+        .curve(d3.curveStep)
+        .defined((d) => !isNaN(d.value))
+        .x((d) => x(d.date))
+        .y((d) => y(d.value))
+
+      svg
+        .append('path') //
+        .datum(data)
+        .attr('fill', 'none')
+        .attr('stroke', gradient.url)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-linecap', 'round')
+        .attr('d', line)
+    </script>
+  </body>
+</html>
