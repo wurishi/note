@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="../d3-array.min.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 800
+      const height = 1000
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(',d')
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height])
+
+      // 3. 准备 data
+      const data = (() => {
+        const data = d3.csvParse(source.csv, d3.autoType)
+        return data.columns.slice(1).flatMap((column) =>
+          data.map((d) => ({
+            name: d.Name,
+            period: column,
+            value: d[column],
+          }))
+        )
+      })()
+
+      // console.log(data)
+      // 4. x,y 比例尺
+      const x = d3
+        .scalePoint() //
+        .domain(data.map((d) => d.period))
+        .range([margin.left, width - margin.right])
+
+      const y = d3
+        .scaleLinear() //
+        .domain(d3.extent(data, (d) => d.value))
+        .range([height - margin.bottom, margin.top])
+
+      // 5. xaxis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, margin.top))
+          .call(d3.axisTop(x))
+          .call((g) => g.select('.domain').remove())
+
+      svg.append('g').call(xAxis)
+
+      // 6. draw line
+      const line = d3
+        .line() //
+        .x((d) => x(d.period))
+        .y((d) => y(d.value))
+
+      svg
+        .append('g') //
+        .attr('fill', 'none')
+        .attr('stroke', '#000')
+        .selectAll('path')
+        .data(d3.groups(data, (d) => d.name))
+        .join('path')
+        .attr('d', ([, group]) => line(group))
+        .call((path) => path.clone(true))
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 5)
+      // 7. draw circle
+      svg
+        .append('g') //
+        .attr('fill', '#fff')
+        // .attr('stroke', 'red')
+        .selectAll('circle')
+        .data(data)
+        .join('circle')
+        .attr('cx', (d) => x(d.period))
+        .attr('cy', (d) => y(d.value))
+        .attr('r', 10)
+      // 8. text
+
+      const formatValue = d3.format(',')
+
+      svg
+        .append('g') //
+        .attr('text-anchor', 'middle')
+        .selectAll('text')
+        .data(data)
+        .join('text')
+        .attr('x', (d) => x(d.period))
+        .attr('y', (d) => y(d.value))
+        .attr('dy', '0.35em')
+        .text((d) => formatValue(d.value))
+      // 9.
+      svg
+        .append('g') //
+        .attr('text-anchor', 'end')
+        .selectAll('text')
+        .data(d3.groups(data, (d) => d.name))
+        .join('text')
+        .attr('x', margin.left - 12)
+        .attr('y', ([key, [d]]) => y(d.value) + (key === 'Colon') * 10)
+        .attr('dy', '0.35em')
+        .text(([key]) => key)
+    </script>
+  </body>
+</html>

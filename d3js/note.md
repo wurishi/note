@@ -531,6 +531,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![parallel-coordinates](assets/parallel-coordinates.jpg)
 
+## Lines - Cancer Survival Rates
+
+[参考](https://observablehq.com/@mbostock/cancer-survival-rates)
+
+![cancer-survival-rates](assets/cancer-survival-rates.jpg)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
