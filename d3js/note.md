@@ -543,6 +543,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![inequality-in-american-cities](assets/inequality-in-american-cities.png)
 
+## Lines - New Zealand Tourists (1921-2018)
+
+[参考](https://observablehq.com/@mbostock/new-zealand-tourists-1921-2018)
+
+![new-zealand-tourists](assets/new-zealand-tourists.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
