@@ -566,6 +566,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 - d3.scaleBand() : 波段比例尺
 - bandwidth() : 获得波段平均分配的宽度
 
+## Bars - Horizontal Bar Chart
+
+[参考](https://observablehq.com/@d3/horizontal-bar-chart)
+
+![horizontal-bar-chart](assets/horizontal-bar-chart.png)
+
 ## Networks - Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/force-directed-graph)
