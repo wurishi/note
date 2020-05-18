@@ -531,11 +531,17 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![parallel-coordinates](assets/parallel-coordinates.jpg)
 
-## Lines - Cancer Survival Rates
+## Lines - Slope Chart
 
 [参考](https://observablehq.com/@mbostock/cancer-survival-rates)
 
-![cancer-survival-rates](assets/cancer-survival-rates.jpg)
+![slope-chart](assets/slope-chart.jpg)
+
+## Lines - Inequality in American Cities
+
+[参考](https://observablehq.com/@mbostock/inequality-in-american-cities)
+
+![inequality-in-american-cities](assets/inequality-in-american-cities.png)
 
 ## Bars - Bar Chart
 

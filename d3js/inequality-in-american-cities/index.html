@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(',d')
+      // const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      const startColor = d3.schemeCategory10[1]
+      const endColor = d3.schemeCategory10[3]
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height])
+
+      // 3. 准备 data
+      const data = Object.assign(d3.csvParse(source.csv, d3.autoType), {
+        x: 'Population →',
+        y: '↑ Inequality',
+      })
+      // 4. arrowId, gradientIds
+      const arrowId = DOM.uid('arrow')
+      const gradientIds = data.map(() => DOM.uid('gradient'))
+      // 5. x,y
+      function padLinear([x0, x1], k) {
+        const dx = ((x1 - x0) * k) / 2
+        return [x0 - dx, x1 + dx]
+      }
+
+      function padLog(x, k) {
+        return padLinear(x.map(Math.log), k).map(Math.exp)
+      }
+
+      const x = d3
+        .scaleLog()
+        .domain(
+          padLog(d3.extent(data.flatMap((d) => [d.POP_1980, d.POP_2015])), 0.1)
+        )
+        .rangeRound([margin.left, width - margin.right])
+
+      const y = d3
+        .scaleLinear() //
+        .domain(
+          padLinear(
+            d3.extent(data.flatMap((d) => [d.R90_10_1980, d.R90_10_2015])),
+            0.1
+          )
+        )
+        .rangeRound([height - margin.bottom, margin.top])
+
+      // 6. defs
+      svg
+        .append('defs') //
+        .append('marker')
+        .attr('id', arrowId.id)
+        .attr('markerHeight', 10)
+        .attr('markerWidth', 10)
+        .attr('refX', 5)
+        .attr('refY', 2.5)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('fill', endColor)
+        .attr('d', 'M0,0v5l7,-2.5Z')
+
+      svg
+        .append('defs') //
+        .selectAll('linearGradient')
+        .data(data)
+        .join('linearGradient')
+        .attr('id', (d, i) => gradientIds[i].id)
+        .attr('x1', (d) => x(d.POP_1980))
+        .attr('x2', (d) => x(d.POP_2015))
+        .attr('y1', (d) => y(d.R90_10_1980))
+        .attr('y2', (d) => y(d.R90_10_2015))
+        .call((g) =>
+          g
+            .append('stop') //
+            .attr('stop-color', startColor)
+            .attr('stop-opacity', 0.5)
+        )
+        .call((g) =>
+          g
+            .append('stop') //
+            .attr('offset', '100%')
+            .attr('stop-color', endColor)
+        )
+      // 7. grid
+
+      const grid = (g) =>
+        g
+          .attr('stroke', 'currentColor') //
+          .attr('stroke-opacity', 0.1)
+          .call((g) =>
+            g
+              .append('g') //
+              .selectAll('line')
+              .data(x.ticks())
+              .join('line')
+              .attr('x1', (d) => 0.5 + x(d))
+              .attr('x2', (d) => 0.5 + x(d))
+              .attr('y1', margin.top)
+              .attr('y2', height - margin.bottom)
+          )
+          .call((g) =>
+            g
+              .append('g') //
+              .selectAll('line')
+              .data(y.ticks())
+              .join('line')
+              .attr('y1', (d) => 0.5 + y(d))
+              .attr('y2', (d) => 0.5 + y(d))
+              .attr('x1', margin.left)
+              .attr('x2', width - margin.right)
+          )
+
+      svg.append('g').call(grid)
+      // 7. axis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(d3.axisBottom(x).ticks(width / 80, '.1s'))
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .append('text')
+              .attr('x', width)
+              .attr('y', margin.bottom - 4)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'end')
+              .text(data.x)
+          )
+
+      svg.append('g').call(xAxis)
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(d3.axisLeft(y))
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .append('text') //
+              .attr('x', -margin.left)
+              .attr('y', 10)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'start')
+              .text(data.y)
+          )
+
+      svg.append('g').call(yAxis)
+      // 8. arc path
+      function arc(x1, y1, x2, y2) {
+        const r = Math.hypot(x1 - x2, y1 - y2) * 2 //* 0.5
+        return `
+          M${x1},${y1}
+          A${r},${r} 0,0,1 ${x2},${y2}
+        `
+      }
+      svg
+        .append('g') //
+        .attr('fill', 'none')
+        .selectAll('path')
+        .data(data)
+        .join('path')
+        .attr('stroke', (d, i) => gradientIds[i].url)
+        .attr('marker-end', arrowId.url)
+        .attr('d', (d) =>
+          arc(x(d.POP_1980), y(d.R90_10_1980), x(d.POP_1980), y(d.R90_10_2015))
+        )
+      // 9. circle
+      svg
+        .append('g') //
+        .attr('fill', 'currentColor')
+        .selectAll('circle')
+        .data(data)
+        .join('circle')
+        .attr('r', 1.75)
+        .attr('cx', (d) => x(d.POP_1980))
+        .attr('cy', (d) => y(d.R90_10_1980))
+
+      // 10. text
+      svg
+        .append('g') //
+        .attr('fill', 'currentColor')
+        .attr('text-anchor', 'middle')
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-width', 4)
+        .selectAll('text')
+        .data(data.filter((d) => d.highlight))
+        .join('text')
+        .attr('dy', (d) => (d.R90_10_1980 > d.R90_10_2015 ? '1.2em' : '-0.5em'))
+        .attr('x', (d) => x(d.POP_2015))
+        .attr('y', (d) => y(d.R90_10_2015))
+        .text((d) => d.nyt_display)
+        .call((text) => text.clone(true))
+        .attr('fill', 'none')
+        .attr('stroke', 'white')
+    </script>
+  </body>
+</html>
