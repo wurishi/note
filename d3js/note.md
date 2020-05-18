@@ -572,6 +572,18 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![horizontal-bar-chart](assets/horizontal-bar-chart.png)
 
+## Bars - Diverging Bar Chart
+
+[参考](https://observablehq.com/@d3/diverging-bar-chart)
+
+![diverging-bar-chart](assets/diverging-bar-chart.png)
+
+## Bars - Stacked Bar Chart
+
+[参考](https://observablehq.com/@d3/stacked-bar-chart)
+
+
+
 ## Networks - Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/force-directed-graph)
