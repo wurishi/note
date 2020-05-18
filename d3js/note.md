@@ -549,6 +549,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![new-zealand-tourists](assets/new-zealand-tourists.png)
 
+## Lines - Sea Ice Extent (1978-2017)
+
+[参考](https://observablehq.com/@mbostock/sea-ice-extent-1978-2017)
+
+![sea-ice-extent](assets/sea-ice-extent.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)

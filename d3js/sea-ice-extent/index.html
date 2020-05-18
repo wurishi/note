@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="../d3-array.min.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      const format = d3.format(',d')
+      const color = d3.scaleOrdinal(d3.schemeCategory10)
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height])
+
+      // 3. 准备 data
+      const data = Object.assign(
+        d3.csvParse(source.csv, ({ date, extent }) => ({
+          date: new Date(date),
+          value: 1e6 * extent,
+        })),
+        { y: 'km²' }
+      )
+      // console.log(data)
+      // 4. x,y,z
+      const x = d3.scaleUtc(
+        [Date.UTC(2000, 0, 1), Date.UTC(2001, 0, 0)],
+        [margin.left, width - margin.right]
+      )
+      const y = d3.scaleLinear(
+        [0, d3.max(data, (d) => d.value)],
+        [height - margin.bottom, margin.top]
+      )
+      const z = d3.scaleSequential(
+        d3.extent(data, (d) => d.date.getUTCFullYear()),
+        (t) => d3.interpolateSpectral(1 - t)
+      )
+      // 5. axis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(
+            d3
+              .axisBottom(x)
+              .ticks(width / 80, '%B')
+              .tickSizeOuter(0)
+          )
+
+      svg.append('g').call(xAxis)
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(d3.axisLeft(y).ticks(null, 's'))
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .selectAll('.tick:not(:first-of-type) line')
+              .clone() //
+              .attr('x2', width)
+              .attr('stroke', '#ddd')
+          )
+          .call((g) =>
+            g
+              .select('.tick:last-of-type text')
+              .clone() //
+              .attr('x', 3)
+              .attr('text-anchor', 'start')
+              .attr('font-weight', 'bold')
+              .text(data.y)
+          )
+      svg.append('g').call(yAxis)
+      // 6. line
+      function intrayear(date) {
+        let t = new Date(+date)
+        t.setUTCFullYear(2000)
+        return t
+      }
+
+      function getTotalLength() {
+        return 1
+      }
+
+      function dashTween() {
+        const length = this.getTotalLength()
+        return d3.interpolate(`0,${length}`, `${length},${length}`)
+      }
+
+      const line = d3
+        .line() //
+        .defined((d) => !isNaN(d.value))
+        .x((d) => x(intrayear(d.date)))
+        .y((d) => y(d.value))
+
+      const g = svg
+        .append('g')
+        .attr('fill', 'none')
+        .attr('stroek-width', 1.5)
+        .attr('stroke-miterlimit', 1)
+
+      const loop = async () => {
+        for (const [key, values] of d3.group(data, (d) =>
+          d.date.getUTCFullYear()
+        )) {
+          await g
+            .append('path') //
+            .attr('d', line(values))
+            .attr('stroke', z(key))
+            .attr('stroke-dasharray', '0.1')
+            .transition()
+            // .duration(5000)
+            .ease(d3.easeLinear)
+            .attrTween('stroke-dasharray', dashTween)
+            .end()
+
+          if (!isNaN(values[values.length - 1].value)) {
+            g.append('text') //
+              .attr('stroke', 'white')
+              .attr('stroke-width', 3)
+              .attr('dx', 4)
+              .attr('dy', '0.32em')
+              .attr('x', x(intrayear(values[values.length - 1].date)))
+              .attr('y', y(values[values.length - 1].value))
+              .text(key)
+              .clone(true)
+              .attr('fill', z(key))
+              .attr('stroke', 'none')
+          }
+        }
+      }
+
+      loop()
+    </script>
+  </body>
+</html>
