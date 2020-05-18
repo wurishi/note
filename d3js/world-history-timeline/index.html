@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <div id="div">
+      <div id="tooltip"></div>
+      <svg></svg>
+    </div>
+    <script>
+      // 1. 基本准备
+      const width = 960
+      const height = 640
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 } // 设置边距
+      // const format = d3.format(',d')
+      // const color = d3.scaleOrdinal(d3.schemeCategory10)
+      const formatDate = (d) => (d < 0 ? `${-d}BC` : `${d}AD`)
+      function getTooltipContent(d) {
+        return `<b>${d.civilization}</b>
+<br/>
+<b style="color:${d.color.darker()}">${d.region}</b>
+<br/>
+${formatDate(d.start)} - ${formatDate(d.end)}
+`
+      }
+
+      function createTooltip(el) {
+        el.style('position', 'absolute') //
+          .style('pointer-events', 'none')
+          .style('top', 0)
+          .style('opacity', 0)
+          .style('background', 'white')
+          .style('border-radius', '5px')
+          .style('box-shadow', '0 0 10px rgba(0,0,0,.25)')
+          .style('padding', '10px')
+          .style('line-height', '1.3')
+          .style('font', '11px sans-serif')
+      }
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height])
+
+      // 3. 准备 data
+      const csv = d3.csvParse(source.csv)
+      const data = csv
+        .map((d) => ({ ...d, start: +d.start, end: +d.end }))
+        .sort((a, b) => a.start - b.start)
+
+      // console.log(data)
+
+      const regions = d3
+        .nest()
+        .key((d) => d.region)
+        .entries(data)
+        .map((d) => d.key)
+
+      const color = d3.scaleOrdinal(d3.schemeSet2).domain(regions)
+
+      // 4. x,y
+      const x = d3
+        .scaleLinear() //
+        .domain([d3.min(data, (d) => d.start), d3.max(data, (d) => d.end)])
+        .range([0, width - margin.left - margin.right])
+
+      const y = d3
+        .scaleBand() //
+        .domain(d3.range(data.length))
+        .range([0, height - margin.bottom - margin.top])
+        .padding(0.2)
+      // 5. getRect
+      function getRect(d) {
+        const el = d3.select(this)
+        const sx = x(d.start)
+        const w = x(d.end) - x(d.start)
+        const isLabelRight = sx > width / 2 ? sx + w < width : sx - w > 0
+
+        el.style('cursor', 'pointer')
+
+        el.append('rect') //
+          .attr('x', sx)
+          .attr('height', y.bandwidth())
+          .attr('width', w)
+          .attr('fill', d.color)
+
+        el.append('text') //
+          .text(d.civilization)
+          .attr('x', isLabelRight ? sx - 5 : sx + w + 5)
+          .attr('y', 2.5)
+          .attr('fill', 'black')
+          .style('text-anchor', isLabelRight ? 'end' : 'start')
+          .style('dominant-baseline', 'hanging')
+      }
+
+      // 6. filteredData
+      const dataByTimeline = d3
+        .nest()
+        .key((d) => d.timeline)
+        .entries(data)
+
+      const dataByRegion = d3
+        .nest()
+        .key((d) => d.region)
+        .entries(data)
+
+      const sorting = 'time' // region / time
+      let filteredData
+      if (sorting !== 'time') {
+        filteredData = [].concat.apply(
+          [],
+          dataByRegion.map((d) => d.values)
+        )
+      } else {
+        filteredData = data.sort((a, b) => a.start - b.start)
+      }
+      filteredData.forEach((d) => (d.color = d3.color(color(d.region))))
+
+      // 7. init
+      const parent = document.getElementById('div')
+
+      const g = svg
+        .append('g')
+        .attr('transform', (d, i) => _t(margin.left, margin.top))
+
+      const groups = g
+        .selectAll('g') //
+        .data(filteredData)
+        .enter()
+        .append('g')
+        .attr('class', 'civ')
+      // 8. tooltip
+      const tooltip = d3.select('#tooltip').call(createTooltip)
+      // 9. line
+      const line = svg
+        .append('line')
+        .attr('y1', margin.top - 10)
+        .attr('y2', height - margin.bottom)
+        .attr('stroke', 'rgba(0,0,0,0.2)')
+        .style('pointer-events', 'none')
+      // 10. groups
+      groups.attr('transform', (d, i) => _t(0, y(i)))
+      groups
+        .each(getRect) //
+        .on('mouseover', function (d) {
+          d3.select(this).select('rect').attr('fill', d.color.darker())
+
+          tooltip.style('opacity', 1).html(getTooltipContent(d))
+        })
+        .on('mouseout', function (d) {
+          d3.select(this).select('rect').attr('fill', d.color)
+          tooltip.style('opacity', 0)
+        })
+
+      // 11. axis
+      const axisTop = d3
+        .axisTop(x) //
+        .tickPadding(2)
+        .tickFormat(formatDate)
+
+      const axisBottom = d3
+        .axisBottom(x) //
+        .tickPadding(2)
+        .tickFormat(formatDate)
+
+      svg
+        .append('g') //
+        .attr('transform', (d, i) => _t(margin.left, margin.top - 10))
+        .call(axisTop)
+
+      svg
+        .append('g') //
+        .attr('transform', (d, i) => _t(margin.left, height - margin.bottom))
+        .call(axisBottom)
+
+      // 12. global mousemove
+      svg.on('mousemove', function (d) {
+        let [x, y] = d3.mouse(this)
+        line.attr('transform', _t(x, 0))
+        y += 20
+        x > width / 2 && (x -= 100)
+        tooltip.style('left', x + 'px').style('top', y + 'px')
+      })
+    </script>
+  </body>
+</html>

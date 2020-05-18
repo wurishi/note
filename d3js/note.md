@@ -584,6 +584,18 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![stacked-bar-chart](assets/stacked-bar-chart.png)
 
+## Bars - World History Timeline
+
+[参考](https://observablehq.com/@tezzutezzu/world-history-timeline)
+
+![world-history-timeline](assets/world-history-timeline.png)
+
+## Bars - Calendar View
+
+[参考](https://observablehq.com/@d3/calendar-view)
+
+
+
 ## Networks - Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/force-directed-graph)
