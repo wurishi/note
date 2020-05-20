@@ -594,7 +594,7 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 [参考](https://observablehq.com/@d3/calendar-view)
 
-
+![calendar-view](assets/calendar-view.png)
 
 ## Networks - Force-Directed Graph
 
