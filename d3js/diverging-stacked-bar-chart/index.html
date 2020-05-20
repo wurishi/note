@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="../d3-array.min.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      const data = (() => {
+        const categories = {
+          'pants-fire': 'Pants on fire!',
+          false: 'False',
+          'mostly-false': 'Mostly false',
+          'barely-true': 'Mostly false', // recategorized
+          'half-true': 'Half true',
+          'mostly-true': 'Mostly true',
+          true: 'True',
+        };
+
+        const data = d3.csvParse(
+          source.csv,
+          ({ speaker: name, ruling: category, count: value }) =>
+            categories[category]
+              ? {
+                  name,
+                  category: categories[category],
+                  value: +value,
+                }
+              : null
+        );
+
+        d3.rollup(
+          data,
+          (group) => {
+            const sum = d3.sum(group, (d) => d.value);
+            for (const d of group) d.value /= sum;
+          },
+          (d) => d.name
+        );
+
+        return Object.assign(data, {
+          format: '.0%',
+          negative: '← More falsehoods',
+          positive: 'More truths →',
+          negatives: ['Pants on fire!', 'False', 'Mostly false'],
+          positives: ['Half true', 'Mostly true', 'True'],
+        });
+      })();
+
+      const signs = new Map(
+        [].concat(
+          data.negatives.map((d) => [d, -1]),
+          data.positives.map((d) => [d, +1])
+        )
+      );
+
+      const bias = d3
+        .rollups(
+          data,
+          (v) => d3.sum(v, (d) => d.value * Math.min(0, signs.get(d.category))),
+          (d) => d.name
+        )
+        .sort(([, a], [, b]) => d3.ascending(a, b));
+
+      const series = d3
+        .stack() //
+        .keys([].concat(data.negatives.slice().reverse(), data.positives))
+        .value(
+          ([, value], category) =>
+            signs.get(category) * (value.get(category) || 0)
+        )
+        .offset(d3.stackOffsetDiverging)(
+        d3.rollups(
+          data,
+          (data) =>
+            d3.rollup(
+              data,
+              ([d]) => d.value,
+              (d) => d.category
+            ),
+          (d) => d.name
+        )
+      );
+      // 4. x,y
+      const x = d3
+        .scaleLinear() //
+        .domain(d3.extent(series.flat(2)))
+        .rangeRound([margin.left, width - margin.right]);
+
+      const y = d3
+        .scaleBand() //
+        .domain(bias.map(([name]) => name))
+        .rangeRound([margin.top, height - margin.bottom])
+        .padding(2 / 33);
+
+      const color = d3
+        .scaleOrdinal() //
+        .domain([].concat(data.negatives, data.positives))
+        .range(
+          d3.schemeSpectral[data.negatives.length + data.positives.length]
+        );
+      // 5. rect
+      const formatValue = (() => {
+        const format = d3.format(data.format || '');
+        return (x) => format(Math.abs(x));
+      })();
+      svg
+        .append('g') //
+        .selectAll('g')
+        .data(series)
+        .join('g')
+        .attr('fill', (d) => color(d.key))
+        .selectAll('rect')
+        .data((d) => d.map((v) => Object.assign(v, { key: d.key })))
+        .join('rect')
+        .attr('x', (d) => x(d[0]))
+        .attr('y', ({ data: [name] }) => y(name))
+        .attr('width', (d) => x(d[1]) - x(d[0]))
+        .attr('height', y.bandwidth())
+        .append('title')
+        .text(
+          ({ key, data: [name, value] }) => `${name}
+${formatValue(value.get(key))} ${key}`
+        );
+      // 6. axis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, margin.top))
+          .call(
+            d3
+              .axisTop(x) //
+              .ticks(width / 80)
+              .tickFormat(formatValue)
+              .tickSizeOuter(0)
+          )
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .append('text') //
+              .attr('x', x(0) + 20)
+              .attr('y', -24)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'start')
+              .text(data.positive)
+          )
+          .call((g) =>
+            g
+              .append('text') //
+              .attr('x', x(0) - 20)
+              .attr('y', -24)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'end')
+              .text(data.negative)
+          );
+
+      svg.append('g').call(xAxis);
+
+      const yAxis = (g) =>
+        g //
+          .call(d3.axisLeft(y).tickSizeOuter(0))
+          .call((g) =>
+            g
+              .selectAll('.tick') //
+              .data(bias)
+              .attr('transform', ([name, min]) =>
+                _t(x(min), y(name) + y.bandwidth() / 2)
+              )
+          )
+          .call((g) => g.select('.domain').attr('transform', _t(x(0), 0)));
+
+      svg.append('g').call(yAxis);
+    </script>
+  </body>
+</html>

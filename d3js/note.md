@@ -600,7 +600,7 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 [参考](https://observablehq.com/@d3/diverging-stacked-bar-chart)
 
-
+![diverging-stacked-bar-chart](assets/diverging-stacked-bar-chart.png)
 
 ## Bars - World History Timeline
 
