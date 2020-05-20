@@ -602,6 +602,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![diverging-stacked-bar-chart](assets/diverging-stacked-bar-chart.png)
 
+## Bars - Marimekko Chart
+
+[参考](https://observablehq.com/@d3/marimekko-chart)
+
+![marimekko-chart](assets/marimekko-chart.png)
+
 ## Bars - World History Timeline
 
 [参考](https://observablehq.com/@tezzutezzu/world-history-timeline)
