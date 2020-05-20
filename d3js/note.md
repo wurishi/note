@@ -590,6 +590,18 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![stacked-normalized-horizontal-bar-chart](assets/stacked-normalized-horizontal-bar-chart.png)
 
+## Bars - Grouped Bar Chart
+
+[参考](https://observablehq.com/@d3/grouped-bar-chart)
+
+![grouped-bar-chart](assets/grouped-bar-chart.png)
+
+## Bars - Diverging Stacked Bar Chart
+
+[参考](https://observablehq.com/@d3/diverging-stacked-bar-chart)
+
+
+
 ## Bars - World History Timeline
 
 [参考](https://observablehq.com/@tezzutezzu/world-history-timeline)
