@@ -632,6 +632,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![electricity-usage-2019](assets/electricity-usage-2019.png)
 
+## Bars - Revenue by Music Format
+
+[参考](https://observablehq.com/@mbostock/revenue-by-music-format-1973-2018)
+
+![revenue-by-music-format](assets/revenue-by-music-format.png)
+
 ## Networks - Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/force-directed-graph)
