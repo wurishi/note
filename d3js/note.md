@@ -470,6 +470,12 @@ D3.js 中一些常见的图形：
 
 ![bubble-chart](assets/bubble-chart.png)
 
+## Dots - Beeswarm
+
+[参考](https://observablehq.com/@d3/beeswarm)
+
+![beeswarm](assets/beeswarm.png)
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
