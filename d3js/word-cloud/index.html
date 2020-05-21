@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+
+    <script src="../d3.v5.js"></script>
+    <script src="../d3-array.min.js"></script>
+    <script src="../d3.layout.cloud.js"></script>
+
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+      const padding = 0;
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+
+      const stopwords = new Set(
+        "i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall".split(
+          ','
+        )
+      );
+
+      const words = source.text
+        .split(/[\s.]+/g)
+        .map((w) => w.replace(/^[“‘"\-—()\[\]{}]+/g, ''))
+        .map((w) => w.replace(/[;:.!?()\[\]{},"'’”\-—]+$/g, ''))
+        .map((w) => w.replace(/['’]s$/g, ''))
+        .map((w) => w.substring(0, 30))
+        .map((w) => w.toLowerCase())
+        .filter((w) => w && !stopwords.has(w));
+
+      const data = d3
+        .rollups(
+          words,
+          (group) => group.length,
+          (w) => w
+        ) //
+        .sort(([, a], [, b]) => d3.descending(a, b))
+        .slice(0, 250)
+        .map(([text, value]) => ({ text, value }));
+
+      // 4. cloud
+      const rotate = () => 0;
+      const fontFamily = 'sans-serif';
+      const fontScale = 15;
+
+      d3.cloud = window.cloud;
+
+      const cloud = d3
+        .cloud() //
+        .size([width, height])
+        .words(data.map((d) => Object.create(d)))
+        .padding(padding)
+        .rotate(rotate)
+        .font(fontFamily)
+        .fontSize((d) => Math.sqrt(d.value) * fontScale)
+        .on('word', ({ size, x, y, rotate, text }) => {
+          // console.log(size, x, y, text);
+          svg
+            .append('text')
+            .attr('font-size', size)
+            .attr('transform', _t(x, y) + ' ' + _r(rotate))
+            .text(text);
+        });
+
+      cloud.start();
+    </script>
+  </body>
+</html>

@@ -805,3 +805,10 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 新的知识点：
 
 d3.curve(d3.curveCatmullRom) : 画弧线
+
+## Fun - Word Cloud
+
+[参考](https://observablehq.com/@d3/word-cloud)
+
+![word-cloud](assets/word-cloud.png)
+
