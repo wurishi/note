@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 960;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      const data = (() => {
+        const names = [
+          'Alaska',
+          'Ala.',
+          'Ark.',
+          'Ariz.',
+          'Calif.',
+          'Colo.',
+          'Conn.',
+          'D.C.',
+          'Del.',
+          'Fla.',
+          'Ga.',
+          'Hawaii',
+          'Iowa',
+          'Idaho',
+          'Ill.',
+          'Ind.',
+          'Kan.',
+          'Ky.',
+          'La.',
+          'Mass.',
+          'Md.',
+          'Maine',
+          'Mich.',
+          'Minn.',
+          'Mo.',
+          'Miss.',
+          'Mont.',
+          'N.C.',
+          'N.D.',
+          'Neb.',
+          'N.H.',
+          'N.J.',
+          'N.M',
+          'Nev.',
+          'N.Y.',
+          'Ohio',
+          'Okla.',
+          'Ore.',
+          'Pa.',
+          'R.I.',
+          'S.C.',
+          'S.D.',
+          'Tenn.',
+          'Texas',
+          'Utah',
+          'Va.',
+          'Vt.',
+          'Wash.',
+          'Wis.',
+          'W.Va.',
+          'Wyo.',
+        ];
+        const data = source.json;
+        const values = [];
+        const year0 = d3.min(data[0].data.values.data, (d) => d[0]);
+        const year1 = d3.max(data[0].data.values.data, (d) => d[0]);
+        const years = d3.range(year0, year1 + 1);
+        for (const [year, i, value] of data[0].data.values.data) {
+          if (null == value) continue;
+          (values[i] || (values[i] = []))[year - year0] = value;
+        }
+        return {
+          values,
+          names,
+          years,
+          year: data[0].data.chart_options.vaccine_year,
+        };
+      })();
+      // console.log(data);
+      // 4. x,y,color
+      const x = d3
+        .scaleLinear() //
+        .domain([d3.min(data.years), d3.max(data.years) + 1])
+        .rangeRound([margin.left, width - margin.right]);
+
+      const innerHeight = 816;
+      const y = d3
+        .scaleBand() //
+        .domain(data.names)
+        .rangeRound([margin.top, margin.top + innerHeight]);
+
+      const color = d3.scaleSequentialSqrt(
+        [0, d3.max(data.values, (d) => d3.max(d))],
+        d3.interpolatePuRd
+      );
+      // 5. axis
+      const xAxis = (g) =>
+        g //
+          .call((g) =>
+            g
+              .append('g') //
+              .attr('transform', _t(0, margin.top))
+              .call(d3.axisTop(x).ticks(null, 'd'))
+              .call((g) => g.select('.domain').remove())
+          )
+          .call((g) =>
+            g
+              .append('g') //
+              .attr('transform', _t(0, innerHeight + margin.top + 4))
+              .call(
+                d3
+                  .axisBottom(x) //
+                  .tickValues([data.year])
+                  .tickFormat((x) => x)
+                  .tickSize(-innerHeight - 10)
+              )
+              .call((g) =>
+                g
+                  .select('.tick text') //
+                  .clone()
+                  .attr('dy', '2em')
+                  .style('font-weight', 'bold')
+                  .text('Measles vaccine introduced')
+              )
+          )
+          .call((g) => g.select('.domain').remove());
+
+      svg.append('g').call(xAxis);
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(d3.axisLeft(y).tickSize(0))
+          .call((g) => g.select('.domain').remove());
+
+      svg.append('g').call(yAxis);
+      // 6. rect
+      const format = (() => {
+        const f = d3.format(',d');
+        return (d) =>
+          isNaN(d)
+            ? 'N/A cases'
+            : d === 0
+            ? '0 cases'
+            : d < 1
+            ? '<1 case'
+            : d < 1.5
+            ? '1 case'
+            : `${f(d)} cases`;
+      })();
+      svg
+        .append('g') //
+        .selectAll('g')
+        .data(data.values)
+        .join('g')
+        .attr('transform', (d, i) => _t(0, y(data.names[i])))
+        .selectAll('rect')
+        .data((d) => d)
+        .join('rect')
+        .attr('x', (d, i) => x(data.years[i]) + 1)
+        .attr('width', (d, i) => x(data.years[i] + 1) - x(data.years[i]) - 1)
+        .attr('height', y.bandwidth() - 1)
+        .attr('fill', (d) => (isNaN(d) ? '#eee' : d === 0 ? '#fff' : color(d)))
+        .append('title')
+        .text((d, i) => `${format(d)} per 100,000 people in ${data.years[i]}`);
+    </script>
+  </body>
+</html>

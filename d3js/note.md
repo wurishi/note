@@ -620,6 +620,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![calendar-view](assets/calendar-view.png)
 
+## Bars - The Impact of Vaccines
+
+[参考](https://observablehq.com/@mbostock/the-impact-of-vaccines)
+
+![the-impact-of-vaccines](assets/the-impact-of-vaccines.png)
+
 ## Networks - Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/force-directed-graph)
