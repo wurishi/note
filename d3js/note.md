@@ -458,6 +458,12 @@ D3.js 中一些常见的图形：
 
 ![global-temperature-trends](assets/global-temperature-trends.png)
 
+## Dots - Bubble Map
+
+[参考](https://observablehq.com/@d3/bubble-map)
+
+![bubble-map](assets/bubble-map.png)
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
