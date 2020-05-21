@@ -476,6 +476,12 @@ D3.js 中一些常见的图形：
 
 ![beeswarm](assets/beeswarm.png)
 
+## Dots - Hertzsprung Russell Diagram
+
+[参考](https://observablehq.com/@mbostock/hertzsprung-russell-diagram)
+
+![hertzsprung-russell-diagram](assets/hertzsprung-russell-diagram.png)
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
