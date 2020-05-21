@@ -704,6 +704,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 - classed : 可以对元素设置样式 class
 - order() : 因为 raise() 而置顶过的元素，可以让整批元素调用 order() 重新排序
 
+## Networks - Sankey Diagram
+
+[参考](https://observablehq.com/@d3/sankey-diagram)
+
+![sankey-diagram](assets/sankey-diagram.png)
+
 ## Radial - Pie Chart
 
 [参考](https://observablehq.com/@d3/pie-chart)

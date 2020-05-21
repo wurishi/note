@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="../d3-sankey.min.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const _s_align = ['left', 'right', 'center', 'justify'];
+      const align = _s_align[0];
+      const _s_edgeColor = ['input', 'output', 'path', 'none'];
+      const edgeColor = _s_edgeColor[2];
+
+      const width = 960;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      const data = (() => {
+        const links = d3.csvParse(source.csv, d3.autoType);
+        const nodes = Array.from(
+          new Set(links.flatMap((l) => [l.source, l.target])),
+          (name) => ({
+            name,
+            category: name.replace(/ .*/, ''),
+          })
+        );
+        return { nodes, links, units: 'TWh' };
+      })();
+
+      const format = (() => {
+        const format = d3.format(',.0f');
+        return data.units ? (d) => `${format(d)} ${data.units}` : format;
+      })();
+
+      const color = (() => {
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+        return (d) => color(d.category === undefined ? d.name : d.category);
+      })();
+      // 4. rect
+      const sankey = (() => {
+        const sankey = d3
+          .sankey() //
+          .nodeId((d) => d.name)
+          .nodeAlign(d3[`sankey${align[0].toUpperCase()}${align.slice(1)}`])
+          .nodeWidth(15)
+          .nodePadding(10)
+          .extent([
+            [1, 5],
+            [width - 1, height - 5],
+          ]);
+
+        return ({ nodes, links }) =>
+          sankey({
+            nodes: nodes.map((d) => Object.assign({}, d)),
+            links: links.map((d) => Object.assign({}, d)),
+          });
+      })();
+      // console.log(data);
+      const { nodes, links } = sankey(data);
+      // console.log(nodes, links);
+      // 5. rect
+      svg
+        .append('g') //
+        .attr('stroke', '#000')
+        .selectAll('rect')
+        .data(nodes)
+        .join('rect')
+        .attr('x', (d) => d.x0)
+        .attr('y', (d) => d.y0)
+        .attr('height', (d) => d.y1 - d.y0)
+        .attr('width', (d) => d.x1 - d.x0)
+        .attr('fill', color)
+        .append('title')
+        .text((d) => d.name + ':' + d.value);
+      // 6. link
+      const link = svg
+        .append('g') //
+        .attr('fill', 'none')
+        .attr('stroke-opacity', 0.5)
+        .selectAll('g')
+        .data(links)
+        .join('g')
+        .style('mix-blend-mode', 'multiply');
+
+      // 7. edgeColor == path
+      if (edgeColor === 'path') {
+        const gradient = link
+          .append('linearGradient') //
+          .attr('id', (d) => (d.uid = DOM.uid('link')).id)
+          .attr('gradientUnits', 'userSpaceOnUse')
+          .attr('x1', (d) => d.source.x1)
+          .attr('x2', (d) => d.target.x0);
+
+        gradient
+          .append('stop') //
+          .attr('offset', '0%')
+          .attr('stop-color', (d) => color(d.source));
+
+        gradient
+          .append('stop') //
+          .attr('offset', '100%')
+          .attr('stop-color', (d) => color(d.target));
+      }
+      // 8. path
+      link
+        .append('path') //
+        .attr('d', d3.sankeyLinkHorizontal())
+        .attr('stroke', (d) =>
+          edgeColor === 'none'
+            ? '#aaa'
+            : edgeColor === 'path'
+            ? d.uid.url
+            : edgeColor === 'input'
+            ? color(d.source)
+            : color(d.target)
+        )
+        .attr('stroke-width', (d) => Math.max(1, d.width));
+
+      link
+        .append('title')
+        .text((d) => d.source.name + '→' + d.target.name + ':' + d.value);
+      // 9. text
+      svg
+        .append('g')
+        .selectAll('text')
+        .data(nodes)
+        .join('text')
+        .attr('x', (d) => (d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6))
+        .attr('y', (d) => (d.y1 + d.y0) / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', (d) => (d.x0 < width / 2 ? 'start' : 'end'))
+        .text((d) => d.name);
+    </script>
+  </body>
+</html>
