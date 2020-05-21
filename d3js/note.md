@@ -722,6 +722,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![chord-diagram](assets/chord-diagram.png)
 
+## Networks - Chord Dependency Diagram
+
+[参考](https://observablehq.com/@d3/chord-dependency-diagram)
+
+![chord-dependency-diagram](assets/chord-dependency-diagram.png)
+
 ## Radial - Pie Chart
 
 [参考](https://observablehq.com/@d3/pie-chart)

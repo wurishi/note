@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 640;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      const format = d3.format(',d');
+      const color = d3.scaleOrdinal(d3.schemeCategory10);
+      const outerRadius = Math.min(width, height) * 0.5;
+      const innerRadius = outerRadius - 124;
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [-width / 2, -height / 2, width, height]);
+
+      // 3. 准备 data
+      const data = (() => {
+        const imports = source.json;
+        const indexByName = new Map();
+        const nameByIndex = new Map();
+
+        const matrix = [];
+        let n = 0;
+
+        function name(name) {
+          return name.substring(0, name.lastIndexOf('.')).substring(6);
+        }
+
+        imports.forEach((d) => {
+          if (!indexByName.has((d = name(d.name)))) {
+            nameByIndex.set(n, d);
+            indexByName.set(d, n++);
+          }
+        });
+
+        imports.forEach((d) => {
+          const source = indexByName.get(name(d.name));
+          let row = matrix[source];
+          if (!row) row = matrix[source] = Array.from({ length: n }).fill(0);
+          d.imports.forEach((d) => row[indexByName.get(name(d))]++);
+        });
+
+        return {
+          matrix,
+          indexByName,
+          nameByIndex,
+        };
+      })();
+      // 4. chords
+      const chord = d3
+        .chord() //
+        .padAngle(0.04)
+        .sortSubgroups(d3.descending)
+        .sortChords(d3.descending);
+
+      const chords = chord(data.matrix);
+      // 5. group
+      const group = svg
+        .append('g') //
+        .selectAll('g')
+        .data(chords.groups)
+        .join('g');
+
+      // 6. arc
+      const arc = d3
+        .arc() //
+        .innerRadius(innerRadius)
+        .outerRadius(innerRadius + 20);
+
+      group
+        .append('path') //
+        .attr('fill', (d) => color(d.index))
+        .attr('stroke', (d) => color(d.index))
+        .attr('d', arc);
+      // 7. text
+      group
+        .append('text') //
+        .each((d) => {
+          d.angle = (d.startAngle + d.endAngle) / 2;
+        })
+        .attr('dy', '.35em')
+        .attr(
+          'transform',
+          (d) =>
+            _r((d.angle * 180) / Math.PI - 90) +
+            ' ' +
+            _t(innerRadius + 26, 0) +
+            ' ' +
+            (d.angle > Math.PI ? _r(180) : '')
+        )
+        .attr('text-anchor', (d) => (d.angle > Math.PI ? 'end' : null))
+        .text((d) => data.nameByIndex.get(d.index));
+
+      // 8. ribbon
+      const ribbon = d3
+        .ribbon() //
+        .radius(innerRadius);
+
+      svg
+        .append('g') //
+        .attr('fill-opacity', 0.67)
+        .selectAll('path')
+        .data(chords)
+        .join('path')
+        .attr('stroke', (d) => d3.rgb(color(d.source.index)).darker())
+        .attr('fill', (d) => color(d.source.index))
+        .attr('d', ribbon);
+    </script>
+  </body>
+</html>
