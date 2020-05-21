@@ -414,6 +414,12 @@ D3.js 中一些常见的图形：
 
 ## https://observablehq.com/@d3/gallery
 
+## Areas - Area Chart
+
+[参考](https://observablehq.com/@d3/area-chart)
+
+![area-chart](assets/area-chart.png)
+
 ## Dots - Scatterplot
 
 [参考](https://observablehq.com/@d3/scatterplot)
