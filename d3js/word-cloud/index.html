@@ -60,9 +60,9 @@
       const fontFamily = 'sans-serif';
       const fontScale = 15;
 
-      d3.cloud = window.cloud;
+      // console.log(d3.layout);
 
-      const cloud = d3
+      const cloud = d3.layout
         .cloud() //
         .size([width, height])
         .words(data.map((d) => Object.create(d)))
@@ -71,12 +71,15 @@
         .font(fontFamily)
         .fontSize((d) => Math.sqrt(d.value) * fontScale)
         .on('word', ({ size, x, y, rotate, text }) => {
-          // console.log(size, x, y, text);
           svg
             .append('text')
             .attr('font-size', size)
             .attr('transform', _t(x, y) + ' ' + _r(rotate))
-            .text(text);
+            .text(text)
+            .clone(true)
+            .attr('stroke', 'white')
+            .attr('stroke-width', 2)
+            .attr('stroke-opacity', 0.2);
         });
 
       cloud.start();

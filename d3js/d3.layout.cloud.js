@@ -17,8 +17,6 @@
     g = g.d3 || (g.d3 = {});
     g = g.layout || (g.layout = {});
     g.cloud = f();
-
-    window.cloud = g.cloud;
   }
 })(function () {
   var define, module, exports;
