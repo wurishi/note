@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 960;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .style('text-anchor', 'middle')
+
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      const data = d3.csvParse(source.csv, ({ id, value }) => ({
+        name: id.split('.').pop(),
+        title: id.replace(/\./g, '/'),
+        group: id.split('.')[1],
+        value: +value,
+      }));
+
+      const pack = (data) =>
+        d3
+          .pack() //
+          .size([width - 2, height - 2])
+          .padding(3)(d3.hierarchy({ children: data }).sum((d) => d.value));
+
+      const color = d3.scaleOrdinal(
+        data.map((d) => d.group),
+        d3.schemeCategory10
+      );
+      // 4. leaf
+      const root = pack(data);
+
+      const leaf = svg
+        .selectAll('g') //
+        .data(root.leaves())
+        .join('g')
+        .attr('transform', (d) => _t(d.x + 1, d.y + 1));
+
+      // 5. circle
+      leaf
+        .append('circle') //
+        .attr('id', (d) => (d.leafUid = DOM.uid('leaf')).id)
+        .attr('r', (d) => d.r)
+        .attr('fill-opacity', 0.7)
+        .attr('fill', (d) => color(d.data.group));
+
+      // 6. clipPath
+
+      leaf
+        .append('clipPath') //
+        .attr('id', (d) => (d.clipUid = DOM.uid('clip')).id)
+        .append('use')
+        .attr('xlink:href', (d) => d.leafUid.href);
+      // 使用之后，文本的最大范围(overflow)是根据circle的path决定的
+
+      leaf
+        .append('text') //
+        .attr('clip-path', (d) => d.clipUid.url)
+        .selectAll('tspan')
+        .data((d) => d.data.name.split(/(?=[A-Z][a-z])|\s+/g))
+        .join('tspan')
+        .attr('x', 0)
+        .attr('y', (d, i, nodes) => `${i - nodes.length / 2 + 0.8}em`)
+        .text((d) => d);
+
+      leaf
+        .append('title') //
+        .text(
+          (d) =>
+            `${
+              d.data.title === undefined
+                ? ''
+                : `${d.data.title}
+      `
+            }${format(d.value)}`
+        );
+    </script>
+  </body>
+</html>

@@ -464,6 +464,12 @@ D3.js 中一些常见的图形：
 
 ![bubble-map](assets/bubble-map.png)
 
+## Dots - Bubble Chart
+
+[参考](https://observablehq.com/@d3/bubble-chart)
+
+![bubble-chart](assets/bubble-chart.png)
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
