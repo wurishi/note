@@ -414,11 +414,131 @@ D3.js 中一些常见的图形：
 
 ## https://observablehq.com/@d3/gallery
 
+## Analysis - Moving Average
+
+[参考](https://observablehq.com/@d3/moving-average)
+
+![moving-average](assets/moving-average.jpg)
+
+## Animation - Animated Treemap
+
+[参考](https://observablehq.com/@d3/animated-treemap)
+
+新的知识点：
+
+- Node.textContent : 可以直接访问到显示的文本，也可以直接设置修改显示的文本
+- d3.interpolate(a, b) : 会返回一个计算 a 到 b 之前插值的方法 fn，通过调用这个方法 fn(t)，t: 0-1，返回 a 到 b 之前的值
+- d3.interpolateRgb() : 返回二个颜色之前的插值函数
+- transition.tween(name, fn) : 自定义 tween
+- d3.range(x, y, step) : 生成一个从 x 到 y 步长为 step 的区间数组
+- d3.csvParse() : csv 转换
+- d3.tsvParse() : tsv 转换
+- d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
+
+## Animation - Connected Scatterplot
+
+[参考](https://observablehq.com/@d3/connected-scatterplot)
+
+![connected-scatterplot](assets/connected-scatterplot.jpg)
+
+新的知识点：
+
+d3.curve(d3.curveCatmullRom) : 画弧线
+
+## Annotation - Inline Labels
+
+[参考](https://observablehq.com/@d3/inline-labels)
+
+![inline-labels](assets/inline-labels.jpg)
+
 ## Areas - Area Chart
 
 [参考](https://observablehq.com/@d3/area-chart)
 
 ![area-chart](assets/area-chart.png)
+
+## Bars - Bar Chart
+
+[参考](https://observablehq.com/@d3/bar-chart)
+
+![bar-chart](assets/bar-chart.png)
+
+新的知识点：
+
+- d3.scaleBand() : 波段比例尺
+- bandwidth() : 获得波段平均分配的宽度
+
+## Bars - Horizontal Bar Chart
+
+[参考](https://observablehq.com/@d3/horizontal-bar-chart)
+
+![horizontal-bar-chart](assets/horizontal-bar-chart.png)
+
+## Bars - Diverging Bar Chart
+
+[参考](https://observablehq.com/@d3/diverging-bar-chart)
+
+![diverging-bar-chart](assets/diverging-bar-chart.png)
+
+## Bars - Stacked Bar Chart
+
+[参考](https://observablehq.com/@d3/stacked-bar-chart)
+
+![stacked-bar-chart](assets/stacked-bar-chart.png)
+
+## Bars - Stacked Normalized Horizontal Bar Chart
+
+[参考](https://observablehq.com/@d3/stacked-normalized-horizontal-bar)
+
+![stacked-normalized-horizontal-bar-chart](assets/stacked-normalized-horizontal-bar-chart.png)
+
+## Bars - Grouped Bar Chart
+
+[参考](https://observablehq.com/@d3/grouped-bar-chart)
+
+![grouped-bar-chart](assets/grouped-bar-chart.png)
+
+## Bars - Diverging Stacked Bar Chart
+
+[参考](https://observablehq.com/@d3/diverging-stacked-bar-chart)
+
+![diverging-stacked-bar-chart](assets/diverging-stacked-bar-chart.png)
+
+## Bars - Marimekko Chart
+
+[参考](https://observablehq.com/@d3/marimekko-chart)
+
+![marimekko-chart](assets/marimekko-chart.png)
+
+## Bars - World History Timeline
+
+[参考](https://observablehq.com/@tezzutezzu/world-history-timeline)
+
+![world-history-timeline](assets/world-history-timeline.png)
+
+## Bars - Calendar View
+
+[参考](https://observablehq.com/@d3/calendar-view)
+
+![calendar-view](assets/calendar-view.png)
+
+## Bars - The Impact of Vaccines
+
+[参考](https://observablehq.com/@mbostock/the-impact-of-vaccines)
+
+![the-impact-of-vaccines](assets/the-impact-of-vaccines.png)
+
+## Bars - Electricity Usage, 2019
+
+[参考](https://observablehq.com/@mbostock/electric-usage-2019)
+
+![electricity-usage-2019](assets/electricity-usage-2019.png)
+
+## Bars - Revenue by Music Format
+
+[参考](https://observablehq.com/@mbostock/revenue-by-music-format-1973-2018)
+
+![revenue-by-music-format](assets/revenue-by-music-format.png)
 
 ## Dots - Scatterplot
 
@@ -597,89 +717,6 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![sea-ice-extent](assets/sea-ice-extent.png)
 
-## Bars - Bar Chart
-
-[参考](https://observablehq.com/@d3/bar-chart)
-
-![bar-chart](assets/bar-chart.png)
-
-新的知识点：
-
-- d3.scaleBand() : 波段比例尺
-- bandwidth() : 获得波段平均分配的宽度
-
-## Bars - Horizontal Bar Chart
-
-[参考](https://observablehq.com/@d3/horizontal-bar-chart)
-
-![horizontal-bar-chart](assets/horizontal-bar-chart.png)
-
-## Bars - Diverging Bar Chart
-
-[参考](https://observablehq.com/@d3/diverging-bar-chart)
-
-![diverging-bar-chart](assets/diverging-bar-chart.png)
-
-## Bars - Stacked Bar Chart
-
-[参考](https://observablehq.com/@d3/stacked-bar-chart)
-
-![stacked-bar-chart](assets/stacked-bar-chart.png)
-
-## Bars - Stacked Normalized Horizontal Bar Chart
-
-[参考](https://observablehq.com/@d3/stacked-normalized-horizontal-bar)
-
-![stacked-normalized-horizontal-bar-chart](assets/stacked-normalized-horizontal-bar-chart.png)
-
-## Bars - Grouped Bar Chart
-
-[参考](https://observablehq.com/@d3/grouped-bar-chart)
-
-![grouped-bar-chart](assets/grouped-bar-chart.png)
-
-## Bars - Diverging Stacked Bar Chart
-
-[参考](https://observablehq.com/@d3/diverging-stacked-bar-chart)
-
-![diverging-stacked-bar-chart](assets/diverging-stacked-bar-chart.png)
-
-## Bars - Marimekko Chart
-
-[参考](https://observablehq.com/@d3/marimekko-chart)
-
-![marimekko-chart](assets/marimekko-chart.png)
-
-## Bars - World History Timeline
-
-[参考](https://observablehq.com/@tezzutezzu/world-history-timeline)
-
-![world-history-timeline](assets/world-history-timeline.png)
-
-## Bars - Calendar View
-
-[参考](https://observablehq.com/@d3/calendar-view)
-
-![calendar-view](assets/calendar-view.png)
-
-## Bars - The Impact of Vaccines
-
-[参考](https://observablehq.com/@mbostock/the-impact-of-vaccines)
-
-![the-impact-of-vaccines](assets/the-impact-of-vaccines.png)
-
-## Bars - Electricity Usage, 2019
-
-[参考](https://observablehq.com/@mbostock/electric-usage-2019)
-
-![electricity-usage-2019](assets/electricity-usage-2019.png)
-
-## Bars - Revenue by Music Format
-
-[参考](https://observablehq.com/@mbostock/revenue-by-music-format-1973-2018)
-
-![revenue-by-music-format](assets/revenue-by-music-format.png)
-
 ## Networks - Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/force-directed-graph)
@@ -780,18 +817,6 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 和上一个最大的改动就是数据从大到小排了个序
 
-## Annotation - Inline Labels
-
-[参考](https://observablehq.com/@d3/inline-labels)
-
-![inline-labels](assets/inline-labels.jpg)
-
-## Analysis - Moving Average
-
-[参考](https://observablehq.com/@d3/moving-average)
-
-![moving-average](assets/moving-average.jpg)
-
 ## Hierarchies - Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
@@ -846,31 +871,6 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 新的知识点：
 
 - d3.hierarchy().copy() : 拷贝一份数据，用于做一些额外运算而不会影响源数据
-
-## Animation - Animated Treemap
-
-[参考](https://observablehq.com/@d3/animated-treemap)
-
-新的知识点：
-
-- Node.textContent : 可以直接访问到显示的文本，也可以直接设置修改显示的文本
-- d3.interpolate(a, b) : 会返回一个计算 a 到 b 之前插值的方法 fn，通过调用这个方法 fn(t)，t: 0-1，返回 a 到 b 之前的值
-- d3.interpolateRgb() : 返回二个颜色之前的插值函数
-- transition.tween(name, fn) : 自定义 tween
-- d3.range(x, y, step) : 生成一个从 x 到 y 步长为 step 的区间数组
-- d3.csvParse() : csv 转换
-- d3.tsvParse() : tsv 转换
-- d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
-
-## Animation - Connected Scatterplot
-
-[参考](https://observablehq.com/@d3/connected-scatterplot)
-
-![connected-scatterplot](assets/connected-scatterplot.jpg)
-
-新的知识点：
-
-d3.curve(d3.curveCatmullRom) : 画弧线
 
 ## Fun - Word Cloud
 
