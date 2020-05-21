@@ -710,6 +710,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![sankey-diagram](assets/sankey-diagram.png)
 
+## Networks - Hierarchical Edge Bundling
+
+[参考](https://observablehq.com/@d3/hierarchical-edge-bundling)
+
+![hierarchical-edge-bundling](assets/hierarchical-edge-bundling.png)
+
 ## Radial - Pie Chart
 
 [参考](https://observablehq.com/@d3/pie-chart)

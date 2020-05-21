@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      // const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      const format = d3.format(',d');
+      const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [-width / 2, -width / 2, width, width]);
+
+      // 3. 准备 data
+      function hierarchy(data, delimiter = '.') {
+        let root;
+        const map = new Map();
+        data.forEach(function find(data) {
+          const { name } = data;
+          if (map.has(name)) return map.get(name);
+          const i = name.lastIndexOf(delimiter);
+          map.set(name, data);
+          if (i >= 0) {
+            find({ name: name.substring(0, i), children: [] }).children.push(
+              data
+            );
+            data.name = name.substring(i + 1);
+          } else {
+            root = data;
+          }
+          return data;
+        });
+        return root;
+      }
+
+      const data = hierarchy(source.json);
+      // console.log(data);
+      // 4. bilink
+      function id(node) {
+        return `${node.parent ? id(node.parent) + '.' : ''}${node.data.name}`;
+      }
+      function bilink(root) {
+        const map = new Map(
+          root.leaves().map((d) => {
+            const r = [id(d), d];
+            // console.log(r);
+            return r;
+          })
+        );
+        // console.log(map);
+        for (const d of root.leaves())
+          (d.incoming = []),
+            (d.outgoing = d.data.imports.map((i) => {
+              const r = [d, map.get(i)];
+              // console.log(i);
+              return r;
+            }));
+        for (const d of root.leaves())
+          for (const o of d.outgoing) {
+            // console.log(o);
+            o[1].incoming.push(o);
+          }
+        return root;
+      }
+
+      const colorin = '#00f';
+      const colorout = '#f00';
+      const colornone = '#ccc';
+      const radius = width / 2;
+      const line = d3
+        .lineRadial() //
+        .curve(d3.curveBundle.beta(0.85))
+        .radius((d) => d.y)
+        .angle((d) => d.x);
+
+      const tree = d3.cluster().size([2 * Math.PI, radius - 100]);
+      // 5. root
+      const root = tree(
+        bilink(
+          d3
+            .hierarchy(data)
+            .sort(
+              (a, b) =>
+                d3.ascending(a.height, b.height) ||
+                d3.ascending(a.data.name, b.data.name)
+            )
+        )
+      );
+      // 6. node
+      const node = svg
+        .append('g') //
+        .selectAll('g')
+        .data(root.leaves())
+        .join('g')
+        .attr(
+          'transform',
+          (d) => _r((d.x * 180) / Math.PI - 90) + ' ' + _t(d.y, 0)
+        )
+        .append('text')
+        .attr('dy', '0.31em')
+        .attr('x', (d) => (d.x < Math.PI ? 6 : -6))
+        .attr('text-anchor', (d) => (d.x < Math.PI ? 'start' : 'end'))
+        .attr('transform', (d) => (d.x >= Math.PI ? _r(180) : null))
+        .text((d) => d.data.name)
+        .each(function (d) {
+          d.text = this;
+        })
+        .on('mouseover', overed)
+        .on('mouseout', outed)
+        .call((text) =>
+          text
+            .append('title')
+            .text(
+              (d) =>
+                id(d) +
+                '\n' +
+                d.outgoing.length +
+                ' outgoing\n' +
+                d.incoming.length +
+                ' incoming'
+            )
+        );
+      // 7. link
+      const link = svg
+        .append('g') //
+        .attr('stroke', colornone)
+        .attr('fill', 'none')
+        .selectAll('path')
+        .data(root.leaves().flatMap((leaf) => leaf.outgoing))
+        .join('path')
+        .style('mix-blend-mode', 'multiply')
+        .attr('d', ([i, o]) => line(i.path(o)))
+        .each(function (d) {
+          d.path = this;
+        });
+
+      // 8. mouse
+      function overed(d) {
+        link.style('mix-blend-mode', null);
+        d3.select(this).attr('font-weight', 'bold');
+        d3.selectAll(d.incoming.map((d) => d.path))
+          .attr('stroke', colorin)
+          .raise();
+        d3.selectAll(d.incoming.map(([d]) => d.text))
+          .attr('fill', colorin)
+          .attr('font-weight', 'bold');
+        d3.selectAll(d.outgoing.map((d) => d.path))
+          .attr('stroke', colorout)
+          .raise();
+        d3.selectAll(d.outgoing.map(([, d]) => d.text))
+          .attr('fill', colorout)
+          .attr('font-weight', 'bold');
+      }
+      function outed(d) {
+        link.style('mix-blend-mode', 'multiply');
+        d3.select(this).attr('font-weight', null);
+        d3.selectAll(d.incoming.map((d) => d.path)).attr('stroke', null);
+        d3.selectAll(d.incoming.map(([d]) => d.text))
+          .attr('fill', null)
+          .attr('font-weight', null);
+        d3.selectAll(d.outgoing.map((d) => d.path))
+          .attr('stroke', null)
+          .raise();
+        d3.selectAll(d.outgoing.map(([, d]) => d.text))
+          .attr('fill', null)
+          .attr('font-weight', null);
+      }
+      // 9.
+    </script>
+  </body>
+</html>
