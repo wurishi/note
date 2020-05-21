@@ -626,6 +626,12 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![the-impact-of-vaccines](assets/the-impact-of-vaccines.png)
 
+## Bars - Electricity Usage, 2019
+
+[参考](https://observablehq.com/@mbostock/electric-usage-2019)
+
+![electricity-usage-2019](assets/electricity-usage-2019.png)
+
 ## Networks - Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/force-directed-graph)
