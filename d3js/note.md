@@ -446,6 +446,12 @@ D3.js 中一些常见的图形：
 
 - d3.cross() : 将二个数组的值交叉组成一个数组，如 [1,2],[3,4] 将组成 [1,3],[1,4],[2,3],[2,4]
 
+## Dots - Dot Plot
+
+[参考](https://observablehq.com/@d3/dot-plot)
+
+![dot-plot](assets/dot-plot.png)
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
