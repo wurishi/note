@@ -608,6 +608,67 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![hertzsprung-russell-diagram](assets/hertzsprung-russell-diagram.png)
 
+## Fun - Word Cloud
+
+[参考](https://observablehq.com/@d3/word-cloud)
+
+![word-cloud](assets/word-cloud.png)
+
+## Hierarchies - Treemap
+
+[参考](https://observablehq.com/@d3/treemap)
+
+![treemap](assets/treemap.jpg)
+
+新的知识点：
+
+- join() : 会自动让选择的元素集与数据源的个数相同。即自动完成了 enter 和 exit，并返回合并后的元素集。也可以传入若干个方法来自定义 enter, update, exit 的行为。如：`join(enter => enter.append(''), update => update, exit => exit.remove())`
+- d3.format(",d") : 将数字 1000 格式化为 1,000
+- d3.treemap() : 生成一个 treemap
+- d3.treemap().tile(tile) : 块的布局模式
+  - d3.treemapBinary : 常用的模式
+  - d3.treemapSquarify : 常用的模式
+  - d3.treemapDice : 竖切
+  - d3.treemapSlice : 横切
+  - d3.treemapSliceDice : 横竖切
+- d3.hierarchy(data) : 根据 data 生成层级布局的数据，会有 parent, children, height, depth 等信息
+- d3.hierarchy().sum(d => d.value) : 后序遍历，即从子节点开始往根节点遍历，一般用来统计每个父节点的权重值(value)，权重值是 sum 这个节点所有子节点指定的(value)
+- treemap(hierarchy) : 将层级布局数据转换成 treemap 数据，会多出 x0,x1,y0,y1 四个属性，表示每个节点所占 tile 的大小
+- treemap().leaves() : 获取所有叶子节点
+- Node.ancestors() : 获取从节点到根节点的继承链，是一个数组
+
+## Hierarchies - Cascaded Treemap
+
+[参考](https://observablehq.com/@d3/cascaded-treemap)
+
+![cascaded-treemap](assets/cascaded-treemap.jpg)
+
+## Hierarchies - Circle Packing
+
+[参考](https://observablehq.com/@d3/circle-packing)
+
+![circle-packing](assets/circle-packing.jpg)
+
+新的知识点：
+
+- filter : 定义好一个 filter 元素并指定一个 id 后，要使用这个滤镜的元素只需要设置 filter 属性为 url(#id) 即可生效
+
+## Hierarchies - Circle Packing (monochrome)
+
+[参考](https://observablehq.com/@d3/circle-packing-monochrome)
+
+![circle-packing-monochrome](assets/circle-packing-monochrome.jpg)
+
+## Hierarchies - Indented Tree
+
+[参考](https://observablehq.com/@d3/indented-tree)
+
+![indented-tree](assets/indented-tree.jpg)
+
+新的知识点：
+
+- d3.hierarchy().copy() : 拷贝一份数据，用于做一些额外运算而不会影响源数据
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
@@ -817,64 +878,5 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 和上一个最大的改动就是数据从大到小排了个序
 
-## Hierarchies - Treemap
 
-[参考](https://observablehq.com/@d3/treemap)
-
-![treemap](assets/treemap.jpg)
-
-新的知识点：
-
-- join() : 会自动让选择的元素集与数据源的个数相同。即自动完成了 enter 和 exit，并返回合并后的元素集。也可以传入若干个方法来自定义 enter, update, exit 的行为。如：`join(enter => enter.append(''), update => update, exit => exit.remove())`
-- d3.format(",d") : 将数字 1000 格式化为 1,000
-- d3.treemap() : 生成一个 treemap
-- d3.treemap().tile(tile) : 块的布局模式
-  - d3.treemapBinary : 常用的模式
-  - d3.treemapSquarify : 常用的模式
-  - d3.treemapDice : 竖切
-  - d3.treemapSlice : 横切
-  - d3.treemapSliceDice : 横竖切
-- d3.hierarchy(data) : 根据 data 生成层级布局的数据，会有 parent, children, height, depth 等信息
-- d3.hierarchy().sum(d => d.value) : 后序遍历，即从子节点开始往根节点遍历，一般用来统计每个父节点的权重值(value)，权重值是 sum 这个节点所有子节点指定的(value)
-- treemap(hierarchy) : 将层级布局数据转换成 treemap 数据，会多出 x0,x1,y0,y1 四个属性，表示每个节点所占 tile 的大小
-- treemap().leaves() : 获取所有叶子节点
-- Node.ancestors() : 获取从节点到根节点的继承链，是一个数组
-
-## Hierarchies - Cascaded Treemap
-
-[参考](https://observablehq.com/@d3/cascaded-treemap)
-
-![cascaded-treemap](assets/cascaded-treemap.jpg)
-
-## Hierarchies - Circle Packing
-
-[参考](https://observablehq.com/@d3/circle-packing)
-
-![circle-packing](assets/circle-packing.jpg)
-
-新的知识点：
-
-- filter : 定义好一个 filter 元素并指定一个 id 后，要使用这个滤镜的元素只需要设置 filter 属性为 url(#id) 即可生效
-
-## Hierarchies - Circle Packing (monochrome)
-
-[参考](https://observablehq.com/@d3/circle-packing-monochrome)
-
-![circle-packing-monochrome](assets/circle-packing-monochrome.jpg)
-
-## Hierarchies - Indented Tree
-
-[参考](https://observablehq.com/@d3/indented-tree)
-
-![indented-tree](assets/indented-tree.jpg)
-
-新的知识点：
-
-- d3.hierarchy().copy() : 拷贝一份数据，用于做一些额外运算而不会影响源数据
-
-## Fun - Word Cloud
-
-[参考](https://observablehq.com/@d3/word-cloud)
-
-![word-cloud](assets/word-cloud.png)
 
