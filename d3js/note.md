@@ -481,6 +481,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![us-population-by-state](assets/us-population-by-state.png)
 
+## Areas - Streamgraph
+
+[参考](https://observablehq.com/@d3/streamgraph)
+
+![streamgraph](assets/streamgraph.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
