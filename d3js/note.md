@@ -469,6 +469,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![stacked-area-chart](assets/stacked-area-chart.png)
 
+## Areas - Normalized Stacked Area Chart
+
+[参考](https://observablehq.com/@d3/normalized-stacked-area-chart)
+
+![normalized-stacked-area-chart](assets/normalized-stacked-area-chart.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
