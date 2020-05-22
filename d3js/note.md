@@ -487,6 +487,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![streamgraph](assets/streamgraph.png)
 
+## Areas - Difference Chart
+
+[参考](https://observablehq.com/@d3/difference-chart)
+
+![difference-chart](assets/difference-chart.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
