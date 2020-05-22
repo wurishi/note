@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      const regionRank = [
+        'New England',
+        'Middle Atlantic',
+        'South Atlantic',
+        'East South Central',
+        'West South Central',
+        'East North Central',
+        'West North Central',
+        'Mountain',
+        'Pacific',
+      ];
+
+      const regionByState = (() => {
+        const regions = d3.csvParse(source.d);
+        return new Map(regions.map((d) => [d.State, d.Division]));
+      })();
+
+      const data = (() => {
+        const years = d3.range(1790, 2000, 10);
+        const states = d3.tsvParse(source.p, (d, i) =>
+          i === 0
+            ? null
+            : {
+                name: d[''],
+                values: years.map((y) => +d[y].replace(/,/g, '') || 0),
+              }
+        );
+        states.sort(
+          (a, b) =>
+            d3.ascending(
+              regionRank.indexOf(regionByState.get(a.name)),
+              regionRank.indexOf(regionByState.get(b.name))
+            ) || d3.descending(d3.sum(a.values), d3.sum(b.values))
+        );
+
+        return Object.assign(
+          years.map((y, i) =>
+            Object.fromEntries(
+              [['date', new Date(Date.UTC(y, 0, 1))]].concat(
+                states.map((s) => [s.name, s.values[i]])
+              )
+            )
+          ),
+          { columns: ['date', ...states.map((s) => s.name)] }
+        );
+      })();
+
+      const series = d3
+        .stack() //
+        .keys(data.columns.slice(1))
+        .offset(d3.stackOffsetExpand)(data);
+
+      // console.log(data);
+      // 4. x,y,color
+      const x = d3
+        .scaleUtc() //
+        .domain(d3.extent(data, (d) => d.date))
+        .range([margin.left, width - margin.right]);
+
+      const y = d3
+        .scaleLinear() //
+        .range([height - margin.bottom, margin.top]);
+
+      const color = d3
+        .scaleOrdinal() //
+        .domain(regionRank)
+        .range(d3.schemeCategory10)
+        .unknown('gray');
+
+      // 5. area
+      const area = d3
+        .area() //
+        .x((d) => x(d.data.date))
+        .y0((d) => y(d[0]))
+        .y1((d) => y(d[1]));
+
+      svg
+        .append('g') //
+        .attr('fill-opacity', 0.8)
+        .selectAll('path')
+        .data(series)
+        .join('path')
+        .attr('fill', ({ key }) => color(regionByState.get(key)))
+        .attr('d', area)
+        .append('title')
+        .text(({ key }) => key);
+      // 6. path
+      svg
+        .append('g') //
+        .attr('fill', 'none')
+        .attr('stroke-width', 0.75)
+        .selectAll('path')
+        .data(series)
+        .join('path')
+        .attr('stroke', ({ key }) =>
+          d3.lab(color(regionByState.get(key))).darker()
+        )
+        .attr('d', area.lineY1());
+      // 7. defs
+      const midline = d3
+        .line() //
+        .curve(d3.curveBasis)
+        .x((d) => x(d.data.date))
+        .y((d) => y((d[0] + d[1]) / 2));
+
+      svg
+        .append('defs') //
+        .selectAll('path')
+        .data(series)
+        .join('path')
+        .attr('id', (d) => (d.id = DOM.uid('state')).id)
+        .attr('d', midline);
+
+      // 8. 文本到defs
+      svg
+        .append('g') //
+        .attr('text-anchor', 'middle')
+        .selectAll('text')
+        .data(series)
+        .join('text')
+        .attr('dy', '0.35em')
+        .append('textPath')
+        .attr('href', (d) => d.id.href)
+        .attr('startOffset', (d, i) => {
+          const tmp = i % 5;
+          return 40 + tmp * 10 + '%';
+        })
+        // .attr(
+        //   'startOffset',
+        //   (d) =>
+        //     `${
+        //       Math.max(
+        //         0.05,
+        //         Math.min(
+        //           0.95,
+        //           (d.offset =
+        //             d3.maxIndex(d, (d) => d[1] - d[0]) / (d.length - 1))
+        //         )
+        //       ) * 100
+        //     }%`
+        // )
+        .text((d) => d.key);
+      // 9. axis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(
+            d3
+              .axisBottom(x)
+              .ticks(width / 80)
+              .tickSizeOuter(0)
+          );
+
+      svg.append('g').call(xAxis);
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(d3.axisLeft(y).ticks(10, '%'))
+          .call((g) => g.select('.domain').remove());
+
+      svg.append('g').call(yAxis);
+    </script>
+  </body>
+</html>

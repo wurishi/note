@@ -475,6 +475,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![normalized-stacked-area-chart](assets/normalized-stacked-area-chart.png)
 
+## Areas - US Population by State
+
+[参考](https://observablehq.com/@mbostock/u-s-population-by-state-1790-1990)
+
+![us-population-by-state](assets/us-population-by-state.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
