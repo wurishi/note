@@ -759,6 +759,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![versor-dragging](assets/versor-dragging.png)
 
+## Interaction - Index Chart
+
+[参考](https://observablehq.com/@d3/index-chart)
+
+![index-chart](assets/index-chart.png)
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
