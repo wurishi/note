@@ -511,6 +511,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![horizon-chart](assets/horizon-chart.png)
 
+## Areas - Realtime Horizon Chart
+
+[参考](https://observablehq.com/@d3/realtime-horizon-chart)
+
+![realtime-horizon-chart](assets/realtime-horizon-chart.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
