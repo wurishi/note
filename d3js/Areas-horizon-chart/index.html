@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="../d3-array.min.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 1200;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+      const step = 23;
+      const overlap = 7;
+      const scheme = 'schemeBlues'; //schemeBlues schemeBuGn
+      const color = (i) =>
+        d3[scheme][Math.max(3, overlap)][i + Math.max(0, 3 - overlap)];
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      const data = (() => {
+        const data = d3.csvParse(source.csv, d3.autoType);
+        const dates = Array.from(d3.group(data, (d) => +d.date).keys()).sort(
+          d3.ascending
+        );
+        return {
+          dates: dates.map((d) => new Date(d)),
+          series: d3
+            .groups(data, (d) => d.name)
+            .map(([name, values]) => {
+              const value = new Map(values.map((d) => [+d.date, d.value]));
+              return { name, values: dates.map((d) => value.get(d)) };
+            }),
+        };
+      })();
+      // console.log(data);
+      // 4. group
+      const g = svg
+        .append('g') //
+        .selectAll('g')
+        .data(
+          data.series.map((d) =>
+            Object.assign(
+              {
+                clipId: DOM.uid('clip'),
+                pathId: DOM.uid('path'),
+              },
+              d
+            )
+          )
+        )
+        .join('g')
+        .attr('transform', (d, i) => _t(0, i * (step + 1) + margin.top));
+      // 5. clipPath, x, y
+      g.append('clipPath') //
+        .attr('id', (d) => d.clipId.id)
+        .append('rect')
+        // .attr('fill', color(0))
+        .attr('width', width)
+        .attr('height', step);
+
+      const x = d3
+        .scaleUtc() //
+        .domain(d3.extent(data.dates))
+        .range([0, width]);
+
+      const y = d3
+        .scaleLinear() //
+        .domain([0, d3.max(data.series, (d) => d3.max(d.values))])
+        .range([0, -overlap * step]);
+      // 6. defs
+      const area = d3
+        .area() //
+        .curve(d3.curveBasis)
+        .defined((d) => !isNaN(d))
+        .x((d, i) => x(data.dates[i]))
+        .y0(0)
+        .y1((d) => y(d));
+
+      g.append('defs') //
+        .append('path')
+        .attr('id', (d) => d.pathId.id)
+        .attr('d', (d) => area(d.values));
+      // 7. clip-path
+      g.append('g') //
+        .attr('cilp-path', (d) => d.clipId.url)
+        .selectAll('use')
+        .data((d) => new Array(overlap).fill(d))
+        .join('use')
+        .attr('fill', (d, i) => color(i))
+        .attr('transform', (d, i) => _t(0, (i + 1) * step))
+        .attr('xlink:href', (d) => d.pathId.href);
+      // 8. text
+      g.append('text') //
+        .attr('x', 4)
+        .attr('y', step / 2)
+        .attr('dy', '0.35em')
+        .text((d) => d.name);
+      // 9. xAxis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, margin.top))
+          .call(
+            d3
+              .axisTop(x)
+              .ticks(width / 80)
+              .tickSizeOuter(0)
+          )
+          .call((g) =>
+            g
+              .selectAll('.tick')
+              .filter((d) => x(d) < margin.left || x(d) >= width - margin.right)
+              .remove()
+          )
+          .call((g) => g.select('.domain').remove());
+
+      svg.append('g').call(xAxis);
+    </script>
+  </body>
+</html>
