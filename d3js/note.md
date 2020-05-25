@@ -753,6 +753,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 - d3.hierarchy().copy() : 拷贝一份数据，用于做一些额外运算而不会影响源数据
 
+## Interaction - Versor Draggin
+
+[参考](https://observablehq.com/@d3/versor-dragging)
+
+![versor-dragging](assets/versor-dragging.png)
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
