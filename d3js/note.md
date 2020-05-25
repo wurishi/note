@@ -493,6 +493,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![difference-chart](assets/difference-chart.png)
 
+## Areas - Band Chart
+
+[参考](https://observablehq.com/@d3/band-chart)
+
+![band-chart](assets/band-chart.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
