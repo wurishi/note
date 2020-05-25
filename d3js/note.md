@@ -457,6 +457,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![scatterplot-tour](assets/scatterplot-tour.png)
 
+## Animation - Bar Chart Race
+
+[参考](https://observablehq.com/@d3/bar-chart-race)
+
+![bar-chart-race](assets/bar-chart-race.png)
+
 ## Annotation - Inline Labels
 
 [参考](https://observablehq.com/@d3/inline-labels)
