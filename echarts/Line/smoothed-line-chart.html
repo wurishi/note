@@ -18,14 +18,21 @@
       const myChart = echarts.init(main);
       const option = {
         title: {
-          text:'',
+          text: 'Smoothed Line Chart',
         },
-        xAxis: {},
-        yAxis: {},
+        xAxis: {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          boundaryGap: false,
+        },
+        yAxis: {
+          type: 'value',
+        },
         series: [
           {
-            data: [],
-            type: '',
+            data: d3.range(10).map(d3.randomUniform(500, 1400)),
+            type: 'line',
+            smooth: true, //
           },
         ],
       };

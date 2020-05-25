@@ -17,4 +17,12 @@
 - boundaryGap : 默认值 true, 坐标轴两端是否留白。
 - areaStyle : area 样式，设置一个{}，即可以让 chart 表现为 area chart 。
 
+## Smoothed Line Chart
+
+![smoothed-line-chart](assets/smoothed-line-chart.png)
+
+新的知识点：
+
+- smooth : 设置为 true， 将变成平滑曲线。
+
 end
