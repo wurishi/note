@@ -17,12 +17,22 @@
 
       const myChart = echarts.init(main);
       const option = {
-        xAxis: {},
-        yAxis: {},
+        title: {
+          text: 'Basic Area Chart',
+        },
+        xAxis: {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          boundaryGap: false, //
+        },
+        yAxis: {
+          type: 'value',
+        },
         series: [
           {
-            data: [],
-            type: '',
+            data: d3.range(7).map(d3.randomUniform(500, 1400)),
+            type: 'line',
+            areaStyle: {}, //
           },
         ],
       };

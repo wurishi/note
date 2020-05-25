@@ -6,3 +6,15 @@
 
 ![basic-line-chart](assets/basic-line-chart.png)
 
+## Basic Area Chart
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=area-basic)
+
+![basic-area-chart](assets/basic-area-chart.png)
+
+新的知识点：
+
+- boundaryGap : 默认值 true, 坐标轴两端是否留白。
+- areaStyle : area 样式，设置一个{}，即可以让 chart 表现为 area chart 。
+
+end
