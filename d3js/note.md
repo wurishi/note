@@ -451,6 +451,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![the-wealth-health-of-nations](assets/the-wealth-health-of-nations.png)
 
+## Animation - Scatterplot Tour
+
+[参考](https://observablehq.com/@d3/scatterplot-tour)
+
+![scatterplot-tour](assets/scatterplot-tour.png)
+
 ## Annotation - Inline Labels
 
 [参考](https://observablehq.com/@d3/inline-labels)
