@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Basic Line Chart',
+        },
+        xAxis: {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: [
+          {
+            // data: [820, 932, 901, 934, 1290, 1330, 1320],
+            data: d3.range(7).map(d3.randomUniform(500, 1400)), // 500-1400
+            type: 'line',
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
