@@ -445,6 +445,12 @@ D3.js 中一些常见的图形：
 
 d3.curve(d3.curveCatmullRom) : 画弧线
 
+## Animation - The Wealth & Health of Nations
+
+[参考](https://observablehq.com/@mbostock/the-wealth-health-of-nations)
+
+![the-wealth-health-of-nations](assets/the-wealth-health-of-nations.png)
+
 ## Annotation - Inline Labels
 
 [参考](https://observablehq.com/@d3/inline-labels)

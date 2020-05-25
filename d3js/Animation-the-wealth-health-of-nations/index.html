@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. x,y,radius,color
+      const data = source.json;
+
+      const x = d3.scaleLog([200, 1e5], [margin.left, width - margin.right]);
+      const y = d3.scaleLinear([14, 86], [height - margin.bottom, margin.top]);
+      const radius = d3.scaleSqrt([0, 5e8], [0, width / 24]);
+      const color = d3
+        .scaleOrdinal(
+          data.map((d) => d.region),
+          d3.schemeCategory10
+        )
+        .unknown('black');
+
+      // 4. axis, grid
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(d3.axisBottom(x).ticks(width / 80, ','))
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .append('text') //
+              .attr('x', width)
+              .attr('y', margin.bottom - 4)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'end')
+              .text('Income per capita (dollars) →')
+          );
+
+      svg.append('g').call(xAxis);
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(d3.axisLeft(y))
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .append('text') //
+              .attr('x', -margin.left)
+              .attr('y', 10)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'start')
+              .text('↑ Life expectancy (years)')
+          );
+
+      svg.append('g').call(yAxis);
+
+      const yearTxt = svg
+        .append('g')
+        .append('text') //
+        .attr('fill', 'black')
+        .attr('x', width - margin.left, margin.right)
+        .attr('y', 10)
+        .attr('text-anchor', 'end')
+        .text('Year');
+
+      const grid = (g) =>
+        g //
+          .attr('stroke', 'currentColor')
+          .attr('stroke-opacity', 0.1)
+          .call((g) =>
+            g
+              .append('g') //
+              .selectAll('line')
+              .data(x.ticks())
+              .join('line')
+              .attr('x1', (d) => 0.5 + x(d))
+              .attr('x2', (d) => 0.5 + x(d))
+              .attr('y1', margin.top)
+              .attr('y2', height - margin.bottom)
+          )
+          .call((g) =>
+            g
+              .append('g') //
+              .selectAll('line')
+              .data(y.ticks())
+              .join('line')
+              .attr('y1', (d) => 0.5 + y(d))
+              .attr('y2', (d) => 0.5 + y(d))
+              .attr('x1', margin.left)
+              .attr('x2', width - margin.right)
+          );
+
+      svg.append('g').call(grid);
+      // 5. circle
+      function dataAt(year) {
+        return data.map((d) => ({
+          name: d.name,
+          region: d.region,
+          income: valueAt(d.income, year),
+          population: valueAt(d.population, year),
+          lifeExpectancy: valueAt(d.lifeExpectancy, year),
+        }));
+      }
+
+      const bisectYear = d3.bisector(([year]) => year).left;
+
+      function valueAt(values, year) {
+        const i = bisectYear(values, year, 0, values.length - 1);
+        const a = values[i];
+        if (i > 0) {
+          const b = values[i - 1];
+          const t = (year - a[0]) / (b[0] - a[0]);
+          return a[1] * (1 - t) + b[1] * t;
+        }
+        return a[1];
+      }
+
+      const circle = svg
+        .append('g') //
+        .attr('stroke', 'black')
+        .selectAll('circle')
+        .data(dataAt(1800), (d) => d.name)
+        .join('circle')
+        .sort((a, b) => d3.descending(a.population, b.population))
+        .attr('cx', (d) => x(d.income))
+        .attr('cy', (d) => y(d.lifeExpectancy))
+        .attr('r', (d) => radius(d.population))
+        .attr('fill', (d) => color(d.region))
+        .call((circle) =>
+          circle
+            .append('title') //
+            .text((d) => [d.name, d.region].join('\n'))
+        );
+      // 6. update
+      function update(data, year) {
+        circle
+          .data(data, (d) => d.name) //
+          .sort((a, b) => d3.descending(a.population, b.population))
+          .attr('cx', (d) => x(d.income))
+          .attr('cy', (d) => y(d.lifeExpectancy))
+          .attr('r', (d) => radius(d.population));
+
+        yearTxt.text(year);
+      }
+
+      const start = 1800,
+        end = 2009;
+      (async () => {
+        for (let i = start; i <= end; i++) {
+          const currentData = dataAt(i);
+          update(currentData, i);
+          await _waitTime(100);
+        }
+      })();
+    </script>
+  </body>
+</html>
