@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <!-- <script src="./data.js"></script> -->
+  </head>
+  <body>
+    <svg></svg>
+    <div id="btn"></div>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+      const n = 5;
+      const m = 58;
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      function bumps(m) {
+        const values = [];
+        for (let i = 0; i < m; i++) {
+          values[i] = 0.1 + 0.1 + Math.random();
+        }
+        for (let j = 0; j < 5; j++) {
+          const x = 1 / (0.1 + Math.random());
+          const y = 2 * Math.random() - 0.5;
+          const z = 10 / (0.1 + Math.random());
+          for (let i = 0; i < m; i++) {
+            const w = (i / m - y) * z;
+            values[i] += x * Math.exp(-w * w);
+          }
+        }
+        for (let i = 0; i < m; i++) {
+          values[i] = Math.max(0, values[i]);
+        }
+        return values;
+      }
+      // 4. rect
+
+      const xz = d3.range(m);
+      const yz = d3.range(n).map(() => bumps(m));
+
+      const y01z = d3
+        .stack() //
+        .keys(d3.range(n))(d3.transpose(yz))
+        .map((data, i) => data.map(([y0, y1]) => [y0, y1, i]));
+
+      const x = d3
+        .scaleBand() //
+        .domain(xz)
+        .rangeRound([margin.left, width - margin.right])
+        .padding(0.08);
+
+      const y1Max = d3.max(y01z, (y) => d3.max(y, (d) => d[1]));
+      const yMax = d3.max(yz, (y) => d3.max(y));
+
+      const y = d3
+        .scaleLinear() //
+        .domain([0, y1Max])
+        .range([height - margin.bottom, margin.top]);
+
+      const z = d3
+        .scaleSequential(d3.interpolateBlues)
+        .domain([-0.5 * n, 1.5 * n]);
+
+      const rect = svg
+        .selectAll('g') //
+        .data(y01z)
+        .join('g')
+        .attr('fill', (d, i) => z(i))
+        .selectAll('rect')
+        .data((d) => d)
+        .join('rect')
+        .attr('x', (d, i) => x(i))
+        .attr('y', height - margin.bottom)
+        .attr('width', x.bandwidth())
+        .attr('height', 0);
+
+      // 5. xaxis
+      const xAxis = (svg) =>
+        svg
+          .append('g') //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(
+            d3
+              .axisBottom(x)
+              .tickSizeOuter(0)
+              .tickFormat(() => '')
+          );
+      svg.append('g').call(xAxis);
+      // 6. transitionGrouped
+      function transitionGrouped() {
+        y.domain([0, yMax]);
+
+        rect
+          .transition() //
+          .duration(500)
+          .delay((d, i) => i * 20)
+          .attr('x', (d, i) => x(i) + (x.bandwidth() / n) * d[2])
+          .attr('width', x.bandwidth() / n)
+          .transition()
+          .attr('y', (d) => y(d[1] - d[0]))
+          .attr('height', (d) => y(0) - y(d[1] - d[0]));
+      }
+      // 7. transitionStacked
+      function transitionStacked() {
+        y.domain([0, y1Max]);
+        rect
+          .transition()
+          .duration(500)
+          .delay((d, i) => i * 20)
+          .attr('y', (d) => y(d[1]))
+          .attr('height', (d) => y(d[0]) - y(d[1]))
+          .transition()
+          .attr('x', (d, i) => x(i))
+          .attr('width', x.bandwidth());
+      }
+      // 8. update
+      function update(layout) {
+        if (layout === 'stacked') {
+          transitionStacked();
+        } else {
+          transitionGrouped();
+        }
+      }
+      const btn = document.getElementById('btn');
+      let b = document.createElement('div');
+      b.textContent = 'Stacked';
+      b.onclick = () => update('stacked');
+      btn.appendChild(b);
+
+      b = document.createElement('div');
+      b.textContent = 'Grouped';
+      b.onclick = () => update('grouped');
+      btn.appendChild(b);
+    </script>
+  </body>
+</html>

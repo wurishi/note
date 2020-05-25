@@ -463,6 +463,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![bar-chart-race](assets/bar-chart-race.png)
 
+## Animation - Stacked to Grouped Bars
+
+[参考](https://observablehq.com/@d3/stacked-to-grouped-bars)
+
+![stacked-to-grouped-bars](assets/stacked-to-grouped-bars.png)
+
 ## Annotation - Inline Labels
 
 [参考](https://observablehq.com/@d3/inline-labels)
