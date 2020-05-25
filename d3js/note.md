@@ -765,6 +765,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![index-chart](assets/index-chart.png)
 
+## Interaction - Sequences Sunburst
+
+[参考](https://observablehq.com/@kerryrodden/sequences-sunburst)
+
+![sequences-sunburst](assets/sequences-sunburst.png)
+
 ## Lines - Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg id="bread"></svg>
+    <svg id="svg"></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const radius = width / 2;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      // const format = d3.format(',d');
+      // const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('#svg') //
+        .style('font', '12px sans-serif')
+        .attr('viewBox', [-radius, -radius, width, width]);
+
+      const value = { sequence: [], percentage: 0.0 };
+
+      // 3. 准备 data
+      const csv = d3.csvParseRows(source.csv);
+
+      function buildHierarchy(csv) {
+        const root = { name: 'root', children: [] };
+        for (let i = 0; i < csv.length; i++) {
+          const sequence = csv[i][0];
+          const size = +csv[i][1];
+          if (isNaN(size)) {
+            continue;
+          }
+          const parts = sequence.split('-');
+          let currentNode = root;
+          for (let j = 0; j < parts.length; j++) {
+            const children = currentNode['children'];
+            const nodeName = parts[j];
+            let childNode = null;
+            if (j + 1 < parts.length) {
+              let foundChild = false;
+              for (let k = 0; k < children.length; k++) {
+                if (children[k]['name'] == nodeName) {
+                  childNode = children[k];
+                  foundChild = true;
+                  break;
+                }
+              }
+              if (!foundChild) {
+                childNode = { name: nodeName, children: [] };
+                children.push(childNode);
+              }
+              currentNode = childNode;
+            } else {
+              childNode = { name: nodeName, value: size };
+              children.push(childNode);
+            }
+          }
+        }
+        return root;
+      }
+
+      const data = buildHierarchy(csv);
+      // console.log(data);
+      // 4. root
+      const partition = (
+        data //
+      ) =>
+        d3.partition().size([2 * Math.PI, radius * radius])(
+          d3
+            .hierarchy(data)
+            .sum((d) => d.value)
+            .sort((a, b) => b.value - a.value)
+        );
+      const root = partition(data);
+      // 5. label
+      const label = svg
+        .append('text') //
+        .attr('text-anchor', 'middle')
+        .attr('fill', '#888')
+        .style('visibility', 'hidden');
+
+      label
+        .append('tspan') //
+        .attr('class', 'percentage')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('dy', '-0.1em')
+        .attr('font-size', '3em')
+        .text('');
+
+      label
+        .append('tspan') //
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('dy', '1.5em')
+        .attr('of visits begin with this sequence');
+      // 6. path
+      const color = d3
+        .scaleOrdinal() //
+        .domain(['home', 'product', 'search', 'account', 'other', 'end'])
+        .range([
+          '#5d85cf',
+          '#7c6561',
+          '#da7847',
+          '#6fb971',
+          '#9e70cf',
+          '#bbbbbb',
+        ]);
+
+      const arc = d3
+        .arc() //
+        .startAngle((d) => d.x0)
+        .endAngle((d) => d.x1)
+        .padAngle(1 / radius)
+        .padRadius(radius)
+        .innerRadius((d) => Math.sqrt(d.y0))
+        .outerRadius((d) => Math.sqrt(d.y1) - 1);
+
+      const path = svg
+        .append('g') //
+        .selectAll('path')
+        .data(
+          root.descendants().filter((d) => {
+            return d.depth && d.x1 - d.x0 > 0.001;
+          })
+        )
+        .join('path')
+        .attr('fill', (d) => color(d.data.name))
+        .attr('d', arc);
+      // 7. 交互
+      const mousearc = d3
+        .arc() //
+        .startAngle((d) => d.x0)
+        .endAngle((d) => d.x1)
+        .innerRadius((d) => Math.sqrt(d.y0))
+        .outerRadius(radius);
+
+      svg
+        .append('g') //
+        .attr('fill', 'none')
+        .attr('pointer-events', 'all')
+        .on('mouseleave', () => {
+          path.attr('fill-opacity', 1);
+          label.style('visibility', 'hidden');
+
+          value.sequence = [];
+          value.percentage = 0.0;
+        })
+        .selectAll('path')
+        .data(root.descendants().filter((d) => d.depth && d.x1 - d.x0 > 0.001))
+        .join('path')
+        .attr('d', mousearc)
+        .on('mouseenter', (d) => {
+          const sequence = d.ancestors().reverse().slice(1);
+          path.attr('fill-opacity', (node) =>
+            sequence.indexOf(node) >= 0 ? 1.0 : 0.3
+          );
+          const percentage = ((100 * d.value) / root.value).toPrecision(3);
+          label
+            .style('visibility', null) //
+            .select('.percentage')
+            .text(percentage + '%');
+          value.sequence = sequence;
+          value.percentage = percentage;
+        });
+
+      // 8. bread
+      const breadcrumbWidth = 75;
+      const breadcrumbHeight = 30;
+      function breadcrumbPoints(d, i) {
+        const tipWidth = 10;
+        const points = [];
+        points.push('0,0');
+        points.push(`${breadcrumbWidth},0`);
+        points.push(`${breadcrumbWidth + tipWidth},${breadcrumbHeight / 2}`);
+        points.push(`${breadcrumbWidth},${breadcrumbHeight}`);
+        points.push(`0,${breadcrumbHeight}`);
+        if (i > 0) {
+          points.push(`${tipWidth},${breadcrumbHeight / 2}`);
+        }
+        return points.join(' ');
+      }
+
+      const bSvg = (() => {
+        const svg = d3
+          .select('#bread') //
+          .attr('viewBox', [0, 0, breadcrumbWidth * 10, breadcrumbHeight])
+          .style('font', '12px sans-serif')
+          .style('margin', '5px');
+
+        svg.append('text').attr('id', 'ttt');
+        return svg;
+      })();
+
+      const keys = Object.keys(value);
+      let t = 0;
+      keys.forEach((key) => {
+        value['_' + key] = value[key];
+        Object.defineProperty(value, key, {
+          get: () => value['_' + key],
+          set: (newVal) => {
+            value['_' + key] = newVal;
+            t && clearTimeout(t);
+            t = setTimeout(update, 100);
+          },
+        });
+      });
+
+      function update() {
+        const g = bSvg
+          .selectAll('g') //
+          .data(value.sequence)
+          .join('g')
+          .attr('transform', (d, i) => _t(i * breadcrumbWidth, 0));
+
+        g.append('polygon') //
+          .attr('points', breadcrumbPoints)
+          .attr('fill', (d) => color(d.data.name))
+          .attr('stroke', 'white');
+
+        g.append('text') //
+          .attr('x', (breadcrumbWidth + 10) / 2)
+          .attr('y', 15)
+          .attr('dy', '0.35em')
+          .attr('text-anchor', 'middle')
+          .attr('fill', 'white')
+          .text((d) => d.data.name);
+
+        bSvg
+          .select('#ttt')
+          .text(value.percentage > 0 ? value.percentage + '%' : '')
+          .attr('x', (value.sequence.length + 0.5) * breadcrumbWidth)
+          .attr('y', breadcrumbHeight / 2)
+          .attr('dy', '0.35em')
+          .attr('text-anchor', 'middle');
+      }
+    </script>
+  </body>
+</html>
