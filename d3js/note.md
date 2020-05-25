@@ -499,6 +499,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![band-chart](assets/band-chart.png)
 
+## Areas - Ridgeline Plot
+
+[参考](https://observablehq.com/@d3/ridgeline-plot)
+
+![ridgeline-plot](assets/ridgeline-plot.png)
+
 ## Bars - Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)

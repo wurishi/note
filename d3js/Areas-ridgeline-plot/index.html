@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="../d3-array.min.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 700;
+      const overlap = 8;
+      const margin = { top: 60, bottom: 60, left: 120, right: 60 }; // 设置边距
+      const format = d3.format(',d');
+      const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      const data = (() => {
+        const data = d3.csvParse(source.csv, d3.autoType);
+        const dates = Array.from(d3.group(data, (d) => +d.date).keys()).sort(
+          d3.ascending
+        );
+
+        return {
+          dates: dates.map((d) => new Date(d)),
+          series: d3
+            .groups(data, (d) => d.name)
+            .map(([name, values]) => {
+              const value = new Map(values.map((d) => [+d.date, d.value]));
+              return { name, values: dates.map((d) => value.get(d)) };
+            }),
+        };
+      })();
+      // console.log(data);
+      // 4. x,y,z
+      const x = d3
+        .scaleTime() //
+        .domain(d3.extent(data.dates))
+        .range([margin.left, width - margin.right]);
+
+      const y = d3
+        .scalePoint() //
+        .domain(data.series.map((d) => d.name))
+        .range([margin.top, height - margin.bottom]);
+
+      const z = d3
+        .scaleLinear() //
+        .domain([0, d3.max(data.series, (d) => d3.max(d.values))])
+        .nice()
+        .range([0, -overlap * y.step()]);
+      // 5. axis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(
+            d3
+              .axisBottom(x)
+              .ticks(width / 80)
+              .tickSizeOuter(0)
+          );
+      svg.append('g').call(xAxis);
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(d3.axisLeft(y).tickSize(0).tickPadding(4))
+          .call((g) => g.select('.domain').remove());
+
+      svg.append('g').call(yAxis);
+      // 6. group
+      const group = svg
+        .append('g') //
+        .selectAll('g')
+        .data(data.series)
+        .join('g')
+        .attr('transform', (d) => _t(0, y(d.name) + 1));
+      // 7. area
+      const area = d3
+        .area() //
+        .curve(d3.curveBasis)
+        .defined((d) => !isNaN(d))
+        .x((d, i) => x(data.dates[i]))
+        .y0(0)
+        .y1((d) => z(d));
+      group
+        .append('path')
+        .attr('fill', '#ddd')
+        .attr('d', (d) => area(d.values));
+      // 8. line
+      group
+        .append('path') //
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('d', (d) => area.lineY1()(d.values));
+    </script>
+  </body>
+</html>
