@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const symbolSize = 20;
+      const data = [
+        [15, 0],
+        [-50, 10],
+        [-56.5, 20],
+        [-46.5, 30],
+        [-22.1, 40],
+      ];
+      const points = [];
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Click to Add Points',
+        },
+        tooltip: {
+          formatter: (params) => {
+            const { data = [0, 0] } = params;
+            return data[0].toFixed(2) + ', ' + data[1].toFixed(2);
+          },
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {
+          min: -60,
+          max: 20,
+          type: 'value',
+          axisLine: { onZero: false },
+        },
+        yAxis: {
+          min: 0,
+          max: 40,
+          type: 'value',
+          axisLine: { onZero: false },
+        },
+        series: [
+          {
+            id: 'a',
+            data,
+            type: 'line',
+            smooth: true,
+            symbolSize,
+          },
+        ],
+      };
+      myChart.setOption(option);
+
+      const zr = myChart.getZr();
+      // console.log(zr);
+
+      zr.on('click', (params) => {
+        const pointInPixel = [params.offsetX, params.offsetY];
+
+        if (myChart.containPixel('grid', pointInPixel)) {
+          const pointInGrid = myChart.convertFromPixel('grid', pointInPixel);
+
+          data.push(pointInGrid);
+
+          myChart.setOption({
+            series: { id: 'a', data },
+          });
+        }
+      });
+
+      zr.on('mousemove', (params) => {
+        const pointInPixel = [params.offsetX, params.offsetY];
+        zr.setCursorStyle(
+          myChart.containPixel('grid', pointInPixel) ? 'copy' : 'default'
+        );
+      });
+    </script>
+  </body>
+</html>

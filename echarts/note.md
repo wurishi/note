@@ -201,5 +201,15 @@
 
 - splitArea.show : 是否显示坐标轴分块区域背景
 
+## Click to Add Points
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-pen)
+
+![click-to-add-points](assets/click-to-add-points.png)
+
+新的知识点：
+
+- getZr() : 获得图表对应的 ZRender 实例.
+
 end
 
