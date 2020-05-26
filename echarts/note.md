@@ -133,5 +133,21 @@
 - silent : 是否响应鼠标事件.
 - visualMap.outOfRange : 未定义的映射数据的显示样式.
 
+## Try Dragging these Points
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-draggable)
+
+![try-dragging-these-points](assets/try-dragging-these-points.png)
+
+新的知识点：
+
+- dispatchAction : 向 echart 发送事件, showTip; hideTip.
+
+## Line Easing Visualizing
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-easing)
+
+
+
 end
 
