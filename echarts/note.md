@@ -191,5 +191,15 @@
 - toolbox.feature.dataView : 显示源数据.
 - toolbox.feature.magicType : 可以提供自动切换 series 的 type.
 
+## Line with Marklines
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-markline)
+
+![line-with-marklines](assets/line-with-marklines.png)
+
+新的知识点：
+
+- splitArea.show : 是否显示坐标轴分块区域背景
+
 end
 
