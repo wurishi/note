@@ -180,5 +180,16 @@
 - graphic.type = 'group' : 组.
 - graphic.type = 'text' : 文本.
 
+## Temperature Change in the coming week
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-marker)
+
+![temperature-change-in-the-coming-week](assets/temperature-change-in-the-coming-week.png)
+
+新的知识点：
+
+- toolbox.feature.dataView : 显示源数据.
+- toolbox.feature.magicType : 可以提供自动切换 series 的 type.
+
 end
 
