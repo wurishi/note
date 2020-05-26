@@ -211,5 +211,21 @@
 
 - getZr() : 获得图表对应的 ZRender 实例.
 
+## Two Value Axes in Polar 1
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-polar)
+
+![two-value-axes-in-polar-1](assets/two-value-axes-in-polar-1.png)
+
+新的知识点：
+
+- 极坐标 : 需要同时设置 angleAxis, radiusAxis, polar, series 中的数据设置 coordinateSystem: 'polar'.
+
+## Two Value Axes in Polar 2
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-polar2)
+
+![two-value-axes-in-polar-2](assets/two-value-axes-in-polar-2.png)
+
 end
 

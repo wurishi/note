@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const data = [];
+      for (let i = 0; i <= 100; i++) {
+        const theta = (i / 100) * 360;
+        const r = 5 * (1 + Math.sin((theta / 180) * Math.PI));
+        data.push([r, theta]);
+      }
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Two Value Axes in Polar 1',
+        },
+        legend: {
+          data: ['line'],
+        },
+        polar: {},
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'cross' },
+        },
+        // xAxis: {},
+        // yAxis: {},
+        angleAxis: {
+          type: 'value',
+          startAngle: 0,
+        },
+        radiusAxis: {},
+        series: [
+          {
+            name: 'line',
+            type: 'line',
+            coordinateSystem: 'polar',
+            data,
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
