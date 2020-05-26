@@ -147,7 +147,7 @@
 
 [参考](https://echarts.apache.org/examples/zh/editor.html?c=line-easing)
 
-
+![line-easing-visualizing](assets/line-easing-visualizing.png)
 
 end
 
