@@ -149,5 +149,16 @@
 
 ![line-easing-visualizing](assets/line-easing-visualizing.png)
 
+## Function Plot
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-function)
+
+![function-plot](assets/function-plot.png)
+
+新的知识点：
+
+- minorTick : 坐标轴上的次刻度.
+- minorSplitLine : 次刻度线.
+
 end
 
