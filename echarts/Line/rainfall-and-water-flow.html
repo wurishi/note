@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="./rainfall-and-water-flow.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 640;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const timeData = data.timeData.map((str) => str.replace('2009/', ''));
+      // const timeData = data.timeData;
+      // console.log(timeData);
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Rainfall and Water Flow',
+          subtext: '数据来自xxxxxx',
+          left: 'center',
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            animation: false,
+          },
+        },
+        legend: {
+          data: ['流量', '降雨量'],
+          left: 10,
+        },
+        toolbox: {
+          feature: {
+            dataZoom: {
+              yAxisIndex: 'none',
+            },
+            restore: {},
+            saveAsImage: {},
+          },
+        },
+        axisPointer: {
+          link: { xAxisIndex: 'all' },
+        },
+        dataZoom: [
+          {
+            show: true,
+            realtime: true,
+            start: 30,
+            end: 70,
+            xAxisIndex: [0, 1],
+          },
+          {
+            type: 'inside',
+            realtime: true,
+            start: 30,
+            end: 70,
+            xAxisIndex: [0, 1],
+          },
+        ],
+        grid: [
+          //
+          {
+            left: 50,
+            right: 50,
+            height: '35%',
+          },
+          { left: 50, right: 50, top: '55%', height: '35%' },
+        ],
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            axisLine: { onZero: true },
+            data: timeData,
+          },
+          {
+            gridIndex: 1, //
+            type: 'category',
+            boundaryGap: false,
+            axisLine: { onZero: true },
+            data: timeData,
+            position: 'top',
+          },
+        ],
+        yAxis: [
+          {
+            name: '流量',
+            type: 'value',
+            max: 500,
+          },
+          {
+            gridIndex: 1,
+            name: '降雨量',
+            type: 'value',
+            inverse: true,
+          },
+        ],
+        series: [
+          {
+            name: '流量',
+            data: data.ll,
+            type: 'line',
+            symbolSize: 8,
+            hoverAnimation: false,
+          },
+          {
+            name: '降雨量',
+            data: data.jyl,
+            type: 'line',
+            symbolSize: 8,
+            hoverAnimation: false,
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

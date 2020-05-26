@@ -100,5 +100,27 @@
 - showLoading / hideLoading : chart 显示 / 隐藏 loading 组件.
 - formatter : 可自定义格式化要显示的数据.
 
+## Dynamic Data + Time Axis
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dynamic-data2)
+
+![dynamic-data-time-axis](assets/dynamic-data-time-axis.png)
+
+新的知识点：
+
+- splitLine.show : 是否显示坐标轴的分隔线.
+- setOption : 目测是增量设置 option 的.
+
+## Rainfall and Water Flow
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=grid-multiple)
+
+![rainfall-and-water-flow](assets/rainfall-and-water-flow.png)
+
+新的知识点：
+
+- gridIndex : 一个图例中可以有多个坐标(xAxis, yAxis都需要设置 gridIndex)，但 grid 也必须设置为数组 , 否则会报错.
+- xAxisIndex / yAxisIndex : series 中的数据通过设置这二个属性，可以将自己显示的位置切换到其他定义的坐标系下.
+
 end
 
