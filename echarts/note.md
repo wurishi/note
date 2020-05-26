@@ -38,7 +38,14 @@
 - label : 可以设置将数据直接显示在点上，其中 position 属性可以设置 label 的位置 (top, bottom, left, right)
 - tooltip : 设置提示框组件.
 - legend : 图例组件.
-- toolbox : saveAsImage 可增加一个保存为图片的按钮
+- toolbox : saveAsImage 可增加一个保存为图片的按钮.
+- stack : 数据堆叠.
+
+## Stacked Line Chart
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-stack)
+
+![stacked-line-chart](assets/stacked-line-chart.png)
 
 end
 
