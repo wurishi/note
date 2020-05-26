@@ -74,7 +74,20 @@
 - inverse : 是否反向坐标轴.
 - toolbox.feature.dataZoom : 提供区域缩放功能按钮，yAxisIndex: 'none' 锁定 y 坐标轴不缩放.
 - toolbox.feature.restore : 恢复功能按钮，将区域缩放操作重置.
-- dataZoom : 区域组件.
+- dataZoom : 区域组件. 添加 inside 项，可以让图表本身拖动时改变 dataZoom 区域.
+
+## Large Scale Area Chart
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=area-simple)
+
+![large-scale-area-chart](assets/large-scale-area-chart.png)
+
+新的知识点：
+
+- tooltip.position : 可以自定义 tooltip 出现的坐标.
+- sampling : 当数据量大于像素点的是采样策略. 
+- itemStyle : 定义样式.
+- LinearGradient : 线性渐变.
 
 end
 
