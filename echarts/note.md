@@ -160,5 +160,11 @@
 - minorTick : 坐标轴上的次刻度.
 - minorSplitLine : 次刻度线.
 
+## Line Gradient
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-gradient)
+
+![line-gradient](assets/line-gradient.png)
+
 end
 

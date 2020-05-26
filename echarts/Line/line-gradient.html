@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="./line-gradient.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const dateList = data.map((item) => item[0]);
+      let valueMax = Number.MIN_VALUE;
+      const valueList = data.map((item) => {
+        valueMax = Math.max(valueMax, item[1]);
+        return item[1];
+      });
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: [
+          { left: 'center', text: 'Gradient along the y axis' },
+          { top: '55%', left: 'center', text: 'Gradient along the x axis' },
+        ],
+        visualMap: [
+          {
+            show: false,
+            type: 'continuous',
+            seriesIndex: 0,
+            min: 0,
+            max: valueMax,
+            inRange: {
+              color: ['red', 'blue'],
+            },
+            // calculable: true,
+          },
+          {
+            show: false,
+            type: 'continuous',
+            seriesIndex: 1,
+            dimension: 0,
+            min: 0,
+            max: dateList.length - 1,
+          },
+        ],
+        tooltip: { trigger: 'axis' },
+        xAxis: [
+          {
+            data: dateList,
+          },
+          {
+            data: dateList,
+            gridIndex: 1,
+          },
+        ],
+        yAxis: [
+          {
+            splitLine: { show: false },
+          },
+          {
+            splitLine: { show: false },
+            gridIndex: 1,
+          },
+        ],
+        grid: [{ bottom: '60%' }, { top: '60%' }],
+        series: [
+          {
+            data: valueList,
+            showSymbol: false,
+            type: 'line',
+          },
+          {
+            type: 'line',
+            showSymbol: false,
+            data: valueList,
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
