@@ -227,5 +227,11 @@
 
 ![two-value-axes-in-polar-2](assets/two-value-axes-in-polar-2.png)
 
+## Distribution of Electricity
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-sections)
+
+![distribution-of-electricity](assets/distribution-of-electricity.png)
+
 end
 
