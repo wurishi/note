@@ -166,5 +166,19 @@
 
 ![line-gradient](assets/line-gradient.png)
 
+## Custom Graphic Component
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-graphic)
+
+![custom-graphic-component](assets/custom-graphic-component.png)
+
+新的知识点：
+
+- formatter : 支持各类字符串模板，如：{a},{b}...
+- graphic : 支持自定义图形.
+- graphic.type = 'image' : 图片, origin 指定图片的原点，缩放，旋转都参考原点.
+- graphic.type = 'group' : 组.
+- graphic.type = 'text' : 文本.
+
 end
 
