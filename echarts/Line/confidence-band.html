@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="./confidence-band.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      myChart.showLoading();
+
+      setTimeout(() => {
+        myChart.hideLoading();
+        const base = -data.reduce(
+          (min, val) => Math.floor(Math.min(min, val.l)),
+          Infinity
+        );
+        // console.log(base);
+
+        const option = {
+          title: {
+            text: 'Confidence Band',
+            subtext: 'Example in MetricsGraphics',
+            left: 'center',
+          },
+          tooltip: {},
+          grid: {},
+          xAxis: {
+            type: 'category',
+            data: data.map((item) => item.date),
+            axisLabel: {
+              formatter: (value, idx) => {
+                //
+                let date = new Date(value);
+                return idx === 0
+                  ? value
+                  : [date.getMonth() + 1, date.getDate()].join('-');
+              },
+            },
+            splitLine: {
+              show: false,
+            },
+            boundaryGap: false,
+          },
+          yAxis: {
+            axisLabel: {
+              formatter: (val) => (val - base) * 100 + '%',
+            },
+            axisPointer: {
+              label: {
+                formatter: (params) =>
+                  ((params.value - base) * 100).toFixed(1) + '%',
+              },
+            },
+            splitNumber: 3,
+            splitLine: { show: false },
+          },
+          series: [
+            {
+              name: 'L',
+              type: 'line',
+              data: data.map((item) => item.l + base),
+              lineStyle: {
+                opacity: 0,
+              },
+              stack: 'confidence-band',
+              symbol: 'none',
+            },
+            {
+              name: 'U',
+              type: 'line',
+              data: data.map((item) => item.u - item.l),
+              lineStyle: {
+                opacity: 0,
+              },
+              areaStyle: {
+                color: '#ccc',
+              },
+              stack: 'confidence-band',
+              symbol: 'none',
+            },
+            {
+              type: 'line',
+              data: data.map((item) => item.value + base),
+              hoverAnimation: false,
+              symbolSize: 6,
+              itemStyle: {
+                color: '#c23531',
+              },
+              showSymbol: false,
+            },
+          ],
+        };
+        myChart.setOption(option);
+      }, 20);
+    </script>
+  </body>
+</html>

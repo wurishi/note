@@ -89,5 +89,16 @@
 - itemStyle : 定义样式.
 - LinearGradient : 线性渐变.
 
+## Confidence Band
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=confidence-band)
+
+![confidence-band](assets/confidence-band.png)
+
+新的知识点：
+
+- showLoading / hideLoading : chart 显示 / 隐藏 loading 组件.
+- formatter : 可自定义格式化要显示的数据.
+
 end
 
