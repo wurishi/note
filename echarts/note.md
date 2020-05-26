@@ -47,5 +47,34 @@
 
 ![stacked-line-chart](assets/stacked-line-chart.png)
 
+## Area Pieces
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=area-pieces)
+
+![area-pieces](assets/area-pieces.png)
+
+新的知识点：
+
+- symbol : 设置为 'none' 将不显示线上的点.
+- boundaryGap : [0,'30%'] 最大值将扩展30%.
+- lineStyle : 自定义线的样式.
+- markLine : 图表标线.
+- visualMap : 数据映射.
+
+## Rainfall
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=area-rainfall)
+
+![rainfall](assets/rainfall.png)
+
+新的知识点：
+
+- subtext : 可定义副标题.
+- yAxisIndex : yAxis 可以设置多个（一个数组），用 yAxisIndex 可以指定数据参照的坐标轴数组的下标.
+- inverse : 是否反向坐标轴.
+- toolbox.feature.dataZoom : 提供区域缩放功能按钮，yAxisIndex: 'none' 锁定 y 坐标轴不缩放.
+- toolbox.feature.restore : 恢复功能按钮，将区域缩放操作重置.
+- dataZoom : 区域组件.
+
 end
 

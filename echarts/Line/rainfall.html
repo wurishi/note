@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="./rainfall.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Rainfall',
+          subtext: '数据来自xxxxxxxxxxx', //
+          left: 'center',
+          align: 'right',
+        },
+        grid: {
+          bottom: 80,
+        },
+        toolbox: {
+          feature: {
+            dataZoom: {
+              // 区域缩放
+              yAxisIndex: 'none',
+            },
+            restore: {}, //
+            saveAsImage: {},
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            animation: false,
+            label: {
+              backgroundColor: '#505765',
+            },
+          },
+        },
+        legend: {
+          data: ['流量', '降雨量'],
+          left: 10,
+        },
+        dataZoom: [
+          //
+          {
+            show: true,
+            realtime: true,
+            start: 65,
+            end: 85,
+          },
+          {
+            type: 'inside',
+            realtime: true,
+            start: 65,
+            end: 85,
+          },
+        ],
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          axisLine: { onZero: false },
+          data: data.x.map((str) => str.replace(' ', '\n')),
+        },
+        yAxis: [
+          {
+            name: '流量(m^3/s)',
+            type: 'value',
+            max: 500,
+          },
+          {
+            name: '降雨量(mm)',
+            nameLocation: 'start',
+            max: 5,
+            type: 'value',
+            inverse: true, //
+          },
+        ],
+        series: [
+          {
+            name: '流量',
+            type: 'line',
+            animation: false,
+            areaStyle: {},
+            lineStyle: {
+              width: 1,
+            },
+            markArea: {
+              silent: true,
+              data: [
+                [
+                  {
+                    xAxis: '2009/9/12\n7:00',
+                  },
+                  {
+                    xAxis: '2009/9/22\n7:00',
+                  },
+                ],
+              ],
+            },
+            data: data.ll,
+          },
+          {
+            name: '降雨量',
+            type: 'line',
+            yAxisIndex: 1, //
+            animation: false,
+            areaStyle: {},
+            lineStyle: {
+              width: 1,
+            },
+            markArea: {
+              silent: true,
+              data: [
+                [{ xAxis: '2009/9/10\n7:00' }, { xAxis: '2009/9/20\n7:00' }],
+              ],
+            },
+            data: data.jyl,
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
