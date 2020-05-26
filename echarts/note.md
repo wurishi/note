@@ -122,5 +122,16 @@
 - gridIndex : 一个图例中可以有多个坐标(xAxis, yAxis都需要设置 gridIndex)，但 grid 也必须设置为数组 , 否则会报错.
 - xAxisIndex / yAxisIndex : series 中的数据通过设置这二个属性，可以将自己显示的位置切换到其他定义的坐标系下.
 
+## Beijing AQI
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-aqi)
+
+![beijing-aqi](assets/beijing-aqi.png)
+
+新的知识点：
+
+- silent : 是否响应鼠标事件.
+- visualMap.outOfRange : 未定义的映射数据的显示样式.
+
 end
 
