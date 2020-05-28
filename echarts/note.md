@@ -249,5 +249,17 @@
 
 ![line-style-and-item-style](assets/line-style-and-item-style.png)
 
+## Tooltip and DataZoom on Mobile
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-tooltip-touch)
+
+![tooltip-and-datazoom-on-mobile](assets/tooltip-and-datazoom-on-mobile.png)
+
+新的知识点：
+
+- axisTick : 设置坐标轴上的刻度.
+- handle : 坐标轴上的手柄.
+- z : 调整显示层级，数值越大越在上方.
+
 end
 
