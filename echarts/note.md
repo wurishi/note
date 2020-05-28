@@ -301,5 +301,11 @@
 - animationDelay : 控制动画延迟时间.
 - pixelRatio : 保存图片的像素密度，2 = 原 canvas 宽高 X 2.
 
+## Bar with Background
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-background)
+
+
+
 end
 
