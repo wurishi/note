@@ -243,5 +243,11 @@
 
 - step : 折线位置，start, middle, end .
 
+## Line Style and Item Style
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-style)
+
+![line-style-and-item-style](assets/line-style-and-item-style.png)
+
 end
 
