@@ -288,5 +288,18 @@
 - dataset : 多组数据可以直接放在 dataset 中.
 - seriesLayoutBy : 在 series 中指定这组数据是使用的 dataset 中的一行数据还是一列数据.
 
+# 柱状图 (Bar)
+
+## 柱状图动画延迟 (Bar Animation Delay)
+
+[参数](https://echarts.apache.org/examples/zh/editor.html?c=bar-animation-delay)
+
+![bar-animation-delay](assets/bar-animation-delay.png)
+
+新的知识点：
+
+- animationDelay : 控制动画延迟时间.
+- pixelRatio : 保存图片的像素密度，2 = 原 canvas 宽高 X 2.
+
 end
 

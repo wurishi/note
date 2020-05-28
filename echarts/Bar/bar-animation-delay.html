@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const xAxisData = [];
+      const data1 = [];
+      const data2 = [];
+      for(let i=0;i<100;i++) {
+        xAxisData.push('类目' + i);
+        data1.push((Math.sin(i/5)*(i/5-10)+i/6)*5);
+        data2.push((Math.cos(i/5)*(i/5-10)+i/6)*5);
+      }
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text:'柱状图动画延迟',
+        },
+        legend: {},
+        toolbox: {
+          feature: {
+            magicType: { //
+              type: ['stack', 'tiled']
+            },
+            dataView: {},
+            saveAsImage: {
+              pixelRatio: 2 //
+            }
+          }
+        },
+        tooltip: {},
+        xAxis: {
+          data: xAxisData,
+          splitLine: {
+            show: false,
+          }
+        },
+        yAxis: {},
+        series: [
+          {
+            name: 'bar',
+            type: 'bar',
+            data: data1,
+            //
+            animationDelay: idx => idx * 10,
+            // stack:'a',
+          },
+          {
+            name: 'bar2',
+            type: 'bar',
+            data: data2,
+            animationDelay: idx => idx * 10 + 100,
+            // stack:'a',
+          }
+        ],
+        animationEasing: 'elasticOut',
+        // animationDelayUpdate: idx => idx * 5
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
