@@ -305,7 +305,24 @@
 
 [参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-background)
 
+![bar-with-background](assets/bar-with-background.png)
 
+新的知识点：
+
+- showBackground : 可以设置让 bar 显示一个100%高度的背景.
+
+## 柱状图框选 (Bar Brush)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-brush)
+
+![bar-brush](assets/bar-brush.png)
+
+新的知识点：
+
+- emphasis : 选中样式.
+- visualMap.calculable : 可自行控制范围.
+- colorLightness : 明暗度.
+- brush : 选边工具.
 
 end
 
