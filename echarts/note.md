@@ -261,5 +261,15 @@
 - handle : 坐标轴上的手柄.
 - z : 调整显示层级，数值越大越在上方.
 
+## Line Y Category
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-y-category)
+
+![line-y-category](assets/line-y-category.png)
+
+新的知识点：
+
+- axisLine.onZero : true 坐标轴线将会出现在数值 0 所在的位置，false 坐标轴线将会出现在最边上.
+
 end
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text:'Line Y Category',
+        },
+        tooltip:{
+          trigger: 'axis',
+          formatter: 'Temperature : <br/>{b}km : {c}°C'
+        },
+        grid:{
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {
+          type: 'value',
+          axisLabel: {
+            formatter: '{value} °C'
+          }
+        },
+        yAxis: {
+          type: 'category',
+          axisLine: {onZero: false},
+          axisLabel: {
+            formatter: '{value} km'
+          },
+          boundaryGap: false,
+          data: [0, 10, 20, 30, 40, 50, 60, 70, 80]
+        },
+        series: [
+          {
+            type: 'line',
+            smooth: true,
+            lineStyle: {
+              width: 3,
+              shadowColor: 'rgba(0,0,0,0.4)',
+              shadowBlur: 10,
+              shadowOffsetY: 10
+            },
+            data: [15, -50, -56.5, -46.5, -22.1, -2.5, -27.7, -55.7, -76.5]
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
