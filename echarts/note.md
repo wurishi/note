@@ -233,5 +233,15 @@
 
 ![distribution-of-electricity](assets/distribution-of-electricity.png)
 
+## Step Line
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=line-step)
+
+![step-line](assets/step-line.png)
+
+新的知识点：
+
+- step : 折线位置，start, middle, end .
+
 end
 
