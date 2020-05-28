@@ -277,5 +277,16 @@
 
 ![multiple-x-axes](assets/multiple-x-axes.png)
 
+## Share Dataset
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dataset-link)
+
+![share-dataset](assets/share-dataset.png)
+
+新的知识点：
+
+- dataset : 多组数据可以直接放在 dataset 中.
+- seriesLayoutBy : 在 series 中指定这组数据是使用的 dataset 中的一行数据还是一列数据.
+
 end
 
