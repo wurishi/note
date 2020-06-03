@@ -324,5 +324,15 @@
 - colorLightness : 明暗度.
 - brush : 选边工具.
 
+## 特性示例：渐变色 阴影 点击缩放 (Bar Gradient)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-gradient)
+
+![bar-gradient](assets/bar-gradient.png)
+
+新的知识点：
+
+- dispatchAction : {type: 'dataZoom'} 触发dataZoom事件
+
 end
 
