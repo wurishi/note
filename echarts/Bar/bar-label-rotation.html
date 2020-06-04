@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const config = {
+        rotate: 90,
+        align: 'left',
+        verticalAlign: 'middle',
+        position: 'insideBottom',
+        distance: 15,
+        onChange() {
+          const labelOption = {
+            rotate: config.rotate,
+            align: config.align,
+            verticalAlign: config.verticalAlign,
+            position: config.position,
+            distance: config.distance,
+          };
+          myChart.setOption({
+            series: [
+              { label: labelOption },
+              { label: labelOption },
+              { label: labelOption },
+              { label: labelOption },
+            ],
+          });
+        },
+      };
+
+      const labelOption = {
+        show: true,
+        fontSize: 16,
+        position: config.position,
+        align: config.align,
+        verticalAlign: config.verticalAlign,
+        rotate: config.rotate,
+        distance: config.distance,
+        formatter: '{c}  {name|{a}}',
+        rich: {
+          //
+          name: {
+            textBorderColor: 'black',
+            color: '#fff',
+          },
+        },
+      };
+
+      const myChart = echarts.init(main);
+      const option = {
+        color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+        title: {
+          text: 'Bar Label Rotation',
+        },
+        legend: {},
+        toolbox: {
+          orient: 'vertical',
+          top: 'center',
+          left: 'right',
+          feature: {
+            mark: { show: true },
+            dataView: { readOnly: true }, //
+            magicType: { type: ['line', 'bar', 'stack', 'tiled'] },
+            restore: {},
+            saveAsImage: {},
+          },
+        },
+        xAxis: {
+          type: 'category',
+          axisTick: { show: false },
+          data: [2012, 2013, 2014, 2015, 2016],
+        },
+        yAxis: {},
+        series: [
+          {
+            name: 'Forest',
+            type: 'bar',
+            barGap: 0,
+            label: labelOption,
+            data: d3.range(5).map(d3.randomUniform(300, 400)).map(Math.floor),
+          },
+          {
+            name: 'Steppe',
+            type: 'bar',
+            barGap: 0,
+            label: labelOption,
+            data: d3.range(5).map(d3.randomUniform(300, 180)).map(Math.floor),
+          },
+          {
+            name: 'Desert',
+            type: 'bar',
+            barGap: 0,
+            label: labelOption,
+            data: d3.range(5).map(d3.randomUniform(150, 230)).map(Math.floor),
+          },
+          {
+            name: 'Wetland',
+            type: 'bar',
+            barGap: 0,
+            label: labelOption,
+            data: d3.range(5).map(d3.randomUniform(40, 110)).map(Math.floor),
+          },
+        ],
+      };
+      myChart.setOption(option);
+
+      const doms = [];
+
+      const rotateInput = document.createElement('input');
+      rotateInput.value = config.rotate;
+      doms.push(['rotate', rotateInput]);
+
+      function createOptions(name, arr) {
+        const select = document.createElement('select');
+        select.name = name;
+
+        // console.log(name, config[name]);
+        arr.forEach((v) => {
+          const option = document.createElement('option');
+          option.label = v;
+          option.value = v;
+          select.appendChild(option);
+        });
+        select.onchange = (e) => {
+          select.value = e.target.value;
+        };
+        setTimeout(() => {
+          select.value = config[name];
+        }, 10);
+        return select;
+      }
+
+      doms.push(['align', createOptions('align', ['left', 'center', 'right'])]);
+      doms.push([
+        'verticalAlign',
+        createOptions('verticalAlign', ['top', 'middle', 'bottom']),
+      ]);
+      var posList = [
+        'left',
+        'right',
+        'top',
+        'bottom',
+        'inside',
+        'insideTop',
+        'insideLeft',
+        'insideRight',
+        'insideBottom',
+        'insideTopLeft',
+        'insideTopRight',
+        'insideBottomLeft',
+        'insideBottomRight',
+      ];
+      doms.push(['position', createOptions('position', posList)]);
+
+      const distanceInput = document.createElement('input');
+      distanceInput.value = config.distance;
+      doms.push(['distance', distanceInput]);
+
+      const btn = document.createElement('button');
+      btn.textContent = '修改';
+      btn.onclick = () => {
+        let tmp = parseInt(rotateInput.value);
+        config.rotate = isNaN(tmp) ? config.rotate : tmp;
+
+        tmp = parseInt(distanceInput.value);
+        config.distance = isNaN(tmp) ? config.distance : tmp;
+
+        doms.forEach((arr) => {
+          if (arr[1]) {
+            if (arr[1].name) {
+              config[arr[1].name] = arr[1].value;
+            }
+          }
+        });
+
+        // console.log(config);
+        config.onChange();
+      };
+      doms.push(['', btn]);
+
+      doms.forEach((item) => {
+        if (item[0]) {
+          const span = document.createElement('span');
+          span.textContent = item[0] + ':';
+          span.style = 'margin-right:50px';
+          window.document.body.appendChild(span);
+        }
+        if (item[1]) {
+          window.document.body.appendChild(item[1]);
+        }
+        window.document.body.appendChild(document.createElement('br'));
+      });
+    </script>
+  </body>
+</html>

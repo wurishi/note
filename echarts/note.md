@@ -334,5 +334,17 @@
 
 - dispatchAction : {type: 'dataZoom'} 触发dataZoom事件
 
+## Bar Label Rotation
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-label-rotation)
+
+![bar-label-rotation](assets/bar-label-rotation.png)
+
+新的知识点：
+
+- toolbox.orient : 工具按钮是横排还是竖排.
+- dataView.readOnly : 数据视图的数据是否为只读.
+- rich : 可以为 formatter 配置自定义的模板样式.
+
 end
 
