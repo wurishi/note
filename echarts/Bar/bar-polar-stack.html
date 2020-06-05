@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar Polar Stack',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        // xAxis: {},
+        // yAxis: {},
+        polar: {},
+        legend: {},
+        angleAxis: {}, //
+        radiusAxis: {
+          //
+          type: 'category',
+          data: ['周一', '周二', '周三', '周四'],
+        },
+        series: [
+          {
+            type: 'bar',
+            data: [1, 2, 3, 4],
+            coordinateSystem: 'polar',
+            name: 'A',
+            stack: 'a',
+          },
+          {
+            type: 'bar',
+            data: [2, 4, 6, 8],
+            coordinateSystem: 'polar',
+            name: 'B',
+            stack: 'a',
+          },
+          {
+            type: 'bar',
+            data: [1, 2, 3, 4],
+            coordinateSystem: 'polar',
+            name: 'C',
+            stack: 'a',
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

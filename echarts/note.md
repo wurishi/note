@@ -383,5 +383,25 @@
 
 ![bar-polar](assets/bar-polar.png)
 
+## 极坐标系下的堆叠柱状图2 (Bar Polar Stack)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-polar-stack)
+
+![bar-polar-stack](assets/bar-polar-stack.png)
+
+新的知识点：
+
+- radiusAxis : 半径坐标轴.
+
+## 极坐标系下的堆叠柱状图3 (Bar Polar Stack Radial)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-polar-stack-radial)
+
+![bar-polar-stack-radial](assets/bar-polar-stack-radial.png)
+
+新的知识点：
+
+- angleAxis : 扇形坐标轴.
+
 end
 
