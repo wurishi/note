@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../node_modules/echarts-gl/dist/echarts-gl.min.js"></script>
+    <script src="./life-expectancy-table-json.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar with Dataset',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        grid3D: {},
+        tooltip: {},
+        xAxis3D: {
+          type: 'category',
+        },
+        yAxis3D: {
+          type: 'category',
+        },
+        zAxis3D: {},
+        visualMap: {
+          max: 1e8,
+          dimension: 'Population',
+        },
+        dataset: {
+          dimensions: [
+            'Income',
+            'Life Expectancy',
+            'Population',
+            'Country',
+            { name: 'Year', type: 'ordinal' },
+          ],
+          source: source.json_let,
+        },
+        series: [
+          {
+            type: 'bar3D',
+            shading: 'lambert',
+            encode: {
+              x: 'Year',
+              y: 'Country',
+              z: 'Life Expectancy',
+              tooltip: [0, 1, 2, 3, 4],
+            },
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
