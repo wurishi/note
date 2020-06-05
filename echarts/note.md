@@ -445,4 +445,11 @@
 
 ![bar-waterfall2](assets/bar-waterfall2.png)
 
+## World Total Population
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-y-category)
+
+![world-total-population](assets/world-total-population.png)
+
 end
+
