@@ -451,5 +451,17 @@
 
 ![world-total-population](assets/world-total-population.png)
 
+## 堆叠条形图 (Bar Y Stack)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-y-category-stack)
+
+![bar-y-stack](assets/bar-y-stack.png)
+
+## Rainfall and Evaporation
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar1)
+
+![rainfall-and-evaporation](assets/rainfall-and-evaporation.png)
+
 end
 

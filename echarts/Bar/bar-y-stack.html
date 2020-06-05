@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar Y Stack',
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+        },
+        legend: {},
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {},
+        yAxis: {
+          type: 'category',
+          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        },
+        series: [
+          {
+            name: '直接访问',
+            type: 'bar',
+            stack: 'a',
+            label: { show: true, position: 'insideRight' },
+            data: d3.range(7).map(d3.randomUniform(300, 390)).map(Math.floor),
+          },
+          {
+            name: '邮件营销',
+            type: 'bar',
+            stack: 'a',
+            label: { show: true, position: 'insideRight' },
+            data: d3.range(7).map(d3.randomUniform(90, 230)).map(Math.floor),
+          },
+          {
+            name: '联盟广告',
+            type: 'bar',
+            stack: 'a',
+            label: { show: true, position: 'insideRight' },
+            data: d3.range(7).map(d3.randomUniform(180, 330)).map(Math.floor),
+          },
+          {
+            name: '视频广告',
+            type: 'bar',
+            stack: 'a',
+            label: { show: true, position: 'insideRight' },
+            data: d3.range(7).map(d3.randomUniform(150, 410)).map(Math.floor),
+          },
+          {
+            name: '搜索引擎',
+            type: 'bar',
+            stack: 'a',
+            label: {
+              show: true,
+              position: 'insideRight',
+            },
+            data: d3.range(7).map(d3.randomUniform(820, 1330)).map(Math.floor),
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
