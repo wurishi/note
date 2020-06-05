@@ -439,6 +439,10 @@
 
 ![bar-waterfall](assets/bar-waterfall.png)
 
+## 阶梯瀑布图 (Bar Waterfall2)
 
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-waterfall2)
+
+![bar-waterfall2](assets/bar-waterfall2.png)
 
 end

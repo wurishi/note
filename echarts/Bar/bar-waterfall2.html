@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar Waterfall2',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          formatter: (params) => {
+            const tar = params[1].value !== '-' ? params[1] : params[0];
+            return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value;
+          },
+        },
+        legend: {
+          data: ['支出', '收入'],
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {
+          type: 'category',
+          splitLine: { show: false },
+          data: ((d) => {
+            const list = [];
+            for (let i = 1; i <= d; i++) {
+              list.push('11月' + i + '日');
+            }
+            return list;
+          })(11),
+        },
+        yAxis: {},
+        series: [
+          {
+            name: '辅助',
+            type: 'bar',
+            stack: 'a',
+            itemStyle: {
+              color: 'transparent',
+            },
+            data: [
+              0,
+              900,
+              1245,
+              1530,
+              1376,
+              1376,
+              1511,
+              1689,
+              1856,
+              1495,
+              1292,
+            ],
+          },
+          {
+            name: '收入',
+            type: 'bar',
+            stack: 'a',
+            label: {
+              show: true,
+              position: 'top',
+            },
+            data: [900, 345, 393, '-', '-', 135, 178, 286, '-', '-', '-'],
+          },
+          {
+            name: '支出',
+            type: 'bar',
+            stack: 'a',
+            label: {
+              show: true,
+              position: 'bottom',
+            },
+            data: ['-', '-', '-', 108, 154, '-', '-', '-', 119, 361, 203],
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
