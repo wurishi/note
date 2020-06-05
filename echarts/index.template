@@ -20,6 +20,11 @@
         title: {
           text:'',
         },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
         xAxis: {},
         yAxis: {},
         series: [
