@@ -357,5 +357,15 @@
 - echarts.format.addCommas : 数字 1000 转化成 1,000 .
 - large : 当数据量过大时，设置 large=true 可以让 echart 优化显示（即分批显示数据）否则图表会长时间卡顿.
 
+## 正负条形图 (Bar Negative)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-negative)
+
+![bar-negative](assets/bar-negative.png)
+
+新的知识点：
+
+- tooltip.axisPointer.type : 默认为 line (直线), 其他参数 shadow .
+
 end
 

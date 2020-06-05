@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar Negative',
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' }, //
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        legend: {},
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {},
+        yAxis: {
+          type: 'category',
+          axisTick: { show: false },
+          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        },
+        series: [
+          {
+            name: '利润',
+            type: 'bar',
+            label: { show: true, position: 'inside' },
+            data: d3.range(7).map(d3.randomUniform(170, 250)).map(Math.floor),
+          },
+          {
+            name: '收入',
+            type: 'bar',
+            stack: '总量',
+            label: { show: true },
+            data: d3.range(7).map(d3.randomUniform(300, 450)).map(Math.floor),
+          },
+          {
+            name: '支出',
+            type: 'bar',
+            stack: '总量',
+            label: { show: true, position: 'left' },
+            data: d3.range(7).map(d3.randomUniform(-100, -250)).map(Math.floor), // 应该是上面二组数据相减的结果
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
