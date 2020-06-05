@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar Waterfall',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          formatter: (params) => {
+            const [, tar] = params;
+            return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value;
+          },
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {
+          splitLine: { show: false },
+          data: ['总费用', '房租', '水电费', '交通费', '伙食费', '日用品数'],
+        },
+        yAxis: {},
+        series: [
+          {
+            type: 'bar',
+            stack: 'a',
+            itemStyle: {
+              barBorderColor: 'transparent',
+              color: 'transparent',
+            },
+            data: [0, 1700, 1400, 1200, 300, 0],
+          },
+          {
+            name: '生活费',
+            type: 'bar',
+            stack: 'a',
+            label: {
+              show: true,
+              position: 'inside',
+            },
+            data: [2900, 1200, 300, 200, 900, 300],
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

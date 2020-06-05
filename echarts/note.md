@@ -433,4 +433,12 @@
 
 - axisTick.alignWithLabel : 刻度与 label 对齐.
 
+## 深圳月最低生活费组成 (Bar Waterfall)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-waterfall)
+
+![bar-waterfall](assets/bar-waterfall.png)
+
+
+
 end
