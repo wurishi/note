@@ -413,5 +413,24 @@
 
 - backgroundColor.image : 可以指定图片.
 
-end
+## 堆叠柱状图 (Bar Stack)
 
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-stack)
+
+![bar-stack](assets/bar-stack.png)
+
+新的知识点：
+
+- barWidth : 可以指定 bar 的宽度.
+
+## 坐标轴刻度与标签对齐 (Bar Tick Align)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-tick-align)
+
+![bar-tick-align](assets/bar-tick-align.png)
+
+新的知识点：
+
+- axisTick.alignWithLabel : 刻度与 label 对齐.
+
+end

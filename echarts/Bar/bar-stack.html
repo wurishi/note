@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const yq = d3.range(7).map(d3.randomUniform(860, 1700)).map(Math.floor);
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar Stack',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+        },
+        legend: {
+          top: 'bottom',
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '10%',
+          containLabel: true,
+        },
+        xAxis: {
+          type: 'category',
+          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        },
+        yAxis: {},
+        series: [
+          {
+            name: '直接访问',
+            type: 'bar',
+            data: d3.range(7).map(d3.randomUniform(300, 400)).map(Math.floor),
+          },
+          {
+            name: '邮件营销',
+            type: 'bar',
+            stack: 'ad',
+            data: d3.range(7).map(d3.randomUniform(90, 230)).map(Math.floor),
+          },
+          {
+            name: '联盟广告',
+            type: 'bar',
+            stack: 'ad',
+            data: d3.range(7).map(d3.randomUniform(180, 330)).map(Math.floor),
+          },
+          {
+            name: '搜索引擎',
+            type: 'bar',
+            data: yq,
+            markLine: {
+              lineStyle: { type: 'dashed' },
+              data: [[{ type: 'min' }, { type: 'max', name: '最小到最大' }]],
+              label: {
+                formatter: '{b}',
+              },
+            },
+          },
+          {
+            name: '百度',
+            type: 'bar',
+            stack: 'yq',
+            data: yq.map((v) => Math.floor(v * 0.4)),
+            barWidth: 5, //
+          },
+          {
+            name: '谷歌',
+            type: 'bar',
+            stack: 'yq',
+            data: yq.map((v) => Math.floor(v * 0.3)),
+          },
+          {
+            name: '必应',
+            type: 'bar',
+            stack: 'yq',
+            data: yq.map((v) => Math.floor(v * 0.2)),
+          },
+          {
+            name: '其他',
+            type: 'bar',
+            stack: 'yq',
+            data: yq.map((v) => Math.floor(v * 0.1)),
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

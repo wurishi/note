@@ -18,19 +18,39 @@
       const myChart = echarts.init(main);
       const option = {
         title: {
-          text:'',
+          text: 'Bar Tick Align',
         },
+        color: ['#3398DB'],
         toolbox: {
           feature: {
             saveAsImage: {},
           },
         },
-        xAxis: {},
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          axisTick: {
+            alignWithLabel: true,
+          },
+        },
         yAxis: {},
         series: [
           {
-            type: '',
-            data: [],
+            type: 'bar',
+            barWidth: '60%',
+            data: d3.range(7).map(d3.randomUniform(10, 400)),
           },
         ],
       };
