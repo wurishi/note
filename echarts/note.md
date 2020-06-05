@@ -463,5 +463,11 @@
 
 ![rainfall-and-evaporation](assets/rainfall-and-evaporation.png)
 
+## Dynamic Data
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dynamic-data)
+
+![dynamic-data](assets/dynamic-data.png)
+
 end
 
