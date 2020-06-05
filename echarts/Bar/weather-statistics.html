@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const PATH = './';
+      const weatherIcons = {
+        Sunny: PATH + 'sunny_128.png',
+        Cloudy: PATH + 'cloudy_128.png',
+        Showers: PATH + 'showers_128.png',
+      };
+
+      // const img = document.createElement('img');
+      // img.src = weatherIcons.Sunny;
+      // document.body.appendChild(img);
+
+      const seriesLabel = {
+        normal: {
+          show: true,
+          textBorderColor: '#333',
+          textBorderWidth: 2,
+        },
+      };
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Weather Statistics',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+        },
+        grid: { left: 100 },
+        xAxis: {
+          name: 'Days',
+        },
+        yAxis: {
+          name: 'T',
+          type: 'category',
+          inverse: true,
+          data: ['Sunny', 'Cloudy', 'Showers'],
+          axisLabel: {
+            formatter: (value) => '{' + value + '| }\n{value|' + value + '}',
+            margin: 20,
+            rich: {
+              value: {
+                lineHeight: 30,
+                align: 'center',
+              },
+              Sunny: {
+                height: 40,
+                align: 'center',
+                backgroundColor: {
+                  image: weatherIcons.Sunny, //
+                },
+              },
+              Cloudy: {
+                height: 40,
+                align: 'center',
+                backgroundColor: {
+                  image: weatherIcons.Cloudy,
+                },
+              },
+              Showers: {
+                height: 40,
+                align: 'center',
+                backgroundColor: {
+                  image: weatherIcons.Showers,
+                },
+              },
+            },
+          },
+        },
+        series: [
+          {
+            name: 'City Alpha',
+            type: 'bar',
+            data: [165, 170, 30],
+            label: seriesLabel,
+            markPoint: {
+              symbolSize: 1,
+              symbolOffset: [0, '50%'],
+              label: {
+                formatter: '{a|{a}\n}{b|{b} }{c|{c}}',
+                backgroundColor: 'rgb(242,242,242)',
+                borderColor: '#aaa',
+                borderWidth: 1,
+                borderRadius: 4,
+                padding: [4, 10],
+                lineHeight: 26,
+                position: 'right',
+                distance: 20,
+                rich: {
+                  a: {
+                    align: 'center',
+                    color: '#fff',
+                    fontSize: 18,
+                    textShadowBlur: 2,
+                    textShadowColor: '#000',
+                    textShadowOffsetX: 0,
+                    textShadowOffsetY: 1,
+                    textBorderColor: '#333',
+                    textBorderWidth: 2,
+                  },
+                  b: {
+                    color: '#333',
+                  },
+                  c: {
+                    color: '#ff8811',
+                    textBorderColor: '#000',
+                    textBorderWidth: 1,
+                    fontSize: 22,
+                  },
+                },
+              },
+              data: [
+                { type: 'max', name: 'max days:' },
+                { type: 'min', name: 'min days:' },
+              ],
+            },
+          },
+          {
+            name: 'City Beta',
+            type: 'bar',
+            label: seriesLabel,
+            data: [150, 105, 110],
+          },
+          {
+            name: 'City Gamma',
+            type: 'bar',
+            label: seriesLabel,
+            data: [220, 82, 63],
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

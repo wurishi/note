@@ -403,5 +403,15 @@
 
 - angleAxis : 扇形坐标轴.
 
+## Weather Statistics
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-rich-text)
+
+![weather-statistics](assets/weather-statistics.png)
+
+新的知识点：
+
+- backgroundColor.image : 可以指定图片.
+
 end
 
