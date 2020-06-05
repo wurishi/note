@@ -377,5 +377,11 @@
 
 - link / sublink : 可以指定 title 中 text / subtext 的指向链接.
 
+## 极坐标系下的堆叠柱状图 (Bar Polar)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-polar-real-estate)
+
+![bar-polar](assets/bar-polar.png)
+
 end
 

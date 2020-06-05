@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const cities = [
+        '北京',
+        '上海',
+        '深圳',
+        '广州',
+        '苏州',
+        '杭州',
+        '南京',
+        '福州',
+        '青岛',
+        '济南',
+        '长春',
+        '大连',
+        '温州',
+        '郑州',
+        '武汉',
+        '成都',
+        '东莞',
+        '沈阳',
+        '烟台',
+      ];
+      const data = cities.map((_, i) => {
+        const low =
+          i == 0
+            ? 5000
+            : i == 1
+            ? 4000
+            : i == 2
+            ? 3000
+            : i == 3
+            ? 2500
+            : Math.floor(Math.random() * 1000 + 500);
+
+        const high = i == 1 ? 10000 : low * 2;
+        return [low, high, Math.floor((high + low) * 0.5)];
+      });
+      const barHeight = 50;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar Polar',
+        },
+        legend: {},
+        grid: { top: 100 },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        tooltip: {
+          show: true,
+          formatter: (params) => {
+            const id = params.dataIndex;
+            return `${cities[id]}<br/>最低：${data[id][0]}<br/>最高：${data[id][1]}<br/>平均：${data[id][2]}`;
+          },
+        },
+        angleAxis: {
+          type: 'category',
+          data: cities,
+        },
+        radiusAxis: {},
+        // xAxis: {},
+        // yAxis: {},
+        polar: {},
+        series: [
+          {
+            type: 'bar',
+            itemStyle: { color: 'transparent' },
+            data: data.map((d) => d[0]),
+            coordinateSystem: 'polar',
+            stack: '最大最小值',
+            silent: true,
+          },
+          {
+            type: 'bar',
+            data: data.map((d) => d[1] - d[0]),
+            coordinateSystem: 'polar',
+            name: '价格范围',
+            stack: '最大最小值',
+          },
+          {
+            type: 'bar',
+            itemStyle: { color: 'transparent' },
+            data: data.map((d) => d[2] - barHeight),
+            coordinateSystem: 'polar',
+            stack: '均值',
+            silent: true,
+            z: 10,
+          },
+          {
+            type: 'bar',
+            data: data.map((d) => barHeight * 2),
+            coordinateSystem: 'polar',
+            stack: '均值',
+            name: '均值',
+            barGap: '-100%',
+            z: 10,
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
