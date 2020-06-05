@@ -367,5 +367,15 @@
 
 - tooltip.axisPointer.type : 默认为 line (直线), 其他参数 shadow .
 
+## 交错正负轴标签 (Bar Negative2)
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar-negative2)
+
+![bar-negative2](assets/bar-negative2.png)
+
+新的知识点：
+
+- link / sublink : 可以指定 title 中 text / subtext 的指向链接.
+
 end
 

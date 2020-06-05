@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const labelRight = {
+        position: 'right',
+      };
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bar Negative2',
+          link: 'http://www.baidu.com', //
+          subtext: 'link test',
+          sublink: 'https://echarts.apache.org/zh/index.html', //
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+        },
+        grid: { top: 80, bottom: 30 },
+        xAxis: {
+          position: 'top',
+          splitLine: {
+            lineStyle: { type: 'dashed' },
+          },
+        },
+        yAxis: {
+          type: 'category',
+          axisLine: { show: false },
+          axisLabel: { show: false },
+          axisTick: { show: false },
+          splitLine: { show: false },
+          data: [
+            'ten',
+            'nine',
+            'eight',
+            'seven',
+            'six',
+            'five',
+            'four',
+            'three',
+            'two',
+            'one',
+          ],
+        },
+        series: [
+          {
+            type: 'bar',
+            label: { show: true, formatter: '{b}' },
+            data: [
+              { value: -0.07, label: labelRight },
+              { value: -0.09, label: labelRight },
+              0.2,
+              0.44,
+              { value: -0.23, label: labelRight },
+              0.08,
+              { value: -0.17, label: labelRight },
+              0.47,
+              { value: -0.36, label: labelRight },
+              0.18,
+            ],
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
