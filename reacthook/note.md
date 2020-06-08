@@ -918,3 +918,83 @@ const value = useContext(MyContext);
 const [state, dispatch] = useReducer(reducer, initialArg, init);
 ```
 
+它是 `useState` 的替代方案. 它接收一个形如 (state, action) => newState 的 reducer, 并返回当前的 state 以及与其配套的 dispatch 方法.
+
+#### 何时使用 useReducer 替代 useState ?
+
+- 在某些场景下, useReducer 会比 useState 更适用, 例如 state 逻辑较复杂且包含多个子值, 或者下一个 state 依赖于之前的 state 等.
+- 使用 useReducer 还能给那些会触发深更新的组件做性能优化, 因为<u>你可以向子组件传递 dispatch 而不是回调函数</u>. (具体原因参考后面小节: 如何避免向下传递回调?)
+
+[代码 7-usereducer](src/7-usereducer.js)
+
+> 注意: React 会确保 dispatch 函数的标识是稳定的, 并且不会在组件重新渲染时改变.
+
+#### 指定初始 state
+
+最简单的方法就是将初始 state 作为第二个参数传入 `useReducer`.
+
+> 注意: React 不使用 state = initialState 这一套由 Redux 推广开来的参数约定, 当然如果特别喜欢这种参数约定, 可以通过调用 useReducer(reducer, undefeind, reducer) 来模拟.
+
+#### 惰性初始化
+
+也可以选择惰性创建初始 state. 为此, 需要将 init 函数作为 useReducer 的第三个参数传入.
+
+```javascript
+function init(initialCount) {
+	return {count: initialCount}
+}
+// ... reducer
+// ... function component
+const [] = useReducer(reducer, initialCount, init);
+```
+
+#### 跳过 dispatch
+
+和 useState 类似, 如果 Reducer Hook 的返回值与当前的 state 相同, React 也会跳过子组件的渲染及副作用的执行.
+
+### 2-2 useCallback
+
+```javascript
+const memoizedCallback = useCallback(
+	() => {
+        doSomething(a,b);
+    },
+    [a, b]
+);
+```
+
+这样将返回一个 memoized 回调函数. 该回调函数仅在某个依赖项改变时才会更新. 当把这个回调函数传递给使用相同的依赖项而避免非必要渲染的子组件时, 会非常有用.
+
+> useCallback(fn, deps) 相当于 useMemo(() => fn, deps) .
+
+### 3-3 useMemo
+
+```javascript
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+将返回一个 memoized 值. 把 "创建" 函数和依赖项数组作为参数传入 useMemo , 它仅会在某个依赖项改变时才重新计算 memoized 值. 这种优化有助于避免在每次渲染时都进行高开销的计算.
+
+> 注意: 
+>
+> 传入 useMemo 的函数会在渲染期间执行. 不要在这个函数内部执行与渲染无关的操作, 诸如副作用这类的操作属于 useEffect 的适用范畴, 而不是 useMemo.
+>
+> 如果没有提供依赖项数组, useMemo 在每次渲染时都会计算新的值.
+>
+> 你可以把 useMemo 作为性能优化的手段, 但不要把它当成语义上的保证. 将来, React 可能会选择 "遗忘" 以前的一些 memoized 值, 并在下次渲染时重新计算它们, 比如为离屏组件释放内存. (所以 useMemo 在一个生命周期内, 即使依赖项一直是相同的, 它也不能保证只执行一次, 所以 useMemo 可以作为性能优化的手段, 但可能并不能满足仅调用一次这样的业务需求)
+
+### 3-4 useRef
+
+```javascript
+const refContainer = useRef(initialValue);
+```
+
+useRef 返回一个可变的 ref 对象, 其 `.current`属性被初始化为传入的参数 (initialValue) . 返回的 ref 对象在组件的整个生命周期内保持不变.
+
+一个常见的用例便是命令式地访问子组件:
+
+[代码 7-useref](src/7-useref.js)
+
+本质上, useRef 就像是可以在其 .current 属性中保存一个可变值的 "盒子".
+
+当 ref 对象内容发生变化时, useRef 并*不会通知*你. 变更 .current 属性不会引发组件重新渲染. 如果想要在 React 绑定或解绑 DOM 节点的 ref 时运行某些代码, 则需要使用 <u>回调 ref</u> 来实现.
