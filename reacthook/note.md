@@ -967,7 +967,7 @@ const memoizedCallback = useCallback(
 
 > useCallback(fn, deps) 相当于 useMemo(() => fn, deps) .
 
-### 3-3 useMemo
+### 2-3 useMemo
 
 ```javascript
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
@@ -983,7 +983,7 @@ const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 >
 > 你可以把 useMemo 作为性能优化的手段, 但不要把它当成语义上的保证. 将来, React 可能会选择 "遗忘" 以前的一些 memoized 值, 并在下次渲染时重新计算它们, 比如为离屏组件释放内存. (所以 useMemo 在一个生命周期内, 即使依赖项一直是相同的, 它也不能保证只执行一次, 所以 useMemo 可以作为性能优化的手段, 但可能并不能满足仅调用一次这样的业务需求)
 
-### 3-4 useRef
+### 2-4 useRef
 
 ```javascript
 const refContainer = useRef(initialValue);
@@ -998,3 +998,49 @@ useRef 返回一个可变的 ref 对象, 其 `.current`属性被初始化为传�
 本质上, useRef 就像是可以在其 .current 属性中保存一个可变值的 "盒子".
 
 当 ref 对象内容发生变化时, useRef 并*不会通知*你. 变更 .current 属性不会引发组件重新渲染. 如果想要在 React 绑定或解绑 DOM 节点的 ref 时运行某些代码, 则需要使用 <u>回调 ref</u> 来实现.
+
+### 2-5 useImperativeHandle
+
+```javascript
+useImperativeHandle(ref, createHandle, [deps])
+```
+
+`useImperativeHandle` 可以让你在使用 ref 时自定义暴露给父组件的实例值. 在大多数情况下, 应当避免使用 ref 这样的命令式代码. `useImperativeHandle` 应当与 `forwardRef` 一起使用.
+
+```javascript
+function FancyInput(props, ref) {
+    const inputRef = useRef();
+    useImperativeHandle(ref, () => ({
+        focus: () => {
+            inputRef.current.focus();
+        }
+    }));
+	return <input ref={inputRef} />;
+}
+FancyInput = forwardRef(FancyInput);
+
+// 渲染 <FancyInput ref={inputRef} /> 的父组件可以调用 inputRef.current.focus()
+```
+
+### 2-6 useLayoutEffect
+
+其函数签名与 `useEffect` 相同, 但它会在所有的 DOM 变更之后同步调用 effect. 可以使用它来读取 DOM 布局并同步触发重渲染. 在浏览器执行绘制之前, useLayoutEffect 内部的更新计划将被同步刷新.
+
+应该尽可能的使用标准的 `useEffect` 以避免阻塞视觉更新.
+
+### 2-7 useDebugValue
+
+```javascript
+useDebugValue(value)
+```
+
+useDebugValue 可用于在 React 开发者工具中显示自定义 hook 标签.
+
+#### 延迟格式化 debug 值
+
+在某些情况下, 格式化值的显示可能是一项开销很大的操作. 除非需要检查 Hook, 否则没有必要这么做. 因此, useDebugValue 接受一个格式化函数作为可选的第二个参数. 该函数只有在 Hook 被检查时才会被调用. 它接受 debug 值作为参数, 并且会返回一个格式化的显示值.
+
+```javascript
+useDebugValue(data, data => data.toDateString());
+```
+

@@ -8,7 +8,7 @@
 
 # echarts
 
-参考资料: [ECharts 官网 Examples](https://echarts.apache.org/examples/zh/index.html) *(进行中)*
+参考资料: [ECharts 官网 Examples](https://echarts.apache.org/examples/zh/index.html) _(进行中)_
 
 # echarts 可视化工具
 
@@ -20,7 +20,7 @@
 
 # reacthook
 
-参考资料: [React Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 6/8)_
+参考资料: [React Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 7/8)_
 
 # rxjs30
 
@@ -56,4 +56,4 @@
 
 # zrender
 
-参考资料: [ZRender 官网  Examples](https://ecomfe.github.io/zrender-doc/public/examples.html) (计划中)
+参考资料: [ZRender 官网 Examples](https://ecomfe.github.io/zrender-doc/public/examples.html) (计划中)
