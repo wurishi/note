@@ -14,13 +14,25 @@
 
 思路: 类似 echarts example 网站，用一套可视化 UI 代替代码实现编辑功能，并最终提供一个代码输出的功能。 (计划中)
 
+# electron
+
+electron
+
 # javascriptbook
 
 参考资料: 《你所不知道的 Javascript》(计划中)
 
+# reactconcurrent
+
+concurrent 实验
+
 # reacthook
 
 参考资料: [React Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 7/8)_
+
+# rust
+
+Ruet
 
 # rxjs30
 
@@ -37,6 +49,10 @@
 # u3decs
 
 参考资料: [Unity 中的 ECS 编程](https://blog.csdn.net/andrewfan/category_8967683.html) (计划中)
+
+# u3djobsys
+
+U3D JobSystem
 
 # unity1
 
