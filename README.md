@@ -28,7 +28,7 @@ concurrent 实验
 
 # reacthook
 
-参考资料: [React Hook](https://react.docschina.org/docs/hooks-overview.html) _(进行中 7/8)_
+参考资料: [React Hook](https://react.docschina.org/docs/hooks-overview.html) **(完成)**
 
 # rust
 

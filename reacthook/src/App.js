@@ -8,11 +8,12 @@ import Example7 from './7-usecontext';
 import Example7_1 from './7-usereducer';
 import Example7_2 from './7-useref';
 import Example8 from './8-2.7';
+import Example8_1 from './8-3.3';
 
 function App() {
   return (
     <div className='App'>
-      <Example8 />
+      <Example8_1 />
     </div>
   );
 }
