@@ -521,5 +521,11 @@
 
 - seriesLayoutBy: 系列数据是依据 dataset 中的行还是列. 默认 column, row: 行
 
+## Encode and Matrix
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dataset-encode1&theme=light)
+
+![encode-and-matrix](assets/encode-and-matrix.png)
+
 end
 
