@@ -481,5 +481,25 @@
 
 - dataset: 可以直接指定数据源, 让 series 序列可以只关心图表层面.
 
+## Dataset in Object Array
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dataset-simple1)
+
+![dataset-in-object-array](assets/dataset-in-object-array.png)
+
+新的知识点:
+
+- dimensions: 定义 series.data 或者 dataset.source 的每个维度的信息. 默认会从 dataset 的第一行/列中获取维度信息, 但如果定义了 dimensions, 将不再会将 dataset 的第一行/列作为维度信息.
+
+## Default Arrangement
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dataset-default)
+
+![default-arrangement](assets/default-arrangement.png)
+
+新的知识点:
+
+- encode: 指定 datasource 中的具体维度.
+
 end
 
