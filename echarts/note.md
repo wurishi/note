@@ -499,7 +499,17 @@
 
 新的知识点:
 
-- encode: 指定 datasource 中的具体维度.
+- encode: value 指定 datasource 中的具体数据.
+
+## Simple Encode
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dataset-encode0&theme=light)
+
+![simple-encode](assets/simple-encode.png)
+
+新的知识点:
+
+- encode: bar 类图表, 通过 x, y 指定 datasource 中的具体维度.
 
 end
 
