@@ -537,7 +537,19 @@
 
 ## 3D Bar with Dataset
 
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bar3d-dataset&gl=1)
+
 ![bar-with-dataset](assets/bar-with-dataset.png)
+
+## Image to Bar3D
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=image-to-bar3d&gl=1)
+
+![image-to-bar3d](assets/image-to-bar3d.png)
+
+通过 canvas.drawImage 拿到图片的像素点, 通过计算像素点的灰度值, 决定 bar 的 z(即高度).
+
+*注意: 图片可以通过 img.src 设置 base64, 但是加载天空盒仍然需要一个基础的 webserver 环境.*
 
 end
 
