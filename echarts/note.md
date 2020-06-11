@@ -527,5 +527,11 @@
 
 ![encode-and-matrix](assets/encode-and-matrix.png)
 
+## Share Dataset
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dataset-link)
+
+![share-dataset1](assets/share-dataset1.png)
+
 end
 
