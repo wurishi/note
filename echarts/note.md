@@ -533,5 +533,11 @@
 
 ![share-dataset1](assets/share-dataset1.png)
 
+# 3D 柱状图 (3D Bar)
+
+## 3D Bar with Dataset
+
+![bar-with-dataset](assets/bar-with-dataset.png)
+
 end
 
