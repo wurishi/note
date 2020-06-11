@@ -469,6 +469,12 @@
 
 ![dynamic-data](assets/dynamic-data.png)
 
+## Mixed Line and Bar
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=mix-line-bar)
+
+![mixed-line-and-bar](assets/mixed-line-and-bar.png)
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset
