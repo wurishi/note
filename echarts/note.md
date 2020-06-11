@@ -511,5 +511,15 @@
 
 - encode: bar 类图表, 通过 x, y 指定 datasource 中的具体维度.
 
+## Series Layout By Column or Row
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dataset-series-layout-by&theme=light)
+
+![series-layout-by-column-or-row](assets/series-layout-by-column-or-row.png)
+
+新的知识点:
+
+- seriesLayoutBy: 系列数据是依据 dataset 中的行还是列. 默认 column, row: 行
+
 end
 

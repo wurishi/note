@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Series Layout by Column or Row',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        legend: {
+          top: 'bottom',
+        },
+        tooltip: {},
+        dataset: {
+          source: [
+            ['product', '2012', '2013', '2014', '2015'],
+            ['Matcha Latte', 41.1, 30.4, 65.1, 53.3],
+            ['Milk Tea', 86.5, 92.1, 85.7, 83.1],
+            ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4],
+          ],
+        },
+        xAxis: [
+          { type: 'category', gridIndex: 0 },
+          { type: 'category', gridIndex: 1 },
+        ],
+        yAxis: [{ gridIndex: 0 }, { gridIndex: 1 }],
+        grid: [{ bottom: '55%' }, { top: '55%' }],
+        series: [
+          {
+            type: 'bar',
+            seriesLayoutBy: 'row', //
+          },
+          {
+            type: 'bar',
+            seriesLayoutBy: 'row',
+          },
+          {
+            type: 'bar',
+            seriesLayoutBy: 'row',
+          },
+          {
+            type: 'bar',
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+          },
+          {
+            type: 'bar',
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+          },
+          {
+            type: 'bar',
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+          },
+          {
+            type: 'bar',
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
