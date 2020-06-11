@@ -469,5 +469,17 @@
 
 ![dynamic-data](assets/dynamic-data.png)
 
+# 数据集 (Dataset)
+
+## Simple Example of Dataset
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=dataset-simple0)
+
+![simple-example-of-dataset](assets/simple-example-of-dataset.png)
+
+新的知识点:
+
+- dataset: 可以直接指定数据源, 让 series 序列可以只关心图表层面.
+
 end
 
