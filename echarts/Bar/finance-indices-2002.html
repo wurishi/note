@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./finance-indices-2002-data.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 800;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        baseOption: {
+          timeline: {
+            //
+            axisType: 'category',
+            autoPlay: true,
+            playInterval: 1000,
+            data: timelineData,
+            label: {
+              formatter: (s) => new Date(s).getFullYear(),
+            },
+          },
+          title: {
+            text: 'Finance Indices 2002',
+            left: 'center',
+          },
+          tooltip: {},
+          legend: {
+            left: 'left',
+            orient: 'vertical',
+            selected: {
+              //
+              GDP: false,
+              金融: false,
+              房地产: false,
+            },
+          },
+          calculable: true,
+          grid: {
+            top: 80,
+            bottom: 100,
+            left: 150,
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'shadow',
+                label: {
+                  formatter: (params) => params.value.replace('\n', ''),
+                },
+              },
+            },
+          },
+          xAxis: {
+            type: 'category',
+            axisLabel: { interval: 0 },
+            data: xAxisData,
+            splitLine: { show: false },
+          },
+          yAxis: {
+            name: 'GDP (亿元)',
+          },
+          series: [
+            //
+            { name: 'GDP', type: 'bar' },
+            { name: '金融', type: 'bar' },
+            { name: '房地产', type: 'bar' },
+            { name: '第一产业', type: 'bar' },
+            { name: '第二产业', type: 'bar' },
+            { name: '第三产业', type: 'bar' },
+            {
+              name: 'GDP占比',
+              type: 'pie',
+              center: ['75%', '35%'],
+              radius: '28%',
+              z: 100,
+            },
+          ],
+        },
+        options: options,
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

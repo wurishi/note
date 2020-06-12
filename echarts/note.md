@@ -475,6 +475,18 @@
 
 ![mixed-line-and-bar](assets/mixed-line-and-bar.png)
 
+## Finance Indices 2002
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=mix-timeline-finance)
+
+![finance-indices-2002](assets/finance-indices-2002.png)
+
+新的知识点:
+
+- timeline: 时间轴功能.
+- symbol: 设置符号形状, diamond 菱形.
+- legend.selected: 设置图示默认是否选中.
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset
