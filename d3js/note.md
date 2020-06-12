@@ -414,13 +414,17 @@ D3.js 中一些常见的图形：
 
 ## https://observablehq.com/@d3/gallery
 
-## Analysis - Moving Average
+# Analysis 
+
+## Moving Average
 
 [参考](https://observablehq.com/@d3/moving-average)
 
 ![moving-average](assets/moving-average.jpg)
 
-## Animation - Animated Treemap
+# Animation 
+
+## Animated Treemap
 
 [参考](https://observablehq.com/@d3/animated-treemap)
 
@@ -435,7 +439,7 @@ D3.js 中一些常见的图形：
 - d3.tsvParse() : tsv 转换
 - d3.nest() : 将数组中某些关联数据组成树状结构。如：`[{name:'张三', value: 100, type:1}, {name:'张三', value:50, type:2}] 可以转换为 [{key:'张三',values:[...包含所有name为张三的数据]}]`
 
-## Animation - Connected Scatterplot
+## Connected Scatterplot
 
 [参考](https://observablehq.com/@d3/connected-scatterplot)
 
@@ -445,103 +449,109 @@ D3.js 中一些常见的图形：
 
 d3.curve(d3.curveCatmullRom) : 画弧线
 
-## Animation - The Wealth & Health of Nations
+## The Wealth & Health of Nations
 
 [参考](https://observablehq.com/@mbostock/the-wealth-health-of-nations)
 
 ![the-wealth-health-of-nations](assets/the-wealth-health-of-nations.png)
 
-## Animation - Scatterplot Tour
+## Scatterplot Tour
 
 [参考](https://observablehq.com/@d3/scatterplot-tour)
 
 ![scatterplot-tour](assets/scatterplot-tour.png)
 
-## Animation - Bar Chart Race
+## Bar Chart Race
 
 [参考](https://observablehq.com/@d3/bar-chart-race)
 
 ![bar-chart-race](assets/bar-chart-race.png)
 
-## Animation - Stacked to Grouped Bars
+## Stacked to Grouped Bars
 
 [参考](https://observablehq.com/@d3/stacked-to-grouped-bars)
 
 ![stacked-to-grouped-bars](assets/stacked-to-grouped-bars.png)
 
-## Annotation - Inline Labels
+# Annotation
+
+## Inline Labels
 
 [参考](https://observablehq.com/@d3/inline-labels)
 
 ![inline-labels](assets/inline-labels.jpg)
 
-## Areas - Area Chart
+# Areas
+
+## Area Chart
 
 [参考](https://observablehq.com/@d3/area-chart)
 
 ![area-chart](assets/area-chart.png)
 
-## Areas - Area with Missing Data
+## Area with Missing Data
 
 [参考](https://observablehq.com/@d3/area-with-missing-data)
 
 ![area-with-missing-data](assets/area-with-missing-data.png)
 
-## Areas - Stacked Area Chart
+## Stacked Area Chart
 
 [参考](https://observablehq.com/@d3/stacked-area-chart)
 
 ![stacked-area-chart](assets/stacked-area-chart.png)
 
-## Areas - Normalized Stacked Area Chart
+## Normalized Stacked Area Chart
 
 [参考](https://observablehq.com/@d3/normalized-stacked-area-chart)
 
 ![normalized-stacked-area-chart](assets/normalized-stacked-area-chart.png)
 
-## Areas - US Population by State
+## US Population by State
 
 [参考](https://observablehq.com/@mbostock/u-s-population-by-state-1790-1990)
 
 ![us-population-by-state](assets/us-population-by-state.png)
 
-## Areas - Streamgraph
+## Streamgraph
 
 [参考](https://observablehq.com/@d3/streamgraph)
 
 ![streamgraph](assets/streamgraph.png)
 
-## Areas - Difference Chart
+## Difference Chart
 
 [参考](https://observablehq.com/@d3/difference-chart)
 
 ![difference-chart](assets/difference-chart.png)
 
-## Areas - Band Chart
+## Band Chart
 
 [参考](https://observablehq.com/@d3/band-chart)
 
 ![band-chart](assets/band-chart.png)
 
-## Areas - Ridgeline Plot
+## Ridgeline Plot
 
 [参考](https://observablehq.com/@d3/ridgeline-plot)
 
 ![ridgeline-plot](assets/ridgeline-plot.png)
 
-## Areas - Horizon Chart
+## Horizon Chart
 
 [参考](https://observablehq.com/@d3/horizon-chart)
 
 ![horizon-chart](assets/horizon-chart.png)
 
-## Areas - Realtime Horizon Chart
+## Realtime Horizon Chart
 
 [参考](https://observablehq.com/@d3/realtime-horizon-chart)
 
 ![realtime-horizon-chart](assets/realtime-horizon-chart.png)
 
-## Bars - Bar Chart
+# Bars
+
+## Bar Chart
 
 [参考](https://observablehq.com/@d3/bar-chart)
 
@@ -552,79 +562,81 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 - d3.scaleBand() : 波段比例尺
 - bandwidth() : 获得波段平均分配的宽度
 
-## Bars - Horizontal Bar Chart
+## Horizontal Bar Chart
 
 [参考](https://observablehq.com/@d3/horizontal-bar-chart)
 
 ![horizontal-bar-chart](assets/horizontal-bar-chart.png)
 
-## Bars - Diverging Bar Chart
+## Diverging Bar Chart
 
 [参考](https://observablehq.com/@d3/diverging-bar-chart)
 
 ![diverging-bar-chart](assets/diverging-bar-chart.png)
 
-## Bars - Stacked Bar Chart
+## Stacked Bar Chart
 
 [参考](https://observablehq.com/@d3/stacked-bar-chart)
 
 ![stacked-bar-chart](assets/stacked-bar-chart.png)
 
-## Bars - Stacked Normalized Horizontal Bar Chart
+## Stacked Normalized Horizontal Bar Chart
 
 [参考](https://observablehq.com/@d3/stacked-normalized-horizontal-bar)
 
 ![stacked-normalized-horizontal-bar-chart](assets/stacked-normalized-horizontal-bar-chart.png)
 
-## Bars - Grouped Bar Chart
+## Grouped Bar Chart
 
 [参考](https://observablehq.com/@d3/grouped-bar-chart)
 
 ![grouped-bar-chart](assets/grouped-bar-chart.png)
 
-## Bars - Diverging Stacked Bar Chart
+## Diverging Stacked Bar Chart
 
 [参考](https://observablehq.com/@d3/diverging-stacked-bar-chart)
 
 ![diverging-stacked-bar-chart](assets/diverging-stacked-bar-chart.png)
 
-## Bars - Marimekko Chart
+## Marimekko Chart
 
 [参考](https://observablehq.com/@d3/marimekko-chart)
 
 ![marimekko-chart](assets/marimekko-chart.png)
 
-## Bars - World History Timeline
+## World History Timeline
 
 [参考](https://observablehq.com/@tezzutezzu/world-history-timeline)
 
 ![world-history-timeline](assets/world-history-timeline.png)
 
-## Bars - Calendar View
+## Calendar View
 
 [参考](https://observablehq.com/@d3/calendar-view)
 
 ![calendar-view](assets/calendar-view.png)
 
-## Bars - The Impact of Vaccines
+## The Impact of Vaccines
 
 [参考](https://observablehq.com/@mbostock/the-impact-of-vaccines)
 
 ![the-impact-of-vaccines](assets/the-impact-of-vaccines.png)
 
-## Bars - Electricity Usage, 2019
+## Electricity Usage, 2019
 
 [参考](https://observablehq.com/@mbostock/electric-usage-2019)
 
 ![electricity-usage-2019](assets/electricity-usage-2019.png)
 
-## Bars - Revenue by Music Format
+## Revenue by Music Format
 
 [参考](https://observablehq.com/@mbostock/revenue-by-music-format-1973-2018)
 
 ![revenue-by-music-format](assets/revenue-by-music-format.png)
 
-## Dots - Scatterplot
+# Dots 
+
+## Scatterplot
 
 [参考](https://observablehq.com/@d3/scatterplot)
 
@@ -635,7 +647,7 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 - d3.scaleLinear().ticks() : 返回刻度列表，可以以这个列表作为数据继续操作
 - circle : 圆形、点元素
 
-## Dots - Scatterplot with Shapes
+## Scatterplot with Shapes
 
 [参考](https://observablehq.com/@d3/scatterplot-with-shapes)
 
@@ -646,7 +658,7 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 - d3.symbols() : 获取 d3 默认提供的一批符号 shapes
 - d3.symbol().type()() : 创建一个符号 shape
 
-## Dots - Scatterplot Matrix
+## Scatterplot Matrix
 
 [参考](https://observablehq.com/@d3/scatterplot-matrix)
 
@@ -656,49 +668,61 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 - d3.cross() : 将二个数组的值交叉组成一个数组，如 [1,2],[3,4] 将组成 [1,3],[1,4],[2,3],[2,4]
 
-## Dots - Dot Plot
+## Dot Plot
 
 [参考](https://observablehq.com/@d3/dot-plot)
 
 ![dot-plot](assets/dot-plot.png)
 
-## Dots - Global Temperature Trends
+## Global Temperature Trends
 
 [参考](https://observablehq.com/@mbostock/global-temperature-trends)
 
 ![global-temperature-trends](assets/global-temperature-trends.png)
 
-## Dots - Bubble Map
+## Bubble Map
 
 [参考](https://observablehq.com/@d3/bubble-map)
 
 ![bubble-map](assets/bubble-map.png)
 
-## Dots - Bubble Chart
+## Bubble Chart
 
 [参考](https://observablehq.com/@d3/bubble-chart)
 
 ![bubble-chart](assets/bubble-chart.png)
 
-## Dots - Beeswarm
+## Beeswarm
 
 [参考](https://observablehq.com/@d3/beeswarm)
 
 ![beeswarm](assets/beeswarm.png)
 
-## Dots - Hertzsprung Russell Diagram
+## Hertzsprung Russell Diagram
 
 [参考](https://observablehq.com/@mbostock/hertzsprung-russell-diagram)
 
 ![hertzsprung-russell-diagram](assets/hertzsprung-russell-diagram.png)
 
-## Fun - Word Cloud
+# Fun 
+
+## Voronoi Stippling
+
+[参考](https://observablehq.com/@mbostock/voronoi-stippling)
+
+![voronoi-strippling](assets/voronoi-strippling.png)
+
+使用 Web Worker 在非阻塞的情况下处理数据. 需要一个简易服务器 live-server.
+
+## Word Cloud
 
 [参考](https://observablehq.com/@d3/word-cloud)
 
 ![word-cloud](assets/word-cloud.png)
 
-## Hierarchies - Treemap
+# Hierarchies 
+
+## Treemap
 
 [参考](https://observablehq.com/@d3/treemap)
 
@@ -721,13 +745,13 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 - treemap().leaves() : 获取所有叶子节点
 - Node.ancestors() : 获取从节点到根节点的继承链，是一个数组
 
-## Hierarchies - Cascaded Treemap
+## Cascaded Treemap
 
 [参考](https://observablehq.com/@d3/cascaded-treemap)
 
 ![cascaded-treemap](assets/cascaded-treemap.jpg)
 
-## Hierarchies - Circle Packing
+## Circle Packing
 
 [参考](https://observablehq.com/@d3/circle-packing)
 
@@ -737,13 +761,13 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 - filter : 定义好一个 filter 元素并指定一个 id 后，要使用这个滤镜的元素只需要设置 filter 属性为 url(#id) 即可生效
 
-## Hierarchies - Circle Packing (monochrome)
+## Circle Packing (monochrome)
 
 [参考](https://observablehq.com/@d3/circle-packing-monochrome)
 
 ![circle-packing-monochrome](assets/circle-packing-monochrome.jpg)
 
-## Hierarchies - Indented Tree
+## Indented Tree
 
 [参考](https://observablehq.com/@d3/indented-tree)
 
@@ -753,25 +777,29 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 - d3.hierarchy().copy() : 拷贝一份数据，用于做一些额外运算而不会影响源数据
 
-## Interaction - Versor Draggin
+# Interaction 
+
+## Versor Draggin
 
 [参考](https://observablehq.com/@d3/versor-dragging)
 
 ![versor-dragging](assets/versor-dragging.png)
 
-## Interaction - Index Chart
+## Index Chart
 
 [参考](https://observablehq.com/@d3/index-chart)
 
 ![index-chart](assets/index-chart.png)
 
-## Interaction - Sequences Sunburst
+## Sequences Sunburst
 
 [参考](https://observablehq.com/@kerryrodden/sequences-sunburst)
 
 ![sequences-sunburst](assets/sequences-sunburst.png)
 
-## Lines - Line Chart
+# Lines 
+
+## Line Chart
 
 [参考](https://observablehq.com/@d3/line-chart)
 
@@ -785,7 +813,7 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 - d3.axisBottom().ticks() : 刻度间隔
 - d3.axisLeft().tickSizeOuter() : 标尺起点与终点的刻度大小
 
-## Lines - Line with Missing Data
+## Line with Missing Data
 
 [参考](https://observablehq.com/@d3/line-with-missing-data)
 
@@ -793,7 +821,7 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 思路：过滤掉只有日期但没有值的数据，根据这组数据画灰线，没有值的地方会直接连线。然后画完整数据，有日期但没有值的地方将不绘制线段。
 
-## Lines - Multi Line Chart
+## Multi Line Chart
 
 [参考](https://observablehq.com/@d3/multi-line-chart)
 
@@ -804,13 +832,13 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 - path.filter().raise() : 按 filter 将过滤后的线段提升到最上层，一般用于有多条线的图
 - style('mix-blend-mode', 'multiply') : 重合区域的混合模式， multiply 将会让重合区域加深
 
-## Lines - Change Line Chart
+## Change Line Chart
 
 [参考](https://observablehq.com/@d3/change-line-chart)
 
 ![change-line-chart](assets/change-line-chart.jpg)
 
-## Lines - Marey's Trains
+## Marey's Trains
 
 [参考](https://observablehq.com/@mbostock/mareys-trains)
 
@@ -818,19 +846,19 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 tooltip 的思路是给整个图表画一堆看不见的格子作为 mouseover, mouseout 的区域
 
-## Lines - Candlestick Chart
+## Candlestick Chart
 
 [参考](https://observablehq.com/@d3/candlestick-chart)
 
 ![candlestick-chart](assets/candlestick-chart.jpg)
 
-## Lines - Variable Color Line
+## Variable Color Line
 
 [参考](https://observablehq.com/@d3/variable-color-line)
 
 ![variable-color-line](assets/variable-color-line.jpg)
 
-## Lines - Gradient Encoding
+## Gradient Encoding
 
 [参考](https://observablehq.com/@d3/gradient-encoding)
 
@@ -844,61 +872,63 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 - stop : 线性渐变的关键颜色点
 - stop-color : 关键点的颜色
 
-## Lines - Threshold Encoding
+## Threshold Encoding
 
 [参考](https://observablehq.com/@d3/threshold-encoding)
 
 ![threshold-encoding](assets/threshold-encoding.jpg)
 
-## Lines - Parallel Coordinates
+## Parallel Coordinates
 
 [参考](https://observablehq.com/@d3/parallel-coordinates)
 
 ![parallel-coordinates](assets/parallel-coordinates.jpg)
 
-## Lines - Slope Chart
+## Slope Chart
 
 [参考](https://observablehq.com/@mbostock/cancer-survival-rates)
 
 ![slope-chart](assets/slope-chart.jpg)
 
-## Lines - Inequality in American Cities
+## Inequality in American Cities
 
 [参考](https://observablehq.com/@mbostock/inequality-in-american-cities)
 
 ![inequality-in-american-cities](assets/inequality-in-american-cities.png)
 
-## Lines - New Zealand Tourists (1921-2018)
+## New Zealand Tourists (1921-2018)
 
 [参考](https://observablehq.com/@mbostock/new-zealand-tourists-1921-2018)
 
 ![new-zealand-tourists](assets/new-zealand-tourists.png)
 
-## Lines - Sea Ice Extent (1978-2017)
+## Sea Ice Extent (1978-2017)
 
 [参考](https://observablehq.com/@mbostock/sea-ice-extent-1978-2017)
 
 ![sea-ice-extent](assets/sea-ice-extent.png)
 
-## Networks - Force-Directed Graph
+# Networks 
+
+## Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/force-directed-graph)
 
 ![force-directed-graph](assets/force-directed-graph.jpg)
 
-## Networks - Disjoint Force-Directed Graph
+## Disjoint Force-Directed Graph
 
 [参考](https://observablehq.com/@d3/disjoint-force-directed-graph)
 
 ![disjoint-force-directed-graph](assets/disjoint-force-directed-graph.jpg)
 
-## Networks - Mobile Patent Suits
+## Mobile Patent Suits
 
 [参考](https://observablehq.com/@d3/mobile-patent-suits)
 
 ![mobile-patent-suits](assets/mobile-patent-suits.jpg)
 
-## Networks - Arc Diagram
+## Arc Diagram
 
 [参考](https://observablehq.com/@d3/arc-diagram)
 
@@ -910,19 +940,19 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 - classed : 可以对元素设置样式 class
 - order() : 因为 raise() 而置顶过的元素，可以让整批元素调用 order() 重新排序
 
-## Networks - Sankey Diagram
+## Sankey Diagram
 
 [参考](https://observablehq.com/@d3/sankey-diagram)
 
 ![sankey-diagram](assets/sankey-diagram.png)
 
-## Networks - Hierarchical Edge Bundling
+## Hierarchical Edge Bundling
 
 [参考](https://observablehq.com/@d3/hierarchical-edge-bundling)
 
 ![hierarchical-edge-bundling](assets/hierarchical-edge-bundling.png)
 
-## Networks - Chord Diagram
+## Chord Diagram
 
 [参考](https://observablehq.com/@d3/chord-diagram)
 
@@ -934,7 +964,9 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 ![chord-dependency-diagram](assets/chord-dependency-diagram.png)
 
-## Radial - Pie Chart
+# Radial 
+
+## Pie Chart
 
 [参考](https://observablehq.com/@d3/pie-chart)
 
@@ -944,7 +976,7 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 - d3.arc() : 用 innerRadius 和 outerRadius 确定内半径和外半径，当 innerRadius(0) 时，表示饼图，其他数值为环形图
 
-## Radial - Donut Chart
+## Donut Chart
 
 [参考](https://observablehq.com/@d3/donut-chart)
 
@@ -952,7 +984,7 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 和 Pie Chart 的唯一区别就是 arc 的 innerRadius
 
-## Radial - Radial Area Chart
+## Radial Area Chart
 
 [参考](https://observablehq.com/@d3/radial-area-chart)
 
@@ -962,7 +994,7 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 - textPath : 指定 xlink:href #id 即可定位到指定 id 的元素
 
-## Radial - Radial Stacked Bar Chart
+## Radial Stacked Bar Chart
 
 [参考](https://observablehq.com/@d3/radial-stacked-bar-chart)
 
@@ -972,7 +1004,7 @@ linearGradient 思路，设置一个整屏区域的渐变色，让 path 的 stro
 
 - transform : rotate 和 translate 的先后顺序非常重要
 
-## Radial - Radial Stacked Bar Chart 2
+## Radial Stacked Bar Chart 2
 
 [参考](https://observablehq.com/@d3/radial-stacked-bar-chart-ii)
 
