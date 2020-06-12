@@ -499,6 +499,14 @@
 
 ![multiple-y-axes](assets/multiple-y-axes.png)
 
+## Rounded Bar on Polar
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=polar-roundCap)
+
+![rounded-bar-on-polar](assets/rounded-bar-on-polar.png)
+
+
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Rounded Bar on Polar',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        angleAxis: {
+          max: 2,
+          startAngle: 30,
+          splitLine: { show: false },
+        },
+        radiusAxis: {
+          type: 'category',
+          data: ['v', 'w', 'x', 'y', 'z'],
+          z: 10,
+        },
+        legend: {
+          top: 'bottom',
+        },
+        polar: {},
+        series: [
+          {
+            type: 'bar',
+            data: [4, 3, 2, 1, 0],
+            coordinateSystem: 'polar',
+            name: 'Without Round Cap',
+            color: 'rgba(200,0,0,0.5)',
+            itemStyle: {
+              borderColor: 'red',
+              borderWith: 1,
+            },
+          },
+          {
+            type: 'bar',
+            data: [4, 3, 2, 1, 0],
+            coordinateSystem: 'polar',
+            name: 'With Round Cap',
+            roundCap: true,
+            color: 'rgba(0,200,0,0.5)',
+            itemStyle: {
+              borderColor: 'green',
+              borderWith: 1,
+            },
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
