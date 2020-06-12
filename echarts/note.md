@@ -563,6 +563,22 @@
 
 - bmap: 需要引入 bmap.js 和 api.js (百度地图相关)
 
+## Bus Lines of Beijing - Baidu Map
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=lines-bmap-bus)
+
+![bus-lines-of-beijing](assets/bus-lines-of-beijing.jpg)
+
+## Bus Lines of Beijing - Line Effect
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=lines-bmap-effect)
+
+![bus-lines-of-beijing-line-effect](assets/bus-lines-of-beijing-line-effect.jpg)
+
+新的知识点:
+
+- modifyHSL: zrender 包下的 color 方法, 提供了一个 HSL 转成 rgba 的方法.
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset

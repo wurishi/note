@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./lines-bus.js"></script>
+    <script src="../bmap.js"></script>
+    <script src="../api.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const data = source.json;
+      const busLines = [].concat.apply(
+        [],
+        data.map((busLine, idx) => {
+          let prevPt;
+          const points = [];
+          for (let i = 0, len = busLine.length; i < len; i += 2) {
+            let pt = [busLine[i], busLine[i + 1]];
+            if (i > 0) {
+              pt = [prevPt[0] + pt[0], prevPt[1] + pt[1]];
+            }
+            prevPt = pt;
+
+            points.push([pt[0] / 1e4, pt[1] / 1e4]);
+          }
+          return {
+            coords: points,
+          };
+        })
+      );
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Bus Lines of Beijing',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        bmap: {
+          center: [116.46, 39.92],
+          zoom: 10,
+          roam: true,
+          mapStyle: {
+            styleJson: [
+              {
+                featureType: 'water',
+                elementType: 'all',
+                stylers: {
+                  color: '#d1d1d1',
+                },
+              },
+              {
+                featureType: 'land',
+                elementType: 'all',
+                stylers: {
+                  color: '#f3f3f3',
+                },
+              },
+              {
+                featureType: 'railway',
+                elementType: 'all',
+                stylers: {
+                  visibility: 'off',
+                },
+              },
+              {
+                featureType: 'highway',
+                elementType: 'all',
+                stylers: {
+                  color: '#fdfdfd',
+                },
+              },
+              {
+                featureType: 'highway',
+                elementType: 'labels',
+                stylers: {
+                  visibility: 'off',
+                },
+              },
+              {
+                featureType: 'arterial',
+                elementType: 'geometry',
+                stylers: {
+                  color: '#fefefe',
+                },
+              },
+              {
+                featureType: 'arterial',
+                elementType: 'geometry.fill',
+                stylers: {
+                  color: '#fefefe',
+                },
+              },
+              {
+                featureType: 'poi',
+                elementType: 'all',
+                stylers: {
+                  visibility: 'off',
+                },
+              },
+              {
+                featureType: 'green',
+                elementType: 'all',
+                stylers: {
+                  visibility: 'off',
+                },
+              },
+              {
+                featureType: 'subway',
+                elementType: 'all',
+                stylers: {
+                  visibility: 'off',
+                },
+              },
+              {
+                featureType: 'manmade',
+                elementType: 'all',
+                stylers: {
+                  color: '#d1d1d1',
+                },
+              },
+              {
+                featureType: 'local',
+                elementType: 'all',
+                stylers: {
+                  color: '#d1d1d1',
+                },
+              },
+              {
+                featureType: 'arterial',
+                elementType: 'labels',
+                stylers: {
+                  visibility: 'off',
+                },
+              },
+              {
+                featureType: 'boundary',
+                elementType: 'all',
+                stylers: {
+                  color: '#fefefe',
+                },
+              },
+              {
+                featureType: 'building',
+                elementType: 'all',
+                stylers: {
+                  color: '#d1d1d1',
+                },
+              },
+              {
+                featureType: 'label',
+                elementType: 'labels.text.fill',
+                stylers: {
+                  color: '#999999',
+                },
+              },
+            ],
+          },
+        },
+        series: {
+          type: 'lines',
+          coordinateSystem: 'bmap',
+          polyline: true,
+          data: busLines,
+          silent: true,
+          lineStyle: {
+            color: 'rgb(200,35,45)',
+            opacity: 0.2,
+            width: 1,
+          },
+          progressiveThreshold: 500,
+          progressive: 200,
+        },
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>
