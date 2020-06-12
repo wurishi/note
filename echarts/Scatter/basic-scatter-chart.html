@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Basic Scatter Chart',
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        xAxis: {},
+        yAxis: {},
+        series: [
+          {
+            type: 'scatter',
+            symbolSize: 20,
+            data: d3
+              .range(11)
+              .map(() => [Math.random() * 15, Math.random() * 15]),
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

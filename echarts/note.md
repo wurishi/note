@@ -537,6 +537,20 @@
 
 - roseType: 变为玫瑰图.
 
+# 散点图 (Scatter)
+
+## Basic Scatter Chart
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=scatter-simple)
+
+![basic-scatter-chart](assets/basic-scatter-chart.png)
+
+## Bubble Chart
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=bubble-gradient)
+
+![bubble-chart](assets/bubble-chart.jpg)
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset
