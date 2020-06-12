@@ -551,6 +551,18 @@
 
 ![bubble-chart](assets/bubble-chart.jpg)
 
+# 地理坐标/地图 (GEO/Map)
+
+## A Hiking Trail in Hangzhou - Baidu Map
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=lines-bmap)
+
+![a-hiking-trail-in-hangzhou](assets/a-hiking-trail-in-hangzhou.jpg)
+
+新的知识点:
+
+- bmap: 需要引入 bmap.js 和 api.js (百度地图相关)
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset
