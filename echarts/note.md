@@ -578,6 +578,7 @@
 新的知识点:
 
 - modifyHSL: zrender 包下的 color 方法, 提供了一个 HSL 转成 rgba 的方法.
+- effect: 提供运动点功能.
 
 # 数据集 (Dataset)
 
