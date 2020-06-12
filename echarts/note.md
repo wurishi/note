@@ -515,6 +515,18 @@
 
 - backgroundColor: 可以指定 image 加 repeat 生成水印效果. image 可以指定 canvas.
 
+# 饼图 (Pie)
+
+## Pie Label Align
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=pie-alignTo)
+
+![pie-label-align](assets/pie-label-align.png)
+
+新的知识点:
+
+- label.alignTo: 不同的对齐模式.
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset
