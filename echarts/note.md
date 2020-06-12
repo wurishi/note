@@ -505,7 +505,15 @@
 
 ![rounded-bar-on-polar](assets/rounded-bar-on-polar.png)
 
+## Watermark - ECharts Download
 
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=watermark)
+
+![watermark-echarts-download](assets/watermark-echarts-download.png)
+
+新的知识点:
+
+- backgroundColor: 可以指定 image 加 repeat 生成水印效果. image 可以指定 canvas.
 
 # 数据集 (Dataset)
 
