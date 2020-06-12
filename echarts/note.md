@@ -527,6 +527,16 @@
 
 - label.alignTo: 不同的对齐模式.
 
+## Customized Pie
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=pie-custom)
+
+<img src="assets/customized-pie.png" alt="customized-pie" style="zoom:150%;" />
+
+新的知识点:
+
+- roseType: 变为玫瑰图.
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset
