@@ -493,7 +493,11 @@
 
 ![mix-zoom-on-value](assets/mix-zoom-on-value.png)
 
+## Multiple Y Axes
 
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=multiple-y-axis)
+
+![multiple-y-axes](assets/multiple-y-axes.png)
 
 # 数据集 (Dataset)
 
