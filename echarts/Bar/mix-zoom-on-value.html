@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script src="./obama_budget_proposal_2012.list.js"></script>
+    <script src="../d3.v5.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <script>
+      const width = 640;
+      const height = 480;
+      const main = document.getElementById('main');
+      main.style.width = `${width}px`;
+      main.style.height = `${height}px`;
+
+      const myChart = echarts.init(main);
+      const option = {
+        title: {
+          text: 'Mix Zoom on Value',
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+            label: { show: true },
+          },
+        },
+        toolbox: {
+          feature: {
+            mark: {},
+            dataView: {},
+            magicType: {
+              type: ['line', 'bar'],
+            },
+            saveAsImage: {},
+          },
+        },
+        calculable: true,
+        legend: {
+          data: ['Growth', 'Budget 2011', 'Budget 2012'],
+          itemGap: 5,
+        },
+        grid: {
+          top: '12%',
+          left: '1%',
+          right: '10%',
+          containLabel: true,
+        },
+        xAxis: {
+          type: 'category',
+          data: source.json.names,
+        },
+        yAxis: {
+          name: 'Budget (million USD)',
+          axisLabel: {
+            formatter: (a) =>
+              isFinite(+a) ? echarts.format.addCommas(+a / 1000) : '',
+          },
+        },
+        dataZoom: [
+          {
+            start: 94,
+            end: 100,
+          },
+          {
+            type: 'inside',
+            start: 94,
+            end: 100,
+          },
+          {
+            yAxisIndex: 0,
+            filterMode: 'empty',
+            width: 30,
+            height: '80%',
+            showDataShadow: false,
+            left: '93%',
+          },
+        ],
+        series: [
+          {
+            name: 'Budget 2011',
+            type: 'bar',
+            data: source.json.budget2011List,
+          },
+          {
+            name: 'Budget 2012',
+            type: 'bar',
+            data: source.json.budget2012List,
+          },
+        ],
+      };
+      myChart.setOption(option);
+    </script>
+  </body>
+</html>

@@ -487,6 +487,14 @@
 - symbol: 设置符号形状, diamond 菱形.
 - legend.selected: 设置图示默认是否选中.
 
+## Mix Zoom on Value
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=mix-zoom-on-value)
+
+![mix-zoom-on-value](assets/mix-zoom-on-value.png)
+
+
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset
