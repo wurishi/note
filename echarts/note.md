@@ -537,6 +537,12 @@
 
 - roseType: 变为玫瑰图.
 
+## Doughnut Chart
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=pie-doughnut)
+
+![doughnut-chart](assets/doughnut-chart.png)
+
 # 散点图 (Scatter)
 
 ## Basic Scatter Chart
