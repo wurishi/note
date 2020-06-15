@@ -580,6 +580,22 @@
 - modifyHSL: zrender 包下的 color 方法, 提供了一个 HSL 转成 rgba 的方法.
 - effect: 提供运动点功能.
 
+## Use lines to draw 1 million ny streets
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=lines-ny)
+
+*未实现*
+
+## Binning on Map
+
+[参考](https://echarts.apache.org/examples/zh/editor.html?c=map-bin)
+
+![binning-on-map](assets/binning-on-map.jpg)
+
+新的知识点:
+
+- renderItem: 可以自定义要怎样渲染 item.
+
 # 数据集 (Dataset)
 
 ## Simple Example of Dataset
