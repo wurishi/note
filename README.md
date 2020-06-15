@@ -32,7 +32,7 @@ concurrent 实验
 
 # rust
 
-Ruet
+Rust
 
 # rxjs30
 

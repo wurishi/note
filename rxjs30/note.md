@@ -1809,5 +1809,47 @@ RxJS 的第二个重点就是 Subject, 之前的范例中, 每个 Observable 都
 
 Subject 实际上就是观察者模式的具体实现, 它会在内部管理一份观察者的清单, 并且在接收到值时遍历这份清单并发送该值.
 
-Subject 本身就是 Observable, 所以适用于某些无法超拽使用 Observable 的前端框架, 比如在 React 中想对 DOM 事件做监听.
+Subject 本身就是 Observable, 所以适用于某些无法直接使用 Observable 的前端框架, 比如在 React 中想对 DOM 事件做监听.
 
+## 2. BehaviorSubject
+
+很多时候我们希望 Subject 能代表当下的状态, 而不是仅仅处理事件发送. 比如:
+
+```javascript
+const subject = new Rx.Subject();
+const observerA = {
+    next: value => console.log('A next: ' + value),
+    error: error => console.log('A error: ' + error),
+    complete: () => console.log('A complete!')
+};
+const observerB = {
+    next: value => console.log('B next: ' + value),
+    error: error => console.log('B error: ' + error),
+    complete: () => console.log('B complete!')
+};
+subject.subscribe(observerA);
+subject.next(1); // A next: 1
+subject.next(2); // A next: 2
+subject.next(3); // A next: 3
+setTimeout(() => {
+    subject.subscribe(observerB); // 3 秒后开始订阅, observerB 不会收到任何值.
+}, 3000);
+```
+
+上面这个例子, 因为 observerB 订阅后没有subject.next 没有再执行了, 所以 observerB 不会接收到任何元素. 但很多时候我们会希望 subject 能够表达当前的状态, 即一订阅后就能收到最新的状态是什么, 而不是在订阅后, 要等到再有变动才能接收到新的状态. 以这个例子来说, 我们希望 observerB 订阅后立即收到 3. 这时就要使用 BehaviosSubject.
+
+BehaviosSubject 跟 Subject 最大的不同就是 BehaviorSubject 是用来呈现当前的值, 而不是单独用来发送事件的. BehaviosSubject 会记住最新一次发送的元素, 并把该元素作为当前的值, 使用时需要传入一个参数来代表初始状态.
+
+[代码 23-behaviorsubject](codes/23-behaviorsubject.js)
+
+## 3. ReplaySubject
+
+在某些时候我们希望 Subject 代表事件, 但又能在新订阅时重新发送最后的几个元素. 这时我们就可以用 ReplaySubject.
+
+[代码 23-replaysubject](codes/23-replaysubject.js)
+
+## 4. AsyncSubject
+
+AsyncSubject 有点像 operator last, 会在 subject 结束后送出最后一个值.
+
+[代码 23-asyncsubject](codes/23-asyncsubject.js)
