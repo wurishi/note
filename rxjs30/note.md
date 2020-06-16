@@ -22,7 +22,7 @@ Vue 底层是以响应式编程的概念来设计的.
 
 ## 1. 异步常见问题
 
-- 竞态条件 (Ract Condition)
+- 竞态条件 (Race Condition)
 
   当对同一资源作多次异步操作时, 可能会发生竞态条件问题.
 
@@ -221,7 +221,7 @@ arr.splice(0, 3); // [4, 5]
 
 ### 3-3: 利用参数保存状态
 
-Redux 的状态是由各个 reducer 组成的, 每个 reducer 的状态是保存在参数中的[^注2-1].
+Redux 的状态是由各个 reducer 组成的, 每个 reducer 的状态是保存在参数中的.
 
 ```javascript
 function countReducer(state = 0, action) {
@@ -229,7 +229,7 @@ function countReducer(state = 0, action) {
 }
 ```
 
-递归[^注2-2], 通过递归调用 findIndex 查找元素位置. 由参数 start 来保存当前找到第几个 index 的状态.
+递归[^注2-1], 通过递归调用 findIndex 查找元素位置. 由参数 start 来保存当前找到第几个 index 的状态.
 
 ```javascript
 function findIndex(arr, predicate, start = 0) {
@@ -243,8 +243,7 @@ function findIndex(arr, predicate, start = 0) {
 findIndex(['a', 'b'], x => x === 'b');
 ```
 
-[^注2-1]: 应该是初始化状态吧.
-[^注2-2]: 递归会制造多层 stack frame, 导致运算速度降低. ES6 提供了 tail call optimization, 让我们有办法优化递归调用.
+[^注2-1]: 递归会制造多层 stack frame, 导致运算速度降低. ES6 提供了 tail call optimization, 让我们有办法优化递归调用.
 
 ## 4. 面向函数编程的优点
 
@@ -907,8 +906,8 @@ example: (0)----0----1----2----3--...
 merge 跟 concat 一样都是用来合并 observable的, 但二者在行为上有非常大的不同!
 
 ```javascript
-const source = Rx.interval(500).take(3);
-const source2 = Rx.interval(300).take(6);
+const source = Rx.interval(500).pipe(take(3));
+const source2 = Rx.interval(300).pipe(take(6));
 const example = source.pipe(merge(source2));
 example.subscribe({
     next:console.log,
@@ -1850,6 +1849,92 @@ BehaviosSubject 跟 Subject 最大的不同就是 BehaviorSubject 是用来呈�
 
 ## 4. AsyncSubject
 
-AsyncSubject 有点像 operator last, 会在 subject 结束后送出最后一个值.
+AsyncSubject 有点像 operator last, 会在 subject 结束时发送出最后一个值.
 
 [代码 23-asyncsubject](codes/23-asyncsubject.js)
+
+# 24: 与 Subject 相关的 Observable 操作
+
+[代码 24-example](codes/24-example.js)
+
+想要多个 observer 订阅一个 source, 可以使用上一节讲的创建一个 subject 来实现, 也可以使用 multicast 组播来使得代码更简洁.
+
+## 1. multicast
+
+[代码 24-multicast](codes/24-multicast.js)
+
+```javascript
+const Rx = require('rxjs');
+
+const { take, multicast } = require('rxjs/operators');
+
+const source = Rx.interval(1000) //
+  .pipe(take(3))
+  .pipe(multicast(new Rx.Subject()));
+
+const observerA = {
+  next: (value) => console.log('A next:' + value),
+  error: (error) => console.log('A error: ' + error),
+  complete: () => console.log('A complete!'),
+};
+
+const observerB = {
+  next: (value) => console.log('B next:' + value),
+  error: (error) => console.log('B error: ' + error),
+  complete: () => console.log('B complete!'),
+};
+
+source.subscribe(observerA); // 等价于 subject.subscribe(observerA)
+
+source.connect(); // 等价于 source.subscribe(subject)
+
+setTimeout(() => {
+  source.subscribe(observerB);
+}, 1000);
+```
+
+使用了 `multicast(new Rx.Subject())` 后, source 上执行的订阅其实都是订阅到了 subject 上.
+
+只有 `source.connect()`执行后, source 才会开始执行.
+
+要注意的是, 如果要退订的话, 要把 connect() 返回的 subscription 退订才会真正停止 observable 的执行.
+
+[代码 24-multicast-un](codes/24-multicast-un.js)
+
+> 注意:  由于使用 multicast 后仍然需要调用 connect() 才能生效, 所以如果希望有 observer 订阅时就立即开始执行并发送元素, 而不要手动再多执行一个方法 (connect) 的话, 就可以使用 refCount
+
+## 2. refCount
+
+refCount 必须搭配 multicast 一起使用. 只要有订阅, 它就会自动 connect.
+
+[代码 24-refcount](codes/24-refcount.js)
+
+refCount 会记录订阅的 observer 的数量, 当有订阅时, 会自动 connect. 当订阅数变回 0 时, 也会自动停止发送.
+
+## 3. publish
+
+`multicast(new Rx.Subject())`很常用到, 另一种简化的写法就是 `publish`.
+
+```javascript
+const source1 = Rx.interval(1000).pipe(publish()).pipe(refCount());
+// 两者是等价的
+const source2 = Rx.interval(1000).pipe(multicast(new Rx.Subject())).pipe(refCount());
+
+// multicast(new Rx.ReplaySubject(1)) => publishReplay(1)
+// multicast(new Rx.BehaviorSubject(0)) => publishBehavior(0)
+// multicast(new Rx.AsyncSubject(1)) => publishLast()
+```
+
+## 4. share
+
+另外 publish + refCount 还可以简写为 share.
+
+```javascript
+const source = Rx.interval(1000).pipe(share());
+
+// 等价于
+// Rx.interval(1000).pipe(publish()).pipe(refCount())
+// 或
+// Rx.interval(1000).pipe(multicast(new Rx.Subject())).pipe(refCount());
+```
+
