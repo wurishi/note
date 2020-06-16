@@ -1938,3 +1938,70 @@ const source = Rx.interval(1000).pipe(share());
 // Rx.interval(1000).pipe(multicast(new Rx.Subject())).pipe(refCount());
 ```
 
+# 25: Subject 总结
+
+大部分情况下是可以通过 Observable.create() 实现的, 只有在框架限制 (如: React 正常操作下是比较难拿到真实的 DOM的) 的情况下, 才需要使用 Subject.
+
+## Subject 与 Observable 的差异
+
+Subject 其实是观察者模式的具体实现, 所以当 observer 订阅到 subject 时, subject 会把订阅者放到一个订阅者清单中, 在元素发送时遍历这份清单并把元素发送. 而 observable 只是一个 function 执行.
+
+Subject 是 Observable 的子类, 并根据观察者模式实现了(next, error, complete, subscribe 及 unsubscribe) 五个方法. 
+
+说白了 Subject 与 Observable 最大的差异就是 Subject 是有状态的, 它存储了那份订阅清单!
+
+Subject 会记录一份订阅清单, 这样就会衍生出一个问题, 即如果某个 observer 发生错误并没有做错误处理时, 就会影响到其他的订阅.
+
+```javascript
+const Rx = require('rxjs');
+const { map } = require('rxjs/operators');
+
+const source = Rx.interval(1000);
+const subject = new Rx.Subject();
+
+const example = subject.pipe(
+  map((x) => {
+    if (x === 1) {
+      throw new Error('oops');
+    }
+    return x;
+  })
+);
+
+subject.subscribe((x) => console.log('A', x));
+example.subscribe(
+  (x) => console.log('B', x),
+  (error) => console.log('B Error:' + error) // 如果不处理 error , 会导致整个 source 停止
+    // 增加了错误处理后, A,C 会继续运行下去
+);
+subject.subscribe((x) => console.log('C', x));
+
+source.subscribe(subject);
+```
+
+以上问题也可以用 Scheduler 解决.
+
+## 一定需要使用 Subject 的时机?
+
+当 observable 的操作过程中发生了副作用, 并且我们不希望这个副作用因为多个订阅而被触发多次时, 此时就必须要使用 subject.
+
+```javascript
+const Rx = require('rxjs');
+const { take, map, share } = require('rxjs/operators');
+
+// random 会被执行多次
+// const result = Rx.interval(1000) //
+//   .pipe(take(6))
+//   .pipe(map((x) => Math.random()));
+
+// random 只会被执行一次
+const result = Rx.interval(1000) //
+  .pipe(take(6))
+  .pipe(map((x) => Math.random()))
+  .pipe(share());
+
+const subA = result.subscribe((x) => console.log('A: ' + x));
+const subB = result.subscribe((x) => console.log('B: ' + x));
+
+```
+
