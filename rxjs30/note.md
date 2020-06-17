@@ -2086,3 +2086,49 @@ observable.subscribe(observer);
 // 1,2,3,complete!
 ```
 
+# 27: 简单实现 Observable (二)
+
+## 创建 Observable 类
+
+之前是使用 create() 来返回一个 observable. 它至少要有一个 subscribe 的方法.
+
+```javascript
+class Observable {
+    constructor(subscribe) {
+        if(subscribe) {
+            this._subscribe = subscribe;
+        }
+    }
+    subscribe() {
+        const observer = new Observer(...arguments);
+        this._subscribe && this._subscribe(observer);
+        return observer;
+    }
+}
+```
+
+[代码 27-observable](codes/27-observable.js)
+
+## 实现 fromArray
+
+[代码 27-fromarray](codes/27-fromarray.js)
+
+```javascript
+Observable.fromArray = function(array) {
+    if(!Array.isArray(array)) {
+        throw new Error('');
+    }
+    return new Observable(function(observer) {
+        try {
+            array.forEach(value => observer.next(value));
+            observer.complete();
+        } catch(err) {
+            observer.error(err);
+        }
+    });
+}
+```
+
+## 实现 map
+
+[代码 27-27-operatormap](codes/27-operatormap.js)
