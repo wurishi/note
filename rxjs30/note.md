@@ -2002,6 +2002,87 @@ const result = Rx.interval(1000) //
 
 const subA = result.subscribe((x) => console.log('A: ' + x));
 const subB = result.subscribe((x) => console.log('B: ' + x));
+```
 
+# 26: 简单实现 Observable (一)
+
+注意, Observable 跟观察者模式是不同的, Observable 内部并没有订阅清单, 订阅 Observable 就像是执行了一个 function 一样.
+
+所以 Observable 实现的重点就是:
+
+- 订阅就是执行一个 function.
+- 订阅接收的对象应该有 next, error, complete 三个方法.
+- 订阅会返回一个可以退订 (unsubscribe) 的对象.
+
+## 基本的 Observable 实现
+
+```javascript
+function create(subscriber) {
+    const observable = {
+        subscribe: function(observer) {
+            subscriber(observer);
+        }
+    };
+    return observable;
+}
+```
+
+最简单的订阅:
+
+```javascript
+const observable = create(function(observer) {
+    observer.next(1);
+    observer.next(2);
+    observer.next(3);
+});
+const observer = {
+    next: function(value) {
+        console.log(value);
+    }
+};
+observable.subscribe(observer);
+```
+
+[代码 26-example1](codes/26-example1.js)
+
+目前有二个问题:
+
+- 执行 complete 之后, 元素仍会发送.
+- 如果缺少 complete 方法, 就会报错.
+
+## 实现简单的 Observer
+
+保证 new Observer() 必然能返回一个包含 next, error, complete 和 unsubscribe 方法的对象.
+
+[代码 26-observer](codes/26-observer.js)
+
+```javascript
+function create(subscriber) {
+    const observable = {
+        subscribe: function(observerOrNext, error, complete) {
+            const realObserver = new Observer(observerOrNext, error, complete);
+            subscriber(realObserver);
+            return realObserver;
+        }
+    };
+    return observable;
+}
+const observable = create(function(observer) {
+    observer.next(1);
+    observer.next(2);
+    observer.next(3);
+    observer.complete();
+    observer.next('not work');
+});
+const observer = {
+    next: function(value) {
+        console.log(value);
+    },
+    complete: function() {
+        console.log('complete!');
+    }
+};
+observable.subscribe(observer);
+// 1,2,3,complete!
 ```
 
