@@ -36,7 +36,7 @@ Rust
 
 # rxjs30
 
-参考资料: [30 天精通 RxJS](https://blog.jerry-hong.com/series/rxjs/) _(进行中 30/31)_
+参考资料: [30 天精通 RxJS](https://blog.jerry-hong.com/series/rxjs/) **(完成)**
 
 # thinkinfp
 

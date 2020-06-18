@@ -2312,3 +2312,28 @@ const source = Rx.Observable.create(observer => {
 [代码 30-example](codes/30-example.js)
 
 一般情况下, Observable 都是 Cold 的, 这样不同的订阅才不会因为副作用而互相影响. 但在某些多次订阅的情况下, 确实也会需要使用 Hot Observable.
+
+# 31: 如何 Debug ?
+
+## ~~do~~ tap
+
+```javascript
+const source = Rx.interval(1000)
+  .pipe(
+    tap((x) => console.log('log: ' + x)),
+    map((x) => x + 1)
+  );
+```
+
+可以利用 tap , 检测每一步发送的元素是否符合期望.
+
+## Observable 间的关联图
+
+## Marble Diagram
+
+如果是有多个 Observable, 首先先画成它们之间的关联图, 然后再画出弹珠图分析问题.
+
+## RxJS Devtools
+
+使用 Chrome 扩展.
+
