@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../node_modules/rxjs/bundles/rxjs.umd.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        background-color: lightcoral;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const Rx = window.rxjs;
+
+      const source = Rx.from([1,2,3],Rx.animationFrameScheduler);
+
+      console.log('before');
+
+      source.subscribe(v=>console.log('source:'+v));
+
+      let aI = 0;
+      requestAnimationFrame(
+        () => console.log('ani:'+ ++aI)
+      );
+      setTimeout(()=>{
+        console.log('settimeout'); // requestAnimationFrame 首次执行始终比 setTimeout / setInterval 快
+      },0);
+      let t = setInterval(()=>{
+        console.log('setinterval');
+        clearInterval(t);
+      },0);
+
+      console.log('after');
+    </script>
+  </body>
+</html>

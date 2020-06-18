@@ -2131,4 +2131,105 @@ Observable.fromArray = function(array) {
 
 ## 实现 map
 
-[代码 27-27-operatormap](codes/27-operatormap.js)
+[代码 27-operatormap](codes/27-operatormap.js)
+
+# 28: Scheduler 基本概念
+
+RxJS 的优势之一就是可以同时处理同步和异步行为, 但这有时也会带来一个问题, 就是会搞不清当前这个 observable 执行的方式是同步还是异步的.
+
+比如, 我们很清楚 interval 是异步发送数据的, 但是 range, from 呢? 他们有可能有时是异步的, 有时是同步的. 这个时候就要用 **Scheduler** 来处理这个问题.
+
+## 什么是 Scheduler ?
+
+Scheduler 控制一个 observable 的订阅是什么时候开始的, 以及发送的元素什么时候送达. 它主要由以下三个部分组成:
+
+- Scheduler 是一个资料结构. 它知道如何根据优先级或其他标准来储存并排列任务.
+- Scheduler 是一个执行环境. 它意味着任务何时被执行, 比如:
+  - 立即执行
+  - 在 callback 中执行
+  - 在 setTimeout 中执行
+  - 在 animation frame 中执行
+- Scheduler 是一个虚拟时钟, 它通过`now()`这个方法提供时间的概念, 让任务可以在特定的时间点被执行.
+
+```javascript
+const Rx = require('rxjs');
+const { observeOn } = require('rxjs/operators');
+
+const observable = Rx.Observable.create((observer) => {
+  observer.next(1);
+  observer.next(2);
+  observer.next(3);
+  observer.complete();
+}).pipe(observeOn(Rx.asyncScheduler));
+
+console.log('before subscribe');
+
+observable.subscribe(
+  (value) => console.log(value),
+  (error) => console.log('Error: ' + error),
+  () => console.log('complete')
+);
+
+console.log('after subscribe');
+
+// before subscribe
+// after subscribe
+// 1
+// 2
+// 3
+// complete
+```
+
+原来是同步执行的, 使用了 asyncScheduler 后就变成异步执行了.
+
+## 有哪些 Scheduler 可以用
+
+- asapScheduler
+- queueScheduler
+- asyncScheduler
+- animationFrameScheduler
+- VirtualTimeScheduler
+
+## 使用 Scheduler
+
+除了前面介绍的`observeOn()`之外, Observable 创建方法一般情况都可以追加一个参数用来接收 Scheduler. 例如:
+
+```javascript
+Rx.from([1,2,3], Rx.asyncScheduler); // 可以让from变成异步执行.
+```
+
+### queueScheduler :
+
+[代码 28-queuescheduler](codes/28-queuescheduler.js)
+
+queue 和立即执行很像.
+
+### asapScheduler :
+
+[代码 28-asapscheduler](codes/28-asapscheduler.js)
+
+asap 是异步执行的, 在浏览器里其实就是 setTimeout 设为 0 秒 (在 NodeJS 中是用 process.nextTick).
+
+使用场景:
+
+asap 因为都是在 setTimeout 中执行, 所以不会有 block event loop 的问题, 很适合用在永远不会退订的 observable, 比如在后台持续监听 server 发送来的通知.
+
+### asyncScheduler :
+
+[代码 28-asyncscheduler](codes/28-asyncscheduler.js)
+
+async 和 asap 很像, 但它是使用 setInterval 来实现的.
+
+使用场景:
+
+通常与时间相关的操作一起使用.
+
+### animationFrameScheduler :
+
+[代码 28-animationframe](codes/28-animationframe.html)
+
+是利用 window.requestAnimationFrame API 来实现异步的.
+
+使用场景:
+
+做复杂运算且高频率触发 UI 动画时使用.
