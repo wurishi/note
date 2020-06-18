@@ -2198,13 +2198,13 @@ console.log('after subscribe');
 Rx.from([1,2,3], Rx.asyncScheduler); // 可以让from变成异步执行.
 ```
 
-### queueScheduler :
+### queueScheduler
 
 [代码 28-queuescheduler](codes/28-queuescheduler.js)
 
 queue 和立即执行很像.
 
-### asapScheduler :
+### asapScheduler
 
 [代码 28-asapscheduler](codes/28-asapscheduler.js)
 
@@ -2214,7 +2214,7 @@ asap 是异步执行的, 在浏览器里其实就是 setTimeout 设为 0 秒 (�
 
 asap 因为都是在 setTimeout 中执行, 所以不会有 block event loop 的问题, 很适合用在永远不会退订的 observable, 比如在后台持续监听 server 发送来的通知.
 
-### asyncScheduler :
+### asyncScheduler
 
 [代码 28-asyncscheduler](codes/28-asyncscheduler.js)
 
@@ -2224,7 +2224,7 @@ async 和 asap 很像, 但它是使用 setInterval 来实现的.
 
 通常与时间相关的操作一起使用.
 
-### animationFrameScheduler :
+### animationFrameScheduler
 
 [代码 28-animationframe](codes/28-animationframe.html)
 
@@ -2233,3 +2233,82 @@ async 和 asap 很像, 但它是使用 setInterval 来实现的.
 使用场景:
 
 做复杂运算且高频率触发 UI 动画时使用.
+
+# 29: 略
+
+# 30: Code Observable & Hot Observable
+
+Code Observable 和 Hot Observable 其实是区分不同行为的 Observable, Code Observable 就是每次订阅都是**独立执行**, 而 Hot Observable 则是**共用订阅**.
+
+## Code Observable
+
+```javascript
+const Rx = require('rxjs');
+const { take } = require('rxjs/operators');
+
+const coldSource = Rx.interval(1000) //
+  .pipe(take(5));
+
+coldSource.subscribe((v) => console.log('sub1: ' + v));
+
+setTimeout(() => {
+  coldSource.subscribe((v) => console.log('sub2: ' + v));
+}, 3500);
+// sub1: 0
+// sub1: 1
+// sub1: 2
+// sub1: 3
+// sub2: 0
+// sub1: 4
+// sub2: 1
+// sub2: 2
+// sub2: 3
+// sub2: 4
+```
+
+每次订阅都是独立执行的. 如果从 Observable 内部来看, 代表 Data Source 是在 Observable 内部建立的, 大概会像下面这样:
+
+```javascript
+const source = Rx.Observable.create(observer => {
+    // 在订阅时, 才建立新的datasource
+    const someDataSource = getSomeDataSource();
+    someDataSource.addEventListener('message', data => { observer.next(data) });
+});
+```
+
+因为每次订阅都会重新创建一个新的 Data Source, 所以资料都是从头开始发送的.
+
+## Hot Observable
+
+```javascript
+const hotSource = Rx.interval(1000) //
+    .pipe(take(5))
+    .pipe(share());
+
+  hotSource.subscribe((v) => console.log('hot1: ' + v));
+  setTimeout(() => {
+    hotSource.subscribe((v) => console.log('hot2: ' + v));
+  }, 3500);
+
+  // hot1: 0
+  // hot1: 1
+  // hot1: 2
+  // hot1: 3
+  // hot2: 3
+  // hot1: 4
+  // hot2: 4
+```
+
+Hot Observable 代表每个订阅都是共用的, 所以从第二次订阅开始, 资料是继续往下开始发送的, 而不是从头开始发送. 这种共用订阅就称为 Hot Observable. 从 Observable 内部来看, 就是 Data Source 是在 Observable 外部创建的, 大概像这样:
+
+```javascript
+// 只有一个datasource, 所以每次订阅用的都是同一个
+const someDataSource = getSomeDataSource();
+const source = Rx.Observable.create(observer => {
+    someDataSource.addEventListener('message', data => { observer.next(data) });
+});
+```
+
+[代码 30-example](codes/30-example.js)
+
+一般情况下, Observable 都是 Cold 的, 这样不同的订阅才不会因为副作用而互相影响. 但在某些多次订阅的情况下, 确实也会需要使用 Hot Observable.
