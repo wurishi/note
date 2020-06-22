@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "stats.js": "^0.17.0",
     "zrender": "^4.3.1"
   }
 }

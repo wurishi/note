@@ -40,3 +40,8 @@ ZRender 的基本动画
 
 [参考](https://ecomfe.github.io/zrender-doc/public/examples/hello_world.html)
 
+# Particles
+
+![particles](/particles.png)
+
+[参考](https://ecomfe.github.io/zrender-doc/public/examples/particles.html)

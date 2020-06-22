@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZRender Particles</title>
+    <script src="./node_modules/zrender/dist/zrender.js"></script>
+    <script src="./node_modules/stats.js/build/stats.min.js"></script>
+</head>
+
+<body>
+    <div id="main"></div>
+    <script>
+        const container = document.getElementById('main');
+        const zr = zrender.init(container, {
+            width: 640,
+            height: 480,
+        });
+        const w = zr.getWidth();
+        const h = zr.getHeight();
+
+        const stats = new Stats();
+        container.appendChild(stats.dom);
+        stats.dom.style.position = 'absolute';
+        stats.dom.style.left = '10px';
+        stats.dom.style.top = '10px';
+
+        zr.animation.on('frame', () => {
+            stats.begin();
+            stats.end();
+        });
+
+        const spray = (x, y) => {
+            const cnt = 200;
+            const centerTolerance = 0;
+            const radius = 10;
+            const particles = [];
+            const duration = 3000;
+            const color = Math.random() * 260;
+            const maxVx = 1000 + Math.random() * 1500;
+            const maxVy = 1000 + Math.random() * 1500;
+
+            for (let i = 0; i < cnt; i++) {
+                (() => {
+                    const x0 = x + centerTolerance * (Math.random() - 1);
+                    const y0 = y + centerTolerance * (Math.random() - 1);
+                    const opacity = Math.random() * 0.5 + 0.5;
+                    const particle = new zrender.Circle({
+                        shape: {
+                            cx: 0,
+                            cy: 0,
+                            r: radius * (0.5 + 0.5 * Math.random())
+                        },
+                        style: {
+                            fill: `hsl(${Math.floor(color + Math.random() * 100)}, 80%, ${Math.floor(Math.random() * 40 + 40)}%)`,
+                            opacity
+                        },
+                        position: [x0, y0]
+                    });
+                    zr.add(particle);
+                    particles.push(particle);
+
+                    particle._t = 0;
+                    particle._opacity = opacity;
+
+                    const animator = particle.animate('');
+                    const vx = (Math.random() - 0.5) * maxVx;
+                    let vy = (Math.random() - 1.2) * maxVy;
+                    const ay = 8000;
+                    let t0 = 0;
+                    animator//
+                        .when(duration, { _t: 1 })
+                        .during((p, _t) => {
+                            const dt = _t - t0;
+                            const x1 = p.position[0] + vx * dt;
+                            const y1 = p.position[1] + vy * dt;
+                            p.position = [x1, y1];
+                            p.setStyle({
+                                opacity: p._opacity * (1 - _t)
+                            });
+                            vy = vy + ay * dt;
+                            t0 = _t;
+                        })
+                        .done(() => {
+                            zr.remove(particle);
+                        })
+                        .start();
+
+                })();
+            }
+        };
+
+        spray(w / 2, h / 2);
+        setInterval(() => {
+            spray(w * Math.random(), h * Math.random());
+        }, 1000);
+    </script>
+</body>
+
+</html>
