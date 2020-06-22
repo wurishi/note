@@ -27,3 +27,10 @@ ZRender 的基本动画
 [参考](https://ecomfe.github.io/zrender-doc/public/examples/clip_path.html)
 
 - setClipPath : 给图形增加路径.
+
+# Glitched Text
+
+![glitched-text](/glitched-text.png)
+
+[参考](https://ecomfe.github.io/zrender-doc/public/examples/glitched_text.html)
+
