@@ -19,3 +19,11 @@ ZRender 的基本动画
 - .on(eventName, fn) : 对 ZRender 实例可以监听鼠标事件, 如 mousedown, mouseup, mousemove. 也可以对创建的具体图形 Circle, Rect 等监听.
 - zrender.Group : 组.
 - getBoundingRect : 可以获取整个图形的范围矩形.
+
+# ClipPath
+
+![clip-path](/clip-path.png)
+
+[参考](https://ecomfe.github.io/zrender-doc/public/examples/clip_path.html)
+
+- setClipPath : 给图形增加路径.

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZRender Bounding Box</title>
+    <script src="./node_modules/zrender/dist/zrender.js"></script>
+</head>
+
+<body>
+    <div id="main"></div>
+    <script>
+        const container = document.getElementById('main');
+        const zr = zrender.init(container, {
+            width: 640,
+            height: 480,
+            // renderer: 'svg'
+        });
+        const w = zr.getWidth();
+        const h = zr.getHeight();
+
+        const circle = new zrender.Circle({
+            shape: {
+                cx: w / 2,
+                cy: h / 2,
+                r: 50
+            },
+            style: {
+                fill: '#FF6EBE'
+            },
+            draggable: true //
+        });
+
+        const heart = new zrender.Heart({
+            shape: {
+                cx: w / 2 + 20,
+                cy: h / 2 - 40,
+                width: 60,
+                height: 80,
+            },
+            draggable: true
+        });
+
+        circle.setClipPath(heart); //
+        // zr.add(heart);
+        zr.add(circle);
+
+        const borderA = new zrender.Circle({
+            shape: {
+                cx: w / 2,
+                cy: h / 2,
+                r: 50
+            },
+            style: {
+                fill: 'transparent',
+                stroke: '#5ACFFF'
+            }
+        });
+        zr.add(borderA);
+
+        const borderB = new zrender.Heart({
+            shape: {
+                cx: w / 2 + 20,
+                cy: h / 2 - 40,
+                width: 60,
+                height: 80
+            },
+            style: {
+                fill: 'transparent',
+                stroke: '#5ACFFF'
+            }
+        });
+        zr.add(borderB);
+    </script>
+</body>
+
+</html>
