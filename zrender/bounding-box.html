@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZRender Bounding Box</title>
+    <script src="./node_modules/zrender/dist/zrender.js"></script>
+</head>
+
+<body>
+    <div id="main"></div>
+    <script>
+        const container = document.getElementById('main');
+        const zr = zrender.init(container, {
+            width: 640,
+            height: 480,
+        });
+        const w = zr.getWidth();
+        const h = zr.getHeight();
+
+        let isMouseDown = false;
+        zr.on('mousedown', () => (isMouseDown = true)); //
+        zr.on('mouseup', () => (isMouseDown = false));
+
+        const elementStyle = {
+            stroke: '#ccc',
+            fill: 'white'
+        }
+
+        const group = new zrender.Group(); //
+        for (let i = 0; i < 10; i++) {
+            const r = 50 * Math.random() + 20;
+            const circle = new zrender.Circle({
+                shape: {
+                    cx: 0,
+                    cy: 0,
+                    r
+                },
+                position: [
+                    (w * 0.6 - r * 2) * Math.random() + r + w * 0.2,
+                    (h * 0.6 - r * 2) * Math.random() + r + h * 0.2
+                ],
+                style: elementStyle,
+                draggable: true
+            }).on('mousemove', () => {
+                if (isMouseDown) {
+                    const rect = group.getBoundingRect(); //
+                    boundingRect.setShape({
+                        x: rect.x,
+                        y: rect.y,
+                        width: rect.width,
+                        height: rect.height
+                    });
+                }
+            });
+            group.add(circle);
+        }
+        zr.add(group);
+
+        const rect = group.getBoundingRect();
+        const boundingRect = new zrender.Rect({
+            shape: {
+                cx: 0,
+                cy: 0,
+                x: rect.x,
+                y: rect.y,
+                width: rect.width,
+                height: rect.height
+            },
+            style: {
+                fill: 'none',
+                stroke: '#14f1ff'
+            }
+        });
+        zr.add(boundingRect);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZRender Bounding Box</title>
+    <script src="./node_modules/zrender/dist/zrender.js"></script>
+</head>
+<body>
+    <div id="main"></div>
+    <script>
+        const container = document.getElementById('main');
+        const zr = zrender.init(container, {
+            width: 640,
+            height: 480
+        });
+        const w = zr.getWidth();
+        const h = zr.getHeight();
+    </script>
+</body>
+</html>
