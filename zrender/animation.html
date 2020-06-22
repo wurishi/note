@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZRender Animation</title>
+    <script src="./node_modules/zrender/dist/zrender.js"></script>
+</head>
+
+<body>
+    <div id="main"></div>
+    <script>
+        const container = document.getElementById('main');
+        const zr = zrender.init(container, {
+            renderer: 'canvas',
+            width: 640,
+            height: 480
+        }); // 
+        const w = zr.getWidth();
+        const h = zr.getHeight();
+
+        const r = 30;
+        const circle = new zrender.Circle({
+            shape: {
+                cx: r,
+                cy: h / 2,
+                r
+            },
+            style: {
+                fill: 'transparent',
+                stroke: '#FF6EBE'
+            },
+            // silent: true
+        });
+
+        circle.animate('shape', true) //
+            .when(5000, {
+                cx: w - r
+            })
+            .when(10000, {
+                cx: r
+            })
+            .start();
+
+        zr.add(circle);
+    </script>
+</body>
+
+</html>
