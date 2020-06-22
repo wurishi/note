@@ -34,3 +34,9 @@ ZRender 的基本动画
 
 [参考](https://ecomfe.github.io/zrender-doc/public/examples/glitched_text.html)
 
+# Hello World
+
+![hello-world](/hello-world.png)
+
+[参考](https://ecomfe.github.io/zrender-doc/public/examples/hello_world.html)
+
