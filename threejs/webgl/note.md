@@ -113,3 +113,11 @@ gl.enableVertexAttribArray(aposLocation);
 ### drawArray 整体执行顺序
 
 ![webgl91](/webgl91.jpg)
+
+## 3. WebGL 坐标系(投影)
+
+[代码](3.html)
+
+### gl.vertexAttribPointer(index, size, type, normalized, stride, offset)
+
+size: 拿几个数据放到 attribute 里, 如果 attribute 类型是 vec4, 但指定的数据不够4个, 则会用0补全.
