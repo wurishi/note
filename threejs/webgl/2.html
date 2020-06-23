@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL 绘制一个矩形</title>
+</head>
+
+<body>
+    <canvas id="webgl" width="500" height="500" style="background-color: blue;"></canvas>
+
+    <script id='vertexShader' type="x-shader/x-vertex">
+    // 声明 vec4 类型的变量 apos
+    attribute vec4 apos;
+    void main() {
+        // 将顶点坐标apos赋值给内置变量gl_Position
+        gl_Position = apos;
+    }
+    </script>
+
+    <script id='fragmentShader' type="x-shader/x-fragment">
+    void main() {
+        // 定义片元颜色
+        gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    }
+    </script>
+
+    <script>
+        const canvas = document.getElementById('webgl');
+        const gl = canvas.getContext('webgl');
+
+        // 顶点着色器
+        const vertexShaderSource = document.getElementById('vertexShader').innerText;
+        // 片元着色器
+        const fragShaderSource = document.getElementById('fragmentShader').innerText;
+
+        // 初始化着色器
+        const program = initShader(gl, vertexShaderSource, fragShaderSource);
+
+        // 获取顶点着色器的位置变量apos, aposLocation指向了apos
+        const aposLocation = gl.getAttribLocation(program, 'apos');
+        // 矩形四个顶点坐标的数据
+        const data = new Float32Array([0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5])
+        // 创建缓冲区
+        const buffer = gl.createBuffer();
+        // 绑定缓冲区对象, 激活buffer
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        // 将顶点数组data数据传入缓冲区
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        // 将缓冲区中的数据按照一定的规律传递给位置变量apos
+        gl.vertexAttribPointer(aposLocation, 2, gl.FLOAT, false, 0, 0);
+        // 允许数据传递
+        gl.enableVertexAttribArray(aposLocation);
+
+        // 开始绘制
+        gl.drawArrays(gl.LINE_LOOP, 0, 4);
+        // 初始化着色器函数
+        function initShader(gl, vertexShaderSource, fragmentShaderSource) {
+            // 创建顶点着色器对象
+            const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+            // 创建片元着色器对象
+            const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+            // 引入顶点, 片元着色器源代码
+            gl.shaderSource(vertexShader, vertexShaderSource);
+            gl.shaderSource(fragmentShader, fragmentShaderSource);
+            // 编译顶点, 片元着色器
+            gl.compileShader(vertexShader);
+            gl.compileShader(fragmentShader);
+
+            // 创建程序对象
+            const program = gl.createProgram();
+            // 附着顶点, 片元着色器到program
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            // 链接program
+            gl.linkProgram(program);
+            // 使用program
+            gl.useProgram(program);
+
+            return program;
+        }
+    </script>
+</body>
+
+</html>
