@@ -4,6 +4,8 @@ typora-root-url: assets
 
 ![webgl25a](/webgl25a.png)
 
+[参考链接](http://www.yanhuangxueyuan.com/WebGL_course.html)
+
 # 一. WebGL零基础快速入门
 
 ## 1. WebGL 绘制一个点
@@ -120,4 +122,70 @@ gl.enableVertexAttribArray(aposLocation);
 
 ### gl.vertexAttribPointer(index, size, type, normalized, stride, offset)
 
-size: 拿几个数据放到 attribute 里, 如果 attribute 类型是 vec4, 但指定的数据不够4个, 则会用0补全.
+size: 拿几个数据放到 attribute 里, 如果 attribute 类型是 vec4, 但指定的数据不够4个, 也会自动补全.
+
+## 4. WebGL 平移变换
+
+```javascript
+const data = new Float32Array([
+    0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0,
+    1.0, 0.0, 0.0
+]);
+```
+
+**要求沿X轴平移-0.4**
+
+### 方法一
+
+```javascript
+// 将三个顶点的x坐标分别减0.4
+const data = new Float32Array([
+    -0.4, 0.0, 1.0,
+    -0.4, 1.0, 0.0,
+     0.6, 0.0, 0.0,
+]);
+```
+
+### 方法二
+
+```javascript
+for(let i = 0; i < 9; i+=3) {
+    data[i] += -0.4;
+}
+```
+
+### 方法三
+
+```
+// 在顶点着色器中计算
+gl_Position = vec4(apos.x - 0.4, apos.y, apos.z, 1);
+```
+
+### 方法四
+
+```javascript
+// 创建平移矩阵
+// 1	0	0	-0.4
+// 0	1	0	0
+// 0	0	1	0
+// 0	0	0	1
+mat4 m4 = mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, -0.4,0,0,1);
+gl_Position = m4 * apos;
+
+/*
+┌ 1 0 0 Tx ┐   ┌ x ┐   ┌ x+Tx ┐
+│ 0 1 0 Ty │ * │ y │ = │ y+Ty │
+│ 0 0 1 Tz │   │ z │   │ z+Tz │
+└ 0 0 0 1  ┙   └ 1 ┙   └  1   ┙
+*/
+```
+
+## 5. WebGL 绘制立方体
+
+[代码](5.html)
+
+### 着色器内置函数
+
+- radians() : 角度值转化为弧度值, 参数是浮点数float, 所以45必须写成45.0.
+- cos, sin : 余弦, 正弦函数, 参数要求为弧度值且是浮点数.
