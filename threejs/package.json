@@ -1,0 +1,19 @@
+{
+  "name": "threejs-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "drawing-lines": "webpack docs/src/drawing-lines.js -o docs/public/drawing-lines.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.117.1"
+  },
+  "devDependencies": {
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  }
+}
