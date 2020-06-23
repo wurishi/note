@@ -13,3 +13,21 @@
 [代码](public/drawing-lines.html)
 
 - BufferGeometry : 比起 Geometry 会有更好的性能.
+
+# 创建文字
+
+## 1. DOM + CSS
+
+使用 div + 绝对定位来显示文本
+
+## 2. 将文字绘制到画布中, 并将其作为 Texture
+
+## 3. 在 3D 软件里创建模型, 并导入
+
+## 4. 使用 three.js 自带的文字几何体
+
+```javascript
+new THREE.TextGeometry
+```
+
+## 5. 位图字体
