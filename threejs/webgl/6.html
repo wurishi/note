@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL 绘制立方体</title>
+</head>
+
+<body>
+    <canvas id="webgl" width="500" height="500" style="background-color: blue;"></canvas>
+
+    <script id='vertexShader' type="x-shader/x-vertex">
+    // 声明 vec4 类型的变量 apos
+    attribute vec4 apos;
+    void main() {
+        float radian = radians(30.0);
+        float cos = cos(radian);
+        float sin = sin(radian);
+        mat4 mx = mat4(1,0,0,0, 0,cos,-sin,0, 0,sin,cos,0, 0,0,0,1);
+        mat4 my = mat4(cos,0,-sin,0, 0,1,0,0, sin,0,cos,0, 0,0,0,1);
+        gl_Position = mx * my * apos;
+    }
+    </script>
+
+    <script id='fragmentShader' type="x-shader/x-fragment">
+    void main() {
+        // 定义片元颜色
+        gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    }
+    </script>
+
+    <script>
+        const canvas = document.getElementById('webgl');
+        const gl = canvas.getContext('webgl');
+
+        // 顶点着色器
+        const vertexShaderSource = document.getElementById('vertexShader').innerText;
+        // 片元着色器
+        const fragShaderSource = document.getElementById('fragmentShader').innerText;
+
+        // 初始化着色器
+        const program = initShader(gl, vertexShaderSource, fragShaderSource);
+
+        // 获取顶点着色器的位置变量apos, aposLocation指向了apos
+        const aposLocation = gl.getAttribLocation(program, 'apos');
+        // 8个顶点坐标数组
+        const data = new Float32Array([
+            0.5, 0.5, 0.5, // 0
+            -0.5, 0.5, 0.5, // 1
+            -0.5, -0.5, 0.5, // 2
+            0.5, -0.5, 0.5, // 3
+            0.5, 0.5, -0.5, // 4
+            -0.5, 0.5, -0.5, // 5
+            -0.5, -0.5, -0.5, // 6
+            0.5, -0.5, -0.5, // 7
+        ])
+        // 顶点索引数组
+        const indexes = new Uint8Array([
+            0, 1, 2, 3, // 前四个
+            4, 5, 6, 7, // 后四个
+            0, 4,
+            1, 5,
+            2, 6,
+            3, 7, // 前后俩俩对应
+        ]);
+        // 创建缓冲区
+        const buffer = gl.createBuffer();
+        // 绑定缓冲区对象, 激活buffer
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        // 将顶点数组data数据传入缓冲区
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+
+        // 创建index缓冲区
+        const indexesBuffer = gl.createBuffer();
+        // 绑定索引缓冲区
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexesBuffer);
+        // 将索引数组indexes写入缓冲区
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexes, gl.STATIC_DRAW);
+
+        // 将缓冲区中的数据按照一定的规律传递给位置变量apos
+        gl.vertexAttribPointer(aposLocation, 3, gl.FLOAT, false, 0, 0);
+        // 允许数据传递
+        gl.enableVertexAttribArray(aposLocation);
+
+        // LINE_LOOP模式绘制前四个点
+        // gl.drawArrays(gl.LINE_LOOP, 0, 4);
+        gl.drawElements(gl.LINE_LOOP, 4, gl.UNSIGNED_BYTE, 0);
+        // LINE_LOOP模式从第五个点开始绘制四个点
+        // gl.drawArrays(gl.LINE_LOOP, 4, 4);
+        gl.drawElements(gl.LINE_LOOP, 4, gl.UNSIGNED_BYTE, 4);
+        // LINES模式绘制后8个点
+        // gl.drawArrays(gl.LINES, 8, 8);
+        gl.drawElements(gl.LINES, 8, gl.UNSIGNED_BYTE, 8);
+
+        // 初始化着色器函数
+        function initShader(gl, vertexShaderSource, fragmentShaderSource) {
+            // 创建顶点着色器对象
+            const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+            // 创建片元着色器对象
+            const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+            // 引入顶点, 片元着色器源代码
+            gl.shaderSource(vertexShader, vertexShaderSource);
+            gl.shaderSource(fragmentShader, fragmentShaderSource);
+            // 编译顶点, 片元着色器
+            gl.compileShader(vertexShader);
+            gl.compileShader(fragmentShader);
+
+            // 创建程序对象
+            const program = gl.createProgram();
+            // 附着顶点, 片元着色器到program
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            // 链接program
+            gl.linkProgram(program);
+            // 使用program
+            gl.useProgram(program);
+
+            return program;
+        }
+    </script>
+</body>
+
+</html>
