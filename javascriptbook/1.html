@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id='btn'>点我</button>
+    <span id='span'>执行时间:</span>
+
+    <script>
+        function fn() {
+            let t = Date.now();
+            for (let i = 0; i < 100000000; i++) {
+                let tmp = Math.pow(i, 2);
+            }
+            t = Date.now() - t;
+            document.getElementById('span').textContent = '执行时间:' + t + 'ms';
+        }
+        document.getElementById('btn').onclick = fn;
+    </script>
+</body>
+
+</html>

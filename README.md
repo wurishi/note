@@ -20,7 +20,7 @@ electron
 
 # javascriptbook
 
-参考资料: 《你所不知道的 Javascript》(计划中)
+参考资料: 《你所不知道的 Javascript》_(进行中)_
 
 # reactconcurrent
 
