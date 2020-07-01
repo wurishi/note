@@ -48,7 +48,7 @@ Rust
 
 # u3decs
 
-参考资料: [Unity 中的 ECS 编程](https://blog.csdn.net/andrewfan/category_8967683.html) (计划中)
+参考资料: [Unity 中的 ECS 编程](https://blog.csdn.net/andrewfan/category_8967683.html) _(进行中)_
 
 # u3djobsys
 
