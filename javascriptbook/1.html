@@ -12,15 +12,30 @@
     <span id='span'>执行时间:</span>
 
     <script>
-        function fn() {
+        function fn(e, { r }) {
+            const c = arguments[2] || 0; // 前三次运行较慢, v8会针对(e,{})和(e,{},c)作二次编译加速
             let t = Date.now();
+            const { clientX = 0 } = e;
             for (let i = 0; i < 100000000; i++) {
-                let tmp = Math.pow(i, 2);
+                let tmp = Math.pow(i, 2) + clientX;
             }
             t = Date.now() - t;
-            document.getElementById('span').textContent = '执行时间:' + t + 'ms';
+            document.getElementById('span').textContent = '执行时间:' + t + 'ms_' + r + '_' + c;
         }
-        document.getElementById('btn').onclick = fn;
+        // fn({}, {}); // 会有不一样的加速表现
+        let index = 0;
+        document.getElementById('btn').onclick = e => {
+            const tmp = {};
+            if ((index++) % 2 == 0) {
+                tmp.r = Math.random();
+                fn(e, tmp);
+            }
+            else {
+                tmp.r = Math.random() + '字符串';
+                fn(e, tmp, 123);
+            }
+
+        };
     </script>
 </body>
 
