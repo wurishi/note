@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL 立方体添加点光源</title>
+</head>
+
+<body>
+    <canvas id="webgl" width="500" height="500" style="background-color: pink;"></canvas>
+
+    <script id='vertexShader' type="x-shader/x-vertex">
+        precision highp float; // 所有 float 类型的精度是 highp
+        // 声明 vec4 类型的变量 apos
+        attribute vec4 apos;
+        attribute vec4 a_color;
+        // 用于光照计算的变量a_normal, u_lightColor
+        attribute vec4 a_normal; // 法向量
+        uniform vec3 u_lightColor; // uniform声明平行光颜色变量
+        uniform vec3 u_lightPosition;
+        // 颜色插值变量
+        varying vec4 v_color;
+        void main() {
+            float radian = radians(45.0);
+            float cos = cos(radian);
+            float sin = sin(radian);
+            mat4 mx = mat4(1,0,0,0, 0,cos,-sin,0, 0,sin,cos,0, 0,0,0,1);
+            mat4 my = mat4(cos,0,-sin,0, 0,1,0,0, sin,0,cos,0, 0,0,0,1);
+            
+            // 设置点光源位置
+            // vec3 lightPosition = vec3(2,3,4);
+            vec3 lightPosition = u_lightPosition;
+
+            gl_Position = mx * my * apos;
+
+            // 顶点法向量归一化
+            vec3 normal = normalize((mx*my*a_normal).xyz);
+            // 计算顶点位置
+            vec4 vertexPosition = mx * my * apos;
+            
+            // 计算点光源照射顶点的方向并归一化
+            vec3 lightDirection = normalize(vec3(vertexPosition) - lightPosition);
+            // 计算光和法线的点积
+            float dot = max(dot(lightDirection, normal), 0.0);
+            // 套公式计算
+            vec3 reflectedLight = u_lightColor * a_color.rgb * dot;
+
+            // 颜色插值计算
+            v_color = vec4(reflectedLight, a_color.a);
+        }
+    </script>
+
+    <script id='fragmentShader' type="x-shader/x-fragment">
+        precision mediump float;
+        varying vec4 v_color;
+        void main() {
+            // 定义片元颜色
+            gl_FragColor = v_color;
+        }
+    </script>
+
+    <script src="9-3.js"></script>
+
+</body>
+
+</html>
