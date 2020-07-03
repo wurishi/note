@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL 两个立方体旋转动画</title>
+</head>
+
+<body>
+    <canvas id="webgl" width="500" height="500" style="background-color: white;"></canvas>
+
+    <script id='vertexShader' type="x-shader/x-vertex">
+    // 声明 vec4 类型的变量 apos
+    attribute vec4 apos;
+    // 声明顶点颜色变量
+    attribute vec4 a_color;
+    // 法向量
+    attribute vec4 a_normal;
+    // 平行光颜色
+    uniform vec3 u_lightColor;
+    // 平行光方向
+    uniform vec3 u_lightDirection;
+    // x轴旋转矩阵
+    uniform mat4 mx;
+    // y轴旋转矩阵
+    uniform mat4 my;
+    // x轴平移矩阵
+    uniform mat4 Tx;
+    // varying 声明顶点颜色插值后变量
+    varying vec4 v_color;
+    void main() {
+        // tx,mx,my连乘
+        // 先平移再旋转
+        gl_Position = Tx * mx * my * apos;
+        // 先旋转再平移
+        //gl_Position = mx * my * Tx * apos;
+        // 顶点法向量归一
+        vec3 normal = normalize((mx*my*a_normal).xyz);
+        // 平行光方向向量和顶点法向量的点积
+        float dot = max(dot(u_lightDirection, normal), 0.0);
+        // 计算平行光
+        vec3 reflectedLight = u_lightColor * a_color.rgb * dot;
+        // 顶点颜色插值计算
+        v_color = vec4(reflectedLight, a_color.a);
+    }
+    </script>
+
+    <script id='fragmentShader' type="x-shader/x-fragment">
+    precision lowp float; // 所有float类型数据的精度是lowp
+    varying vec4 v_color; // 接收顶点着色器中v_color数据
+    void main() {
+        // 定义片元颜色
+        gl_FragColor = v_color; // 插值后颜色数据赋值给对应的片元
+    }
+    </script>
+
+    <script src="11-2.js"></script>
+
+</body>
+
+</html>
