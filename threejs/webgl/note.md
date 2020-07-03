@@ -336,3 +336,66 @@ normalData 的数据参考此图:
 [代码](11-2.html)
 
 先旋转还是先平移会影响最终的结果.
+
+## 12. WebGL 纹理贴图
+
+![uv](/uv.png)
+
+[代码](12.html)
+
+- 图片的像素尺寸要保证为2的n次幂
+
+- gl.pixelStorei(UNPACK, flag) : 第一个参数可以是 gl.UNPACK_FLIP_Y_WEBGL 或 gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 第二个参数控制第一个参数是false 还是 true.
+
+  - gl.UNPACK_FLIP_Y_WEBGL : 是否将图片倒置左上角与UV坐标原点重合.
+  - gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL : 是否将图像像素值的 RGB 三个分量逐分量乘以透明度分量 A.
+
+- activeTexture() : 激活纹理缓冲区的某个子单元, 具体数量取决于显卡硬件和浏览器的 WebGL 图形系统设置, WebGL 至少支持8个纹理单元. (gl.TEXTURE0 到 gl.TEXTURE7)
+
+- bindTexture() :第一个参数可以是 gl.TEXTURE_2D 表示二维纹理贴图, gl.TEXTURE_CUBE_MAP 表示立方体纹理贴图.
+
+- texParameteri() : 用来设置纹理贴图的填充方式
+
+  | 纹理参数              | 填充模式 | 默认值                   |
+  | --------------------- | -------- | ------------------------ |
+  | gl.TEXTURE_MAG_FILTER | 纹理放大 | gl.LINEAR                |
+  | gl.TEXTURE_MIN_FILTER | 纹理缩小 | gl.NEAREST_MIPMAP_LINEAR |
+  | gl.TEXTURE_WRAP_S     | 水平填充 | gl.REPEAT                |
+  | gl.TEXTURE_WRAP_T     | 垂直填充 | gl.REPEAT                |
+
+  gl.TEXTURE_MAG_FILTER 和 gl.TEXTURE_MIN_FILTER 主要用于纹理贴图缩放, 对应值:
+
+  | 值         | 含义                                                         |
+  | ---------- | ------------------------------------------------------------ |
+  | gl.NEAREST | 纹理坐标乘以纹理图片需要缩放的倍数得到像素的选取坐标, 选择坐标对应的像素, 多余的舍弃掉. (锯齿) |
+  | gl.LINEAR  | 选择纹理坐标对应的像素周围的像素颜色进行加权平均, 相比 gl.NEAREST的效果更好, 但更消耗硬件资源. (平滑) |
+
+  gl.TEXTURE_WRAP_S 和 gl.TEXTURE_WRAP_T 往往用在贴图阵列的场景.
+
+  | 值                 | 含义                       |
+  | ------------------ | -------------------------- |
+  | gl.REPEAT          | 平铺方式                   |
+  | gl.MIRRORED_REPEAT | 镜像方式                   |
+  | gl.CLAMP_TO_EDGE   | 绘制区域边缘使用贴图的部分 |
+
+- texImage2D() : 将纹理数据传入绑定的纹理缓冲区中激活的纹理单元. 
+
+  第三个参数表示纹理图片的格式, 第四个参数表示从图片数据采样抽取过来的纹理数据的格式. jpg格式是RGB结构, png格式是RGBA结构.
+
+  | 格式               | 含义             | 图片格式   |
+  | ------------------ | ---------------- | ---------- |
+  | gl.RGB             | 红, 绿, 蓝三原色 | .jpg, .bmp |
+  | gl.RGBA            | 三原色+透明度    | .png       |
+  | gl.LUMINANCE       | 流明             | 灰度图     |
+  | gl.LUMINANCE_ALPHA | 透明度           | 灰度图     |
+
+  第五个参数表示像素分量占多少字节数.
+
+  | 格式                       | 含义                                 |
+  | -------------------------- | ------------------------------------ |
+  | gl.UNSIGNED_BYTE           | 无符号整型, 每个颜色分量一个字节长度 |
+  | gl.UNSIGNED_SHORT_5_6_5    | RGB: RGB每个分量对应长度5, 6, 5位    |
+  | gl.UNISIGNED_SHORT_4_4_4_4 | RGBA: RGBA每个分量对应长度4位        |
+  | gl.UNISIGNED_SHORT_5_5_5_1 | RGBA: RGB每个分量对应长度5位, A是1位 |
+
+  
