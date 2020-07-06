@@ -22,6 +22,14 @@ const program = initShader(gl, vertexShaderSource, fragShaderSource);
 
 //TODO:
 
+function vertexBuffer(data, posIndex, size) {
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(posIndex, size, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(posIndex);
+}
+
 // 初始化着色器函数
 function initShader(gl, vertexShaderSource, fragmentShaderSource) {
     // 创建顶点着色器对象

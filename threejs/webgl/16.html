@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL 深度测试与 α 融合</title>
+</head>
+
+<body>
+    <canvas id="webgl" width="500" height="500" style="background-color: grey;"></canvas>
+
+    <script id='vertexShader' type="x-shader/x-vertex">
+    // 声明 vec4 类型的变量 apos
+    attribute vec4 apos;
+    // 声明顶点颜色变量
+    attribute vec4 a_color;
+    // varying 声明顶点颜色插值后变量
+    varying vec4 v_color;
+    void main() {
+        float radian = radians(21.0);
+        float cos = cos(radian);
+        float sin = sin(radian);
+        mat4 mx = mat4(1,0,0,0 ,0,cos,-sin,0, 0,sin,cos,0, 0,0,0,1);
+        mat4 my = mat4(cos,0,-sin,0, 0,1,0,0, sin,0,cos,0, 0,0,0,1);
+        gl_Position = mx * my * apos; // 顶点坐标赋值给内置变量 gl_Position
+        v_color = a_color; // 顶点颜色插值计算
+    }
+    </script>
+
+    <script id='fragmentShader' type="x-shader/x-fragment">
+    precision lowp float; // 所有float类型数据的精度是lowp
+    varying vec4 v_color; // 接收顶点着色器中v_color数据
+    void main() {
+        // 定义片元颜色
+        gl_FragColor = v_color; // 插值后颜色数据赋值给对应的片元
+    }
+    </script>
+
+    <script src="16.js"></script>
+
+</body>
+
+</html>
