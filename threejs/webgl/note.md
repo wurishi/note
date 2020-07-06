@@ -2,6 +2,9 @@
 typora-root-url: assets
 ---
 
+
+# 零
+
 ![webgl25a](/webgl25a.png)
 
 [参考链接](http://www.yanhuangxueyuan.com/WebGL_course.html)
@@ -467,4 +470,64 @@ $$
   ![blend](/blend.png)
 
 - gl.depthMask(false) : 关闭深度缓冲区
+
+## 17. WebGL 离屏渲染
+
+### 17.1 窗口系统帧缓冲区
+
+渲染管线生成的片元数据, 像素值 RGB 都会存入颜色缓冲区, 深度值 Z 会存储到深度缓冲区中, 这二者都属于帧缓冲区. 帧缓冲区的数据都会被系统读取并显示到 canvas 画布上, 每一个 canvas 画布都有一个自己的缓冲区. 系统默认的这个帧缓冲区就称为窗口系统的帧缓冲区.
+
+### 17.2 自定义帧缓冲区
+
+WebGL 除了有一个与窗口或者说 canvas 关联的帧缓冲区外, 也支持通过 WebGL 方法 `createFramebuffer()` 自定义创建帧缓冲区. 默认情况下自定义缓冲区中的像素数据不会显示在浏览器窗口的 canvas 画布上. 一般会把这种自定义帧缓冲区中的数据作为其它几何体的纹理贴图, 或者做其他二次处理. 这种远离窗口 canvas 的渲染就被称为离屏渲染.
+
+### 17.3 渲染缓冲区
+
+通过方法 `createRenderbuffer()`方法可以创建一个渲染缓冲区, 通过渲染缓冲区, 帧缓冲区, 纹理缓冲区配合可以实现离屏渲染. 自定义帧缓冲区的时候, 它的颜色, 深度, 模板缓冲区也要自定义, 通过方法 `renderbufferStorage()` 可以设置一个渲染缓冲区的用途.
+
+### 17.4 纹理缓冲区
+
+纹理缓冲区可以作为帧缓存区的子缓冲区颜色缓冲区, 深度缓冲区.
+
+### 17.5 相关 WebGL API 简介
+
+- createFranebuffer() : 创建一个帧缓冲区, 对于的删除帧缓冲区的方法是 `deleteFranebuffer()`
+
+- bindFramebuffer(target, framebuffer) : 绑定帧缓冲区.
+
+- framebufferTexture2D(target, attachment, textarget, texture, level) : 把纹理缓冲区与帧缓冲区关联起来.
+
+  | 参数       | 含义                                                         |
+  | ---------- | ------------------------------------------------------------ |
+  | target     | gl.FRAMEBUFFER 表示帧缓冲区                                  |
+  | attachment | gl.COLOR_ATTACHMENT0: 表示纹理缓冲区作为帧缓冲区的颜色缓冲区, 接收片元像素数据. gl.DEPTH_ATTACHMENT: 表示纹理缓冲区作为帧缓冲区的深度缓冲区, 接收片元深度值 Z. |
+  | textarget  | gl.                                                          |
+  | texture    | 要关联的纹理缓冲区对象的变量名                               |
+  | level      | 0                                                            |
+
+- createRenderbuffer() : 创建一个渲染缓冲区, 可以作为帧缓冲区的子缓冲区, 接收来自渲染管线的片元像素值, 深度值等数据. 对应的删除方法是 `deleteRenderbuffer()`.
+
+- bindRenderbuffer() : 绑定渲染缓冲区.
+
+- renderbufferStorage(target, internalformat, width, height) : 指定 `createRenderbuffer()` 方法创建的渲染缓冲区的用途. target 默认写法 gl.RENDERBUFFER 表示渲染缓冲区, width 和 height 表示帧缓冲区渲染结果的宽高尺寸, internalformat 是指定渲染缓冲区接收帧缓冲区数据是片元的像素值还是片元的深度值或其它的值.
+
+  | internalformat       | 含义                                 |
+  | -------------------- | ------------------------------------ |
+  | gl.DEPTH_COMPONENT16 | 深度缓冲区                           |
+  | gl.STENCIL_INDEX8    | 模板缓冲区                           |
+  | gl.RGBA4             | 颜色缓冲区, 4个分量都是4比特         |
+  | gl.RGB5_A1           | 颜色缓冲区, RGB分量5比特, A分量1比特 |
+  | gl.RGB565            | 颜色缓冲区, RGB分量分别5, 6, 5比特   |
+
+- framebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer) : 把渲染缓冲区关联到帧缓冲区
+
+  | 参数               | 含义                                                         |
+  | ------------------ | ------------------------------------------------------------ |
+  | target             | gl.FRAMEBUFFER 表示帧缓冲区                                  |
+  | attachment         | ① gl.COLOR_ATTACHMENT0: 表示渲染缓冲区作为帧缓冲区的颜色缓冲区, 接收片元像素数据. ② gl.DEPTH_ATTACHMENT: 表示渲染缓冲区作为帧缓冲区的深度缓冲区, 接收片元深度值Z. ③ gl.STENCIL_ATTACHMENT: 表示渲染缓冲区作为帧缓冲区的模板缓冲区. |
+  | renderbuffertarget | gl.RENDERBUFFER                                              |
+  | renderbuffer       | 渲染缓冲区对象的变量名                                       |
+  | level              | 0                                                            |
+
+  
 
