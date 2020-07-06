@@ -411,3 +411,47 @@ $$
 ## 14. 切换着色器程序
 
 [代码](14.html)
+
+## 15. WebGL透明度与 α 融合
+
+
+
+- gl.enable() : 开启的这些功能模块都处于渲染管线这条流水线上的不同位置, 相互配合完成工作. 深度检测, α 融合都是对 RGBA 像素相关的数据进行处理, 也就是说渲染管线上的这些测试单元都位于顶点着色器, 片元着色器的后面, 用来处理经过顶点着色器, 光栅器, 片元着色器处理后的相关数据.
+
+  | 参数                   | 功能                         |
+  | ---------------------- | ---------------------------- |
+  | gl.DEPTH_TEST          | 深度测试, 清除看不到的隐藏面 |
+  | gl.BLEND               | α 融合, 实现颜色融合叠加     |
+  | gl.POLYGON_OFFSET_FILL | 多边形偏移, 解决深度冲突     |
+
+- gl.enable(gl.BLEND) : 表示开启 GPU 渲染管线的 α 融合功能, 比如源颜色像素值是 (R1, G1, B1, A1), 目标颜色像素值是 (R2, G2, B2, A2), 融合后的像素值计算方法如下:
+
+  ```javascri
+  R3 = R1 x A1 + R2 x (1 - A1)
+  G3 = G1 x A1 + G2 x (1 - A1)
+  B3 = B1 x A1 + B2 x (1 - A1)
+  ```
+
+- gl.blendFunc() : 定义了源颜色和目标颜色融合的计算方式, 即对应上面的公式定义了二个自定义参数:
+
+  ```
+  R3 = R1 x 参数1 + R2 x 参数2
+  G3 = G1 x 参数1 + G2 x 参数2
+  B3 = B1 x 参数1 + B2 x 参数2
+  ```
+
+  | 参数                   | 红色R分量系数 | 绿色G分量系数 | 蓝色B分量系数 |
+  | ---------------------- | ------------- | ------------- | ------------- |
+  | gl.ZERO                | 0             | 0             | 0             |
+  | gl.ONE                 | 1             | 1             | 1             |
+  | gl.SRC_COLOR           | Rs            | Gs            | Bs            |
+  | gl.ONE_MINUS_SRC_COLOR | 1 - Rs        | 1 - Gs        | 1 - Bs        |
+  | gl.DST_COLOR           | Rd            | Gd            | Bd            |
+  | gl.ONE_MINUS_DST_COLOR | 1 - Rd        | 1 - Gd        | 1 - Bd        |
+  | gl.SRC_ALPHA           | As            | As            | As            |
+  | gl.ONE_MINUS_SRC_ALPHA | 1 - As        | 1 - As        | 1 - As        |
+  | gl.DST_ALPHA           | Ad            | Ad            | Ad            |
+  | gl.ONE_MINUS_DST_ALPHA | 1 - Ad        | 1 - Ad        | 1 - Ad        |
+  | gl.SRC_ALPHA_SATURATE  | min(As, Ad)   | min(As, Ad)   | min(As, Ad)   |
+
+## 16. 深度测试与 α 融合
