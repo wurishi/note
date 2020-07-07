@@ -867,3 +867,7 @@ function initShader(gl, vertexShaderSource, fragmentShaderSource) {
 ### 19.4 给 uniform 和 attribute 变量传入数据
 
 ![19-4](/19-4.png)
+
+## 20. WebGL 中英文术语对照表
+
+![20](/20.png)
