@@ -627,21 +627,21 @@ gl_PointCoord 和 gl_FragCoord 一样也是表示片元坐标的内置变量, �
 
 片元着色器和顶点着色器一样是 GPU 渲染管线上一个可以执行着色器程序的功能单元, 顶点着色器是逐顶点处理顶点数据, 片元着色器是逐片元处理片元数据. 通过给内置变量 gl_FragColor 赋值可以给每一个片元进行着色, 值可以是一个确定的 RGBA 值, 可以是一个和片元位置相关的值, 也可以是插值后的顶点颜色. 除了给片元进行着色之外, 通过关键字 discard 还可以实现哪些片元可以被丢弃, 不显示在 canvas 画布上.
 
-确定颜色值
+##### 确定颜色值
 
 ```glsl
 // 红色
 gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 ```
 
-颜色值关联片元位置
+##### 颜色值关联片元位置
 
 ```glsl
 // canvasWidth, canvasHeight 表示画布的宽高
 gl_FragColor = vec4(gl_FragCoord.x / canvasWidth, gl_FragCoord.y / canvasHeight, 0.0, 1.0);
 ```
 
-顶点颜色插值
+##### 顶点颜色插值
 
 ```glsl
 varying vec4 v_Color; // 插值后的顶点颜色数据
@@ -649,7 +649,7 @@ varying vec4 v_Color; // 插值后的顶点颜色数据
 gl_FragColor = v_Color;
 ```
 
-纹理缓冲区
+##### 纹理缓冲区
 
 ```glsl
 varying vec2 v_TexCoord; // 插值后的纹理坐标数据
@@ -666,3 +666,204 @@ gl_FragColor = texture2D(u_Sampler, v_TexCoord);
 #### 融合单元
 
 融合单元主要是为了实现透明效果, 硬件上能够实现的是把(x,y)坐标相同片元的颜色进行混合叠加, 和深度测试单元一样需要使用 WebGL 方法 `enable()` 开启.
+
+## 19. WebGL API
+
+### 19.1 获取 WebGL 上下文
+
+- canvas 元素 :
+
+| 属性             | 意义         |
+| ---------------- | ------------ |
+| height           | 画布高度     |
+| width            | 画布宽度     |
+| background-color | 画布背景颜色 |
+| opacity          | 画布透明度   |
+
+- getContext() : 通过传入 "webgl" 作为参数获取 canvas 的 webgl 上下文.
+
+### 19.2 类型数组和顶点缓冲区配置![19-2-1](/19-2-1.png)![19-2-2](/19-2-2.png)
+
+#### 类型数据 
+
+数据用途不同, 要求的精度和形式自然不同, 比如顶点索引使用整数即可, 根据顶点的数量可以选择Uint8, Uint16, Uint32等, 顶点的位置一般使用浮点数表示.
+
+#### getAttribLocation(program, attributeName) 
+
+返回顶点着色器中顶点变量的索引地址
+
+| 参数          | 值                           |
+| ------------- | ---------------------------- |
+| program       | 程序对象                     |
+| attributeName | 顶点着色器程序中的顶点变量名 |
+
+```javascript
+const aposLocation = gl.getAttribLocation(program, 'apos');
+```
+
+#### 顶点数据配置
+
+```javascript
+// 创建缓冲区
+const buffer = gl.createBuffer();
+// 绑定缓冲区
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+// 顶点数组data数据传入缓冲区
+gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+// 缓冲区中的数据按照一定的规律传递给位置变量apos
+gl.vertexAttribPointer(aposLocation, 3, gl.FLOAT, false, 0, 0);
+// 允许数据传递
+gl.enableVertexAttribArray(aposLocation);
+```
+
+#### 顶点索引配置
+
+```javascript
+// 创建缓冲区对象
+const indexesBuffer = gl.createBuffer();
+// 绑定缓冲区对象
+gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexesBuffer);
+// 索引数组indexes数据传入缓冲区
+gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexes, gl.STATIC_DRAW);
+```
+
+#### createBuffer() 和 deleteBuffer()
+
+`createBuffer()` 方法会在 GPU 控制的显存上创建一个缓冲区来存储顶点或顶面索引数据, 通过 `deleteBuffer()` 则可以删除某个缓冲区.
+
+#### bindBuffer(target, buffer)
+
+同类缓冲区在同一时刻只能绑定一个, 只有处于绑定状态才能传入数据.
+
+| 参数   | 值                                                           |
+| ------ | ------------------------------------------------------------ |
+| target | 同 bindBuffer() 方法的 target 参数, 保持一致.                |
+| data   | 类型数组变量名, 表示要传入缓冲区中的数组数据                 |
+| usage  | 通过不同的值控制传入缓冲区数据的方式, GPU 使用缓冲区调用数据方式 |
+
+| usage 值        | 模式         |
+| --------------- | ------------ |
+| gl.STATIC_DRAW  | 静态绘制模式 |
+| gl.STREAM_DRAW  | 流绘制模式   |
+| gl.DYNAMIC_DRAW | 动态绘制模式 |
+
+#### vertexAttribPointer(location, size, type, normalized, stride, offset)
+
+顶点索引缓冲区不需要该方法, 该方法的作用是规定 GPU 从顶点缓冲区中读取数据的方式, 很多时候为了提高顶点数据的传输读取效率, 往往会把顶点位置, 顶点颜色, 顶点法向量, 纹理坐标交叉定义在一个类型数组中, 一次性传入顶点缓冲区中, 这样 CPU 和 GPU 不需要多次通信, 只要执行一次 bufferData() 方法, 这时候 GPU 为了使用顶点缓冲区中的不同用途的数据, 就需要按照一定规律读取.
+
+可以在同一个 WebGL 程序中之次使用该方法, 每个方法的参数 location 分别指向不同的顶点变量.
+
+| 参数       | 值                                                           |
+| ---------- | ------------------------------------------------------------ |
+| location   | 顶点变量的位置                                               |
+| size       | size 是整数1~4, 表示每次取用几个数据, 如果 size 是1, 着色器中的顶点变量vec4后默认2, 3分量是0, 第4分量是1. |
+| type       | 顶点数据类型, 定义该参数主要是为了控制数据的存取, 所有的数据没有分界线, 只能靠数据类型占用的位 bit 数来分界 |
+| normalized | 布尔值 true 或 false, 表示是否归一化到区间 [0,1] 或 [-1, 1]  |
+| stride     | 相邻两个顶点间隔的数据字节数, 具体说就是一个顶点所有的顶点位置, 顶点颜色, 顶点法向量等顶点数据数量减去你要选择的那种顶点数据的数量, 顶点数量再乘以该类型数据一个元素占用的字节点. |
+| offset     | 每个顶点的位置, 颜色, 法向量等数组是一组, offset 是字节数, 规定了 GPU 从一组数据中第几个元素开始读取数据. |
+
+| type 值           | 对应的类型数组 |
+| ----------------- | -------------- |
+| gl.UNSIGNED_BYTE  | Uint8Array     |
+| gl.SHORT          | Int16Array     |
+| gl.UNSIGNED_SHORT | Uint16Array    |
+| gl.INT            | Int32Array     |
+| gl.UNSIGNED_INT   | Uint32Array    |
+| gl.FLOAT          | Float32Array   |
+
+#### enableVertexAttribArray(location)
+
+顶点缓冲区和 GPU 渲染管线之间存在一个硬件单元可以决定 GPU 是否能读取顶点缓冲区中的顶点数据.
+
+### 19.3 编译着色器程序
+
+![19-3-1](/19-3-1.png)![19-3-2](/19-3-2.png)
+
+```javascript
+function initShader(gl, vertexShaderSource, fragmentShaderSource) {
+    // 创建顶点着色器对象
+    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    // 创建片元着色器对象
+    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    // 引入顶点, 片元着色器源代码
+    gl.shaderSource(vertexShader, vertexShaderSource);
+    gl.shaderSource(fragmentShader, fragmentShaderSource);
+    // 编译顶点, 片元着色器
+    gl.compileShader(vertexShader);
+    gl.compileShader(fragmentShader);
+
+    // 创建程序对象
+    const program = gl.createProgram();
+    // 附着顶点, 片元着色器到program
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    // 链接program
+    gl.linkProgram(program);
+    // 使用program
+    gl.useProgram(program);
+
+    return program;
+}
+```
+
+#### createShader(shaderType)
+
+创建着色器对象, 参数表示着色器类型.
+
+#### shaderSource(shaderObject, shaderSource)
+
+| 参数         | 值                   |
+| ------------ | -------------------- |
+| shaderObject | 着色器对象变量名     |
+| shaderSource | 字符串格式着色器程序 |
+
+#### compileShader(shaderSource)
+
+编译顶点着色器程序和片元着色器程序.
+
+#### createProgram()
+
+创建程序对象, 程序对象是为了实现 CPU 和 GPU 的通信, 控制 GPU 着色器的工作状态, 切换不同的着色器程序.
+
+#### attachShader(program, shaderObject)
+
+绑定着色器对象到一个程序对象上.
+
+#### linkProgram(program)
+
+在执行 useProgram 方法之前, 要先连接程序对象的顶点和片元着色器, 检查着色程序的错误, 通过连接测试后, 才能通过 useProgram 方法把着色器程序传递给 GPU, 否则报错
+
+测试项:
+
+1. 检查顶点, 片元着色器程序中同名 varying 变量是否一一对应.
+2. 检查顶点着色器程序中是否给 varying 变量赋值顶点数据.
+3. 硬件资源有限, 要检测 attribute, uniform, varying 变量的数量是否超出限制范围.
+
+#### getProgramParameter(program, value)
+
+通过该方法可以判断 linkPrrogram 方法是否连接成功.
+
+| value 值             | 含义                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| gl.DELETE_STATUS     | 是否执行 deleteProgram 删除程序对象 program, 返回结果 true 或 false |
+| gl.LINK_STATUS       | 程序对象 program 是否通过 linkProgram() 方法连接验证, 返回结果 true 或 false |
+| gl.VALIDATE_STATUS   | 程序对象 program 是否通过验证, 返回结果 true 或 false        |
+| gl.ATTACHED_SHADERS  | 分配给程序的着色器对象数量                                   |
+| gl.ACTIVE_ATTRIBUTES | attribute 变量的数量                                         |
+| gl.ACTIVE_UNIFORMS   | uniform 变量的数量                                           |
+
+#### useProgram(program)
+
+执行后, 在执行 WebGL 绘制函数 drawArrays() 的时候, WebGL 系统会把程序对象对应的顶点, 片元着色器程序传递给 GPU 渲染管线的顶点, 片元着色器功能单元. 同一时刻 GPU 只能配置一组顶点, 片元着色器程序.
+
+#### deleteShader(shaderObject)
+
+删除着色器对象, 如果已经执行 attachShader() 方法把着色器对象绑在程序对象上, 系统不会立即执行删除操作, 只有在程序对象不再使用该着色器对象时, 删除操作才会执行, 并释放内存.
+
+#### deleteProgram(program)
+
+删除程序对象, 如果已经执行 useProgram() 方法调用了该程序对象, 则系统不会立即执行删除操作, 直到该程序对象不再使用, 所谓的不再使用就是指通过方法 useProgram() 调用新的程序对象后, 旧的程序对象才是不再使用的.
+
+### 19.4 给 uniform 和 attribute 变量传入数据
+
+![19-4](/19-4.png)
