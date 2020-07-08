@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>创建一个场景</title>
     <script src="../node_modules/three/build/three.js"></script>
+    <script src="../node_modules/three/examples/js/controls/OrbitControls.js"></script>
 </head>
 
 <body>
@@ -42,10 +43,12 @@
 
         function render() {
             requestAnimationFrame(render);
-            mesh.rotateY(0.002);
+            // mesh.rotateY(0.002);
             renderer.render(scene, camera);
         }
         render();
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enablePan = false;
     </script>
 </body>
 
