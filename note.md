@@ -1,3 +1,7 @@
+共享提交tag
+
+git push origin --tags
+
 # Unity 打包 Android 如果卡在 gradle 阶段。
 
 ## 方法一
