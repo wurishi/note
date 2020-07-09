@@ -1443,3 +1443,63 @@ precision lowp int; // 表示顶点着色器中所有整型数精度为低精度
 | sampler2D   | 低精度 lowp                                                  |
 | samplerCube | 低精度 lowp                                                  |
 
+## 13. 函数
+
+WebGL 着色器和 Javascript 语言等一样可以声明函数, 声明函数方式类似 C 语言.
+
+### 有返回值
+
+```glsl
+// 声明一个函数
+float add(float x, float y) {
+    return x + y;
+}
+void main() {
+    // 调用函数
+    float x = add(1.0, 2.8);
+}
+/*
+格式:
+返回值数据类型 函数名称(参数1, 参数2...) {
+	return 函数返回值
+}
+*/
+```
+
+### 无返回值 void
+
+自定义函数无返回值时, 和主函数 `main` 一样, 使用关键字 `void` 声明函数.
+
+```glsl
+vec3 direc = vec3(1.0, 0.0, 0.0);
+// 声明一个函数
+void fun() {
+    direc.x = 50.0;
+}
+void main() {
+    // 执行函数
+    fun();
+}
+```
+
+### out
+
+自定义声明一个函数, 传入一个参数, 默认情况下, 参数被修改了, 但并不影响传入的参数对应变量的值, 如果使用 `out` 关键字声明参数变量, 函数内部改变参数, 函数外参数对应的变量会改变.
+
+```glsl
+float fun(out vec3 dir) {
+    dir.x = 100.0;
+    return dir.x * dir.x;
+}
+vec3 direc = vec3(1.0, 0.0, 0.0);
+void main() {
+    fun(direc);
+    // direc.x 已经被改为100.0了
+}
+```
+
+### in 和 const in
+
+`函数名(in vec3 dir)` 和 `函数名(vec3 dir)` 是等价的.
+
+`函数名(const in vec3 dir)` 和 `函数名(in vec3 dir)` 区别在于使用 `const in` 关键字声明参数变量的时候, 参数的值将**不能被修改**.
