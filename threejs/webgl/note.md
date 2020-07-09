@@ -1130,3 +1130,101 @@ mat4 my = mat4(cos,0,-sin,0, 0,1,0,0, sin,0,cos,0, 0,0,0,1);
 vec4 newPos = mx * my * pos;
 ```
 
+## 6. if-else 语句和 for 语句
+
+```glsl
+if(x > 100) {
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+if(colorBool) {
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+} else {
+    gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+}
+if(x<10) {
+} else if(x<20) {
+} else {}
+```
+
+```glsl
+for(int i = 0; i < 20; i++) {
+    if(i == 15) {
+        continue;
+    }
+    if(i == 18) {
+        break;
+    }
+}
+```
+
+## 7. 内置变量
+
+| 内置变量      | 含义                               | 值数据类型 |
+| ------------- | ---------------------------------- | ---------- |
+| gl_PointSize  | 点渲染模式, 方形点区域渲染像素大小 | float      |
+| gl_Position   | 顶点位置坐标                       | vec4       |
+| gl_FragColor  | 片元颜色值                         | vec4       |
+| gl_FragCoord  | 片元坐标, 单位像素                 | vec2       |
+| gl_PointCoord | 点渲染模式对应像素坐标             | vec2       |
+
+### gl_PointSize
+
+当 WebGL 执行绘制函数 `gl.drawArrays()` 绘制模式是点模式 `gl.POINTS` 的时候, 顶点着色器语言 `main` 函数中才会使用内置变量 `gl_PointSize`, 它主要是用来设置顶点渲染出来的方形点像素大小.
+
+```glsl
+void main() {
+    gl_PointSize = 20.0;
+}
+```
+
+```javascript
+gl.drawArrays(gl.POINTS, 0, 1);
+```
+
+### gl_Position
+
+`gl_Position` 内置变量主要和顶点相关, 出现的位置是顶点着色器语言的 `main` 函数中. `gl_Position` 表示最终传入片元着色器片元化要使用的顶点位置坐标.
+
+如果只有一个顶点, 可以直接在顶点着色器中给 `gl_Position` 赋值即可.
+
+```glsl
+void main() {
+    gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+}
+```
+
+要完全理解内置变量 `gl_Position`, 必须建立**逐顶点**的概念. 一般语言中, 现出一个变量赋值可以理解为仅执行一次, 但是对于着色器不能这么直接理解, 如果有多个顶点, 可以理解为每个顶点都要执行一遍顶点着色器主函数`main`中的程序.
+
+```glsl
+// Javascript 处传递的会是一组顶点(比如一个立方体)
+attribute vec4 apos;
+// main 会逐顶点执行, 每个顶点放到 apos 中后都会执行一遍 main
+void main() {
+    // 平移矩阵(沿x轴平移-0.4)
+    mat4 m4 = mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, -0.4,0,0,1);
+    // 逐顶点进行矩阵变换
+    gl_Position = m4 * apos;
+}
+// 只有所有顶点都进行矩阵变换后, 立方体才是真正的沿x轴平移了-0.4
+```
+
+### gl_FragColor
+
+`gl_FragColor` 内置变量主要用来设置片元像素的颜色, 出现的位置是片元着色器语言的 `main` 函数中.
+
+内置变量 `gl_FragColor` 的值是四维向量 `vec4(r, g, b, a)`, 前三个参数表示片元像素颜色值 RGB, 第四个参数是片元像素透明度 A, `1.0` 表示不透明, `0.0` 表示完全透明.
+
+理解内置变量 `gl_FragColor` 需要建立**逐片元**的概念. 顶点经过片元着色器片元化以后, 得到一个个片元, 或者说像素点, 然后通过内置变量 `gl_FragColor` 给每一个片元设置颜色值.
+
+### gl_PointCoord
+
+要理解 `gl_PointCoord` 表示的坐标含义, 就需要了解 WebGL 绘制函数 `gl.drawArrays()` 的绘制模式参数 `gl.POINTS`.
+
+使用点渲染模式时, WebGL 会把顶点渲染为一个方形区域, 在这个区域内可以在左上角建立一个直角坐标系, 然后使用 `gl_PointCoord` 描述这个区域内像素或者片元的坐标. 比如左上角坐标是`(0.0, 0.0)`, 中心坐标是 `(0.5, 0.5)`, 右下角坐标是 `(1.0, 1.0)`.![pointcoord](/pointcoord.png)
+
+[代码](2.7.html)
+
+### gl_FragCoord
+
+内置变量 gl_FragCoord 表示 WebGL 在 canvas 画布上渲染的所有片元或者说像素的坐标, 坐标原点是 canvas 画布的左上角.
+

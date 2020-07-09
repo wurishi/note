@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL </title>
+</head>
+
+<body>
+    <canvas id="webgl" width="500" height="500" style="background-color: white;"></canvas>
+
+    <script id='vertexShader' type="x-shader/x-vertex">
+    // 声明 vec4 类型的变量 apos
+    attribute vec4 apos;
+
+    void main() {
+        gl_Position = apos; // 顶点坐标赋值给内置变量 gl_Position
+    }
+    </script>
+
+    <script id='fragmentShader' type="x-shader/x-fragment">
+    precision lowp float; // 所有float类型数据的精度是lowp
+    void main() {
+        // 1. 按坐标设置颜色
+        if(gl_FragCoord.x < 300.0) {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }else if(gl_FragCoord.x <= 400.0) {
+            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+        }else {
+            gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+        }
+        // 2. 渐变
+        gl_FragColor = vec4(gl_FragCoord.x / 500.0 * 1.0, 1.0, 0.0, 1.0);
+    }
+    </script>
+
+    <script src="2.7-1.js"></script>
+
+</body>
+
+</html>
