@@ -1271,3 +1271,23 @@ Javascript 可以通过 WebGL 相关的 API 把一些数据传递给顶点着色
 ### 着色器编写形式
 
 顶点着色器, 片元着色器代码在 Javascript 代码中以字符串的形式存在, Javascript 会通过调用相关 WebGL API 编译处理着色器代码, 然后在 GPU 着色器单元执行.
+
+## 10. 取样器 sampler2D
+
+WebGL 在处理图片纹理编写片元着色器的时候, 会通过 `sampler2D` 关键字声明一个纹理相关的变量, `sampler2D` 和 `vec2`, `float` 都是表示一种数据类型, 只不过 `sampler2D` 关键字声明的变量表示一种取样器类型变量.
+
+### 声明变量
+
+```glsl
+uniform sampler2D u_Sampler;
+```
+
+### 内置函数 texture2D
+
+WebGL 着色器提供了内置函数 `texture2D`, 可以从纹理图像提取像素值, 赋值给内置变量 `gl_FragColor`.
+
+```glsl
+// 采集纹素, 逐片元赋值像素值
+gl_FragColor = texture2D(u_Sampler, v_TexCoord);
+```
+
