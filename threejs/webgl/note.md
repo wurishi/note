@@ -1503,3 +1503,43 @@ void main() {
 `函数名(in vec3 dir)` 和 `函数名(vec3 dir)` 是等价的.
 
 `函数名(const in vec3 dir)` 和 `函数名(in vec3 dir)` 区别在于使用 `const in` 关键字声明参数变量的时候, 参数的值将**不能被修改**.
+
+## 14. 结构体 struct
+
+结构体是由多个同类或不同类的数据类型构成的一个集合.
+
+```glsl
+// 定义一个结构体, 也就是自定义一个数据类型
+struct DirectionalLight {
+    vec3 direction;
+    vec4 color;
+    float shadowBias;
+}
+// 使用自定义结构体声明一个变量
+uniform DirectionalLight dirLight;
+```
+
+### 访问分量 (点符号`.`)
+
+结构体和 `vec3`, `mat4` 等数据类型一样, 也是通过点符号访问自身的变量或元素.
+
+```glsl
+struct DirectionalLight {
+    vec3 direction;
+    vec4 color;
+}
+uniform DirectionalLight dirLight;
+// 结构体成员赋值
+dirLight.color = vec4(0.8, 0.6, 0.1, 1.0);
+// 访问成员, 赋值给其他变量
+vec4 newcol = dirLight.color;
+```
+
+### 结构体 uniform 变量数据传递
+
+```javascript
+const lightColor = gl.getUniformLocation(program, 'dirLight.color');
+gl.uniform4f(lightColor, 1.0, 0.0, 1.0, 0.7);
+```
+
+[代码](2.14.html)
