@@ -44,7 +44,9 @@ Rust
 
 # threejs
 
-参考资料: [three.js 中文](http://www.webgl3d.cn/threejs/docs/index.html) _(进行中)_
+- doc: [three.js 中文](http://www.webgl3d.cn/threejs/docs/index.html) **(完成)**
+- webgl: [WebGL 入门教程](http://www.yanhuangxueyuan.com/WebGL/) *(进行中 1/2)*
+- coures: [three.js 教程](http://www.yanhuangxueyuan.com/Three.js_course.html) (计划中)
 
 # u3decs
 
