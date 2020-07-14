@@ -1619,3 +1619,95 @@ const lightColor = gl.getUniformLocation(program, "dirLight[1].color");
 gl.uniform4f(lightColor, 1.0, 0.0, 1.0, 0.7);
 ```
 
+## 17. 预处理
+
+WebGl 着色器语言和 C 语言一样, 提供了一些用于预处理的命令 `#define`, `#include`, `#if` 等以 `#` 号开头的命令.
+
+### 宏定义 `#define`
+
+注意: 宏定义和着色器声明的变量不同, 着色器程序执行前需要进行编译处理, 着色器程序编译处理之后程序才会在 GPU 上执行, 宏定义主要是在编译处理阶段起作用.
+
+```glsl
+#define PI 3.14;
+#define RECIPROCAL_PI 0.318;
+float add() {
+    float f = PI * 100.0;
+    return f;
+}
+```
+
+预处理之后代码:
+
+```glsl
+float add() {
+    float f = 3.14 * 100.0; // 预处理的时候会把PI符号自动替换为3.14
+    return f;
+}
+```
+
+### `#ifdef`
+
+`#ifdef` 的作用是判断一个宏定义是否存在.
+
+通过 `#ifdef` 和 `#endif` 两个关键字约束作用代码范围.
+
+```glsl
+#define USE_COLOR 1.0;
+
+#ifdef USE_COLOR
+	vColor.xyz = color.xyz;
+#endif
+```
+
+预处理之后代码:
+
+```glsl
+vColor.xyz = color.xyz;
+```
+
+### `#if`
+
+`#if` 主要是判断条件是否成立
+
+```glsl
+#if 10 > 0
+    vec3 v3 = vec3(1.0, 1.0, 0.0);
+#endif
+```
+
+### 引入文件 `#include`
+
+在编写 WebGL 着色器代码的时候, 如果代码比较多, 可能会拆分为多个文件, 某一段逻辑代码会在多个着色器文件中使用, 也可以抽离出来单独作为一个文件. WebGL 着色器因此提供了一个预处理命令 `#include` 关键字, 用来在一个着色器文件中引入另一个着色器文件.
+
+着色器文件 common.glsl
+
+```glsl
+float a = 0.5;
+```
+
+着色器文件 color.glsl
+
+```glsl
+uniform vec3 color;
+```
+
+frag.glsl 文件的代码中引入 color.glsl 和 common.glsl 两个着色器文件
+
+```glsl
+#include <common>
+#include <color>
+void main() {
+    gl_FragColor = vec4(color, a);
+}
+```
+
+上面代码等价于下面代码
+
+```glsl
+float a = 0.5;
+uniform vec3 color;
+void main() {
+    gl_FragColor = vec4(color, a);
+}
+```
+
