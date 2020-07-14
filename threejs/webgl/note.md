@@ -1543,3 +1543,79 @@ gl.uniform4f(lightColor, 1.0, 0.0, 1.0, 0.7);
 ```
 
 [代码](2.14.html)
+
+## 15. discard 舍弃片元
+
+`discard` 关键字通常出现在片元着色器的 if 语句或 for 语句, discard 的使用语法就像 for 语句中的 `continue` 和 `break` 关键字一样, 直接编写 `discard;` 即可. 但是 `discard` 的功能比较特殊, 专门用于着色器片元处理, 可以用它来舍弃片元绘制.
+
+## 16. 数组
+
+WebGL 着色器和其他语言一样, 可以声明数组类型变量, 不过 WebGL 着色器的数据仅仅支持一维数组, 不支持多维数组.
+
+### 声明数组
+
+```
+数组元素的数据类型 数组变量名[数组元素个数]
+```
+
+```glsl
+// 声明一个数组变量arr, arr有100个元素, 元素的数据类型是浮点型
+float arr[100];
+// 声明一个长度为20的三维向量数组变量
+vec3 v3Arr[20];
+```
+
+### 访问数组元素
+
+直接通过数组下标访问.
+
+```glsl
+gl_Position = vec4(arr[1], 0.0, 0.0, 1.0);
+```
+
+### 数组变量数据传递
+
+WebGL 顶点或片元着色器的数组变量需要传递数据, 声明数组变量的时候, 需要使用关键词 `uniform`.
+
+```glsl
+uniform float arr[12];
+```
+
+调用 WebAPI 给数据变量传递数据
+
+```javascript
+// 传递数组中的某个元素, 一次传递一个
+const arr0 = gl.getUniformLocation(program, "arr[0]");
+// 传递给数组第1个元素的值
+gl.uniform1f(arr0, 0.3);
+
+const arr1 = gl.getUniformLocation(program, "arr[1]");
+// 传递给数组第2个元素的值
+gl.uniform1f(arr1, -0.3);
+
+// 批量传递数组元素
+const arr = gl.getUniformLocation(program, "arr");
+const typeArr = new Float32Array([
+    1.0, 1.0, 1.0, 1.0,
+    0.5, 0.5, 0.5, 0.5,
+    0.7, 0.9,0.99,-1.0,
+]);
+gl.uniform1fv(arr, typeArr);
+```
+
+### 结构体声明数组元素
+
+```glsl
+struct DirLight {
+    vec3 direction;
+    vec4 colr;
+}
+// 声明一个DirLight结构体数据类型的数组
+uniform DirLight dirLight[3];
+```
+
+```javascript
+const lightColor = gl.getUniformLocation(program, "dirLight[1].color");
+gl.uniform4f(lightColor, 1.0, 0.0, 1.0, 0.7);
+```
+
