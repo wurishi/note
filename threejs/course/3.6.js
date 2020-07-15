@@ -1,9 +1,22 @@
-import THREE from 'three';
+// import THREE from 'three';
 
 // 创建场景
 const scene = new THREE.Scene();
 
-// TODO:
+// 创建管道网格
+const path = new THREE.SplineCurve3([
+    new THREE.Vector3(-10, -50, -50),
+    new THREE.Vector3(10, 0, 0),
+    new THREE.Vector3(8, 50, 50),
+    new THREE.Vector3(-5, 0, 100)
+]);
+const geometry = new THREE.TubeGeometry(path, 40, 2, 8, false);
+const material = new THREE.MeshPhongMaterial({
+    color: 0x0000ff,
+    side: THREE.DoubleSide,
+});
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
 
 // 光源设置
 const point = new THREE.PointLight(0xffffff);// 点光源

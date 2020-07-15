@@ -1,9 +1,36 @@
-import THREE from 'three';
+// import THREE from 'three';
 
 // 创建场景
 const scene = new THREE.Scene();
 
-// TODO:
+// 矩形平面
+!function () {
+    const box = new THREE.PlaneGeometry(30, 50);
+    const material = new THREE.MeshLambertMaterial({
+        color: 0x0000ff,
+        side: THREE.DoubleSide
+    });
+    const mesh = new THREE.Mesh(box, material);
+    scene.add(mesh);
+}();
+
+// 圆平面
+function circle(geometry, offset) {
+    const material = new THREE.MeshLambertMaterial({
+        color: 0x0000ff,
+        side: THREE.DoubleSide
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    mesh.translateZ(offset);
+}
+// 正五边形
+circle(new THREE.CircleGeometry(50, 5), 50);
+// 正40边形(圆平面)
+circle(new THREE.CircleGeometry(50, 40), 100);
+// 四分之一扇形
+circle(new THREE.CircleGeometry(50, 40, 0, 0.5 * Math.PI), -50);
 
 // 光源设置
 const point = new THREE.PointLight(0xffffff);// 点光源

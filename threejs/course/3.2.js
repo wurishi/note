@@ -1,9 +1,26 @@
-import THREE from 'three';
+// import THREE from 'three';
 
 // 创建场景
 const scene = new THREE.Scene();
 
-// TODO:
+// 立方体顶点位置坐标
+const vertices = [
+    -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1,
+    -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1
+];
+// 立方体顶点索引, 三个顶点定义一个三角面
+const indices = [
+    2, 1, 0, 0, 3, 2,
+    0, 4, 7, 7, 3, 0,
+    0, 1, 5, 5, 4, 0,
+    1, 2, 6, 6, 5, 1,
+    2, 3, 7, 7, 6, 2,
+    4, 5, 6, 6, 7, 4
+];
+const box = new THREE.PolyhedronGeometry(vertices, indices);
+const material = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+const mesh = new THREE.Mesh(box, material);
+scene.add(mesh);
 
 // 光源设置
 const point = new THREE.PointLight(0xffffff);// 点光源
