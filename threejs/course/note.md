@@ -73,3 +73,22 @@ shininess : 可以理解为光照强度的系数.
 
 - THREE.OrbitControls(camera, renderer.domElement) : 创建操作控件, 注意第二个参数.
 - controls.addEventListener('change', render) : 监听到 change 事件后触发渲染, 但一般都会有 requestAnimationFrame 循环调用, 所以一般不用特意注册事件.
+
+# 2. 点、线、面![2-1](/2-1.png)![2-2](/2-2.png)
+
+[代码](2.html)
+
+## 2.1 颜色插值
+
+[代码](2.1.html)
+
+## 2.2 几何体三种渲染方式
+
+- THREE.Line : 四个点可以连续绘制出3条直线.
+- THREE.LineLoop : 与 Line 模式基本一致, 最后会产生闭合.
+- THREE.LineSegments : 两个点确定1条直线, 四个点确定2条直线.
+
+![2.2](/2.2.png)
+
+- 立方体构造函数后三个参数为立方体的细分度, 默认都是1.
+
