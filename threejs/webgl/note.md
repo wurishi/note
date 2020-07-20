@@ -1,11 +1,6 @@
----
-typora-root-url: assets
----
-
-
 # 零.
 
-![webgl25a](/webgl25a.png)
+![webgl25a](assets/webgl25a.png)
 
 [参考链接](http://www.yanhuangxueyuan.com/WebGL_course.html)
 
@@ -117,7 +112,7 @@ gl.enableVertexAttribArray(aposLocation);
 
 ### drawArray 整体执行顺序
 
-![webgl91](/webgl91.jpg)
+![webgl91](assets/webgl91.jpg)
 
 ## 3. WebGL 坐标系(投影)
 
@@ -306,7 +301,7 @@ $$
 
 normalData 的数据参考此图:
 
-![9-2-normal](/9-2-normal.png)
+![9-2-normal](assets/9-2-normal.png)
 
 ### 9.3 立方体添加点光源
 
@@ -342,7 +337,7 @@ normalData 的数据参考此图:
 
 ## 12. WebGL 纹理贴图
 
-![uv](/uv.png)
+![uv](assets/uv.png)
 
 [代码](12.html)
 
@@ -463,11 +458,11 @@ $$
 
 - 片元的深度值 Z : 如果开启了深度检测, 该单元会比较当前将要绘制的片元与相同屏幕坐标的片元坐标深度 Z, 如果将要绘制的片元更靠近观察位置, 那么新的片元的像素值才会取代旧片元的像素值, 深度测试是逐片元比较的.
 
-  ![test](/test.png)
+  ![test](assets/test.png)
 
 - 透明度分量 A : 如果同时开启了 α 融合与深度测试, 那么 α 融合将不再起作用, 因为深度测试是比较先后绘制两个片元的深度值决定取舍的, 而 α 融合是要把先后绘制的两个片元的 RGB 值分别乘以一个系数得到新的 RGB 值, 再覆盖替换原来颜色缓冲区中同屏幕坐标的 RGB 值的. 所以了为解决这个问题, WebGL 提供了一个可以关闭深度缓冲区的方法 `gl.depthMask(false)`
 
-  ![blend](/blend.png)
+  ![blend](assets/blend.png)
 
 - gl.depthMask(false) : 关闭深度缓冲区
 
@@ -475,7 +470,7 @@ $$
 
 ### 17.1 窗口系统帧缓冲区
 
-![frame](/frame.png)
+![frame](assets/frame.png)
 
 渲染管线生成的片元数据, 像素值 RGB 都会存入颜色缓冲区, 深度值 Z 会存储到深度缓冲区中, 这二者都属于帧缓冲区. 帧缓冲区的数据都会被系统读取并显示到 canvas 画布上, 每一个 canvas 画布都有一个自己的缓冲区. 系统默认的这个帧缓冲区就称为窗口系统的帧缓冲区.
 
@@ -489,7 +484,7 @@ WebGL 除了有一个与窗口或者说 canvas 关联的帧缓冲区外, 也支�
 
 ### 17.4 纹理缓冲区
 
-![render](/render.png)
+![render](assets/render.png)
 
 纹理缓冲区可以作为帧缓存区的子缓冲区颜色缓冲区, 深度缓冲区.
 
@@ -540,7 +535,7 @@ WebGL 除了有一个与窗口或者说 canvas 关联的帧缓冲区外, 也支�
 
 GPU, 全称是图形处理器单元 Graphics Processing Unit, GPU 是显卡的显示核心, 最初的渲染管线不能执行着色器程序, 称为固定渲染管线. 现在显卡上的 GPU 渲染管线都能够运行着色器语言, 称为可编程渲染管线. 通过 GPU 渲染管线执行顶点着色器程序和片元着色器程序处理相关数据可以生成像素数据写入显存并显示在屏幕上.
 
-![18-1](/18-1.jpg)
+![18-1](assets/18-1.jpg)
 
 ### 18.2 显存
 
@@ -578,11 +573,11 @@ GPU, 全称是图形处理器单元 Graphics Processing Unit, GPU 是显卡的�
 
 渲染管线就像一条流水线, 由一系列具有特定功能的数字电路单元组成, 下一个功能单元处理上一个功能单元生成的数据, 逐级处理数据. 顶点着色器和片元着色器是可编程的功能单元, 拥有更大的自主性, 还有光栅器, 深度测试等不可编程的功能单元.
 
-![webgl25a](/webgl25a.png)
+![webgl25a](assets/webgl25a.png)
 
 #### 顶点着色器
 
-![18-4-1](/18-4-1.png)
+![18-4-1](assets/18-4-1.png)
 
 顶点着色器是 GPU 渲染管线上一个可执行着色器语言的功能单元, 具体执行的就是顶点着色器程序. WebGL 顶点着色器程序在 Javascript 中以字符串的形式存在, 通过编译处理后传递给顶点着色器执行.
 
@@ -601,7 +596,7 @@ GPU, 全称是图形处理器单元 Graphics Processing Unit, GPU 是显卡的�
 
 顶点变换后的操作是图元装配 (primitive assembly), 它其实就是绘制函数 `drawArrays()` 和 `drawElements()` 的第一个参数绘制模式 mode 来控制顶点如何装配为图元.
 
-![rasterization](/rasterization.png)
+![rasterization](assets/rasterization.png)
 
 #### 光栅化
 
@@ -621,7 +616,7 @@ GPU, 全称是图形处理器单元 Graphics Processing Unit, GPU 是显卡的�
 
 gl_PointCoord 和 gl_FragCoord 一样也是表示片元坐标的内置变量, 区别是 gl_FragCoord 表示所有片元相对 canvas 画布这个窗口坐标系统的值, gl_PointCoord 表示的是点域图元光栅化后的图元.
 
-![pointcoord](/pointcoord.png)
+![pointcoord](assets/pointcoord.png)
 
 #### 片元着色器
 
@@ -682,7 +677,9 @@ gl_FragColor = texture2D(u_Sampler, v_TexCoord);
 
 - getContext() : 通过传入 "webgl" 作为参数获取 canvas 的 webgl 上下文.
 
-### 19.2 类型数组和顶点缓冲区配置![19-2-1](/19-2-1.png)![19-2-2](/19-2-2.png)
+### 19.2 类型数组和顶点缓冲区配置
+![19-2-1](assets/19-2-1.png)
+![19-2-2](assets/19-2-2.png)
 
 #### 类型数据 
 
@@ -777,7 +774,8 @@ gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexes, gl.STATIC_DRAW);
 
 ### 19.3 编译着色器程序
 
-![19-3-1](/19-3-1.png)![19-3-2](/19-3-2.png)
+![19-3-1](assets/19-3-1.png)
+![19-3-2](assets/19-3-2.png)
 
 ```javascript
 function initShader(gl, vertexShaderSource, fragmentShaderSource) {
@@ -866,11 +864,11 @@ function initShader(gl, vertexShaderSource, fragmentShaderSource) {
 
 ### 19.4 给 uniform 和 attribute 变量传入数据
 
-![19-4](/19-4.png)
+![19-4](assets/19-4.png)
 
 ## 20. WebGL 中英文术语对照表
 
-![20](/20.png)
+![20](assets/20.png)
 
 # 二. GLSL ES 着色器语言
 
@@ -1220,7 +1218,8 @@ void main() {
 
 要理解 `gl_PointCoord` 表示的坐标含义, 就需要了解 WebGL 绘制函数 `gl.drawArrays()` 的绘制模式参数 `gl.POINTS`.
 
-使用点渲染模式时, WebGL 会把顶点渲染为一个方形区域, 在这个区域内可以在左上角建立一个直角坐标系, 然后使用 `gl_PointCoord` 描述这个区域内像素或者片元的坐标. 比如左上角坐标是`(0.0, 0.0)`, 中心坐标是 `(0.5, 0.5)`, 右下角坐标是 `(1.0, 1.0)`.![pointcoord](/pointcoord.png)
+使用点渲染模式时, WebGL 会把顶点渲染为一个方形区域, 在这个区域内可以在左上角建立一个直角坐标系, 然后使用 `gl_PointCoord` 描述这个区域内像素或者片元的坐标. 比如左上角坐标是`(0.0, 0.0)`, 中心坐标是 `(0.5, 0.5)`, 右下角坐标是 `(1.0, 1.0)`.
+![pointcoord](assets/pointcoord.png)
 
 [代码](2.7.html)
 

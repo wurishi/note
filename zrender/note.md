@@ -1,7 +1,3 @@
----
-typora-root-url: assets
----
-
 # Animation
 
 ZRender 的基本动画
@@ -12,7 +8,7 @@ ZRender 的基本动画
 
 # Bounding Box
 
-![bounding-box](/bounding-box.png)
+![bounding-box](assets/bounding-box.png)
 
 [参考](https://ecomfe.github.io/zrender-doc/public/examples/bounding_box.html)
 
@@ -22,7 +18,7 @@ ZRender 的基本动画
 
 # ClipPath
 
-![clip-path](/clip-path.png)
+![clip-path](assets/clip-path.png)
 
 [参考](https://ecomfe.github.io/zrender-doc/public/examples/clip_path.html)
 
@@ -30,18 +26,18 @@ ZRender 的基本动画
 
 # Glitched Text
 
-![glitched-text](/glitched-text.png)
+![glitched-text](assets/glitched-text.png)
 
 [参考](https://ecomfe.github.io/zrender-doc/public/examples/glitched_text.html)
 
 # Hello World
 
-![hello-world](/hello-world.png)
+![hello-world](assets/hello-world.png)
 
 [参考](https://ecomfe.github.io/zrender-doc/public/examples/hello_world.html)
 
 # Particles
 
-![particles](/particles.png)
+![particles](assets/particles.png)
 
 [参考](https://ecomfe.github.io/zrender-doc/public/examples/particles.html)

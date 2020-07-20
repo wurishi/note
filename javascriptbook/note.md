@@ -1,7 +1,3 @@
----
-typora-root-url: assets
----
-
 # Part1. 作用域和闭包
 
 ## 1. 作用域是什么?
@@ -41,7 +37,7 @@ typora-root-url: assets
    ```
 
    可能的 AST 长这样:
-   ![1-1-1.1-parsing](/1-1-1.1-parsing.png)
+   ![1-1-1.1-parsing](assets/1-1-1.1-parsing.png)
 
    或者可以通过更官方的工具查看:
 
