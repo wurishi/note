@@ -47,6 +47,7 @@ Rust
 - doc: [three.js 中文](http://www.webgl3d.cn/threejs/docs/index.html) **(完成)**
 - webgl: [WebGL 入门教程](http://www.yanhuangxueyuan.com/WebGL/) **(完成)**
 - coures: [three.js 教程](http://www.yanhuangxueyuan.com/Three.js_course.html) _(进行中)_
+https://alteredqualia.com/
 
 # u3decs
 
