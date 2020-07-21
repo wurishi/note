@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      const format = d3.format(',d');
+      const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+      const data = Object.assign(
+        d3.csvParse(window.source.csv, d3.autoType).map(({ date, close }) => ({
+          date,
+          value: close,
+        })),
+        { y: '$ Close' }
+      );
+
+      // 4. values,x,y
+      const values = Float64Array.from(data, (d) => d.value);
+
+      const x = d3
+        .scaleTime() //
+        .domain(d3.extent(data, (d) => d.date))
+        .rangeRound([margin.left, width - margin.right]);
+
+      const y = d3
+        .scaleLog() //
+        .domain(d3.extent(values))
+        .rangeRound([height - margin.bottom - 20, margin.top]);
+
+      // 5. axis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(d3.axisBottom(x).ticks(width / 80))
+          .call((g) => g.select('.domain').remove());
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(
+            d3
+              .axisLeft(y)
+              .tickValues(d3.ticks(...y.domain(), 10))
+              .tickFormat((d) => d)
+          )
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .selectAll('.tick line')
+              .clone()
+              .attr('x2', width - margin.left - margin.right)
+              .attr('stroke-opacity', 0.1)
+          )
+          .call((g) =>
+            g
+              .select('.tick:last-of-type text')
+              .clone()
+              .attr('x', 3)
+              .attr('text-anchor', 'start')
+              .attr('font-weight', 'bold')
+              .text(data.y)
+          );
+
+      svg.append('g').call(xAxis);
+
+      svg.append('g').call(yAxis);
+      // 6. line
+      const N = 20;
+      const K = 2;
+
+      function bollinger(values, N, K) {
+        let i = 0,
+          sum = 0,
+          sum2 = 0;
+        const bands = K.map(() => new Float64Array(values.length).fill(NaN));
+        for (let n = Math.min(N - 1, values.length); i < n; i++) {
+          const value = values[i];
+          (sum += value), (sum2 += value ** 2);
+        }
+        for (let n = values.length, m = bands.length; i < n; i++) {
+          const value = values[i];
+          (sum += value), (sum2 += value ** 2);
+          const mean = sum / N;
+          const deviation = Math.sqrt((sum2 - sum ** 2 / N) / (N - 1));
+          for (let j = 0; j < K.length; j++) {
+            bands[j][i] = mean + deviation * K[j];
+          }
+          const value0 = values[i - N + 1];
+          (sum -= value0), (sum2 -= value0 ** 2);
+        }
+        return bands;
+      }
+
+      const line = d3
+        .line() //
+        .defined((d) => !isNaN(d))
+        .x((d, i) => x(data[i].date))
+        .y(y);
+
+      svg
+        .append('g')
+        .attr('fill', 'none')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-linecap', 'round')
+        .selectAll('path')
+        .data([values, ...bollinger(values, N, [-K, 0, +K])])
+        .join('path')
+        .attr('stroke', (d, i) => ['#aaa', 'green', 'blue', 'red'][i])
+        .attr('d', line);
+    </script>
+  </body>
+</html>

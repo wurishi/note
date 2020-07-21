@@ -422,6 +422,12 @@ D3.js 中一些常见的图形：
 
 ![moving-average](assets/moving-average.jpg)
 
+## Bollinger bands
+
+[参考](https://observablehq.com/@d3/bollinger-bands)
+
+![bollinger-bands](assets/bollinger-bands.png)
+
 # Animation 
 
 ## Animated Treemap
