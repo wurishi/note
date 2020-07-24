@@ -38,6 +38,10 @@ Rust
 
 参考资料: [30 天精通 RxJS](https://blog.jerry-hong.com/series/rxjs/) **(完成)**
 
+# tensorflowjs
+
+参考资料: [TensorFlow For JavaScript](https://tensorflow.google.cn/js/tutorials/setup?hl=zh-cn)
+
 # thinkinfp
 
 参考资料: [Think in FP](https://blog.jerry-hong.com/series/fp/) (计划中)
