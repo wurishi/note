@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WordCloud</title>
+    <script src="./node_modules/wordcloud/src/wordcloud2.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas" style="width: 800px; height: 600px;"></canvas>
+    <script>
+      const list1 = [
+        "HanLP",
+        "是",
+        "一",
+        "系列",
+        "模型",
+        "与",
+        "算法",
+        "组成",
+        "的",
+        "自然",
+        "语言",
+        "处理",
+        "工具包",
+        "，",
+        "目标",
+        "是",
+        "普及",
+        "自然",
+        "语言",
+        "处理",
+        "在",
+        "生产",
+        "环境",
+        "中",
+        "的",
+        "应用",
+        "。",
+      ];
+      const list2 = [
+        "HanLP",
+        "具备",
+        "功能",
+        "完善",
+        "、",
+        "性能",
+        "高效",
+        "、",
+        "架构",
+        "清晰",
+        "、",
+        "语料",
+        "时",
+        "新",
+        "、",
+        "可",
+        "自",
+        "定义",
+        "的",
+        "特点",
+        "。",
+      ];
+      const list3 = [
+        "内部",
+        "算法",
+        "经过",
+        "工业界",
+        "和",
+        "学术界",
+        "考验",
+        "，",
+        "配套",
+        "书籍",
+        "《",
+        "自然",
+        "语言",
+        "处理",
+        "入门",
+        "》",
+        "已经",
+        "出版",
+        "。",
+      ];
+      const obj = {};
+      function fn(a) {
+        a.forEach((str) => {
+          obj[str] = obj[str] ? obj[str] + 1 : 1;
+        });
+      }
+      fn(list1);
+      fn(list2);
+      fn(list3);
+      const list = [];
+      const keys = Object.keys(obj);
+      keys.forEach((key) => {
+        list.push([key, obj[key]]);
+      });
+      WordCloud(document.getElementById("canvas"), {
+        //
+        list,
+        gridSize: 16,
+        weightFactor: 10,
+        fontFamily: "Times, serif",
+      });
+    </script>
+  </body>
+</html>
