@@ -25,18 +25,18 @@ async function run() {
 
   // 使用 tfvis 根据数据绘制散点图
   tfvis.render.scatterplot(
-    { name: "Horsepower v MPG" },
+    { name: 'Horsepower v MPG' },
     { values },
     {
-      xLabel: "Horsepower",
-      yLabel: "MPG",
+      xLabel: 'Horsepower',
+      yLabel: 'MPG',
       height: 300,
     }
   );
 
   // 创建一个模型实例
   const model = createModel();
-  tfvis.show.modelSummary({ name: "Model Summary" }, model);
+  tfvis.show.modelSummary({ name: 'Model Summary' }, model);
 
   // 转换数据
   const tensorData = convertToTensor(data);
@@ -44,13 +44,13 @@ async function run() {
 
   // 训练模型
   await trainModel(model, inputs, labels);
-  console.log("训练完成");
+  console.log('训练完成');
 
   // 作出预测
   testModel(model, data, tensorData);
 }
 
-document.addEventListener("DOMContentLoaded", run);
+document.addEventListener('DOMContentLoaded', run);
 
 function createModel() {
   // 创建一个模型
@@ -62,6 +62,14 @@ function createModel() {
       inputShape: [1],
       units: 1,
       useBias: true,
+    })
+  );
+
+  // 2.9 增加一个隐藏层, 引入非线性激活函数.
+  model.add(
+    tf.layers.dense({
+      units: 50,
+      activation: 'sigmoid',
     })
   );
 
@@ -118,7 +126,7 @@ async function trainModel(model, inputs, labels) {
   model.compile({
     optimizer: tf.train.adam(),
     loss: tf.losses.meanSquaredError,
-    metrics: ["mse"],
+    metrics: ['mse'],
   });
 
   const batchSize = 32;
@@ -129,9 +137,9 @@ async function trainModel(model, inputs, labels) {
     epochs,
     shuffle: true,
     callbacks: tfvis.show.fitCallbacks(
-      { name: "Training Performance" },
-      ["loss", "mse"],
-      { height: 200, callbacks: ["onEpochEnd"] }
+      { name: 'Training Performance' },
+      ['loss', 'mse'],
+      { height: 200, callbacks: ['onEpochEnd'] }
     ),
   });
 }
@@ -166,14 +174,14 @@ function testModel(model, inputData, normalizationData) {
   }));
 
   tfvis.render.scatterplot(
-    { name: "Model Predictions vs Original Data" },
+    { name: 'Model Predictions vs Original Data' },
     {
       values: [originalPoints, predictedPoints],
-      series: ["original", "predicted"],
+      series: ['original', 'predicted'],
     },
     {
-      xLabel: "Horsepower",
-      yLabel: "MPG",
+      xLabel: 'Horsepower',
+      yLabel: 'MPG',
       height: 300,
     }
   );
