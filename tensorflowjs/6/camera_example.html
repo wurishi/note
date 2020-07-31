@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MobileNet Camera</title>
+    <script src="../node_modules/@tensorflow/tfjs/dist/tf.min.js"></script>
+    <script src="./knn-classifier.js"></script>
+    <script src="./mobilenet.js"></script>
+  </head>
+  <body>
+    <div id="console"></div>
+    <video
+      autoplay
+      playsinline
+      muted
+      id="webcam"
+      width="224"
+      height="224"
+    ></video>
+    <button id="class-a">Add A</button>
+    <button id="class-b">Add B</button>
+    <button id="class-c">Add C</button>
+    <script src="./camera_example.js"></script>
+  </body>
+</html>
