@@ -1,21 +1,29 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
+const CleanWebpackPlugin = require("clean-webpack-plugin").CleanWebpackPlugin;
 
 module.exports = {
   entry: {
     "1.1": "./guide/1.1.js",
     "1.2": "./guide/1.2.js",
     "1.3": "./guide/1.3.js",
+    "2.1.1": "./guide/2.1.1.js",
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: "TensorFlow.js Guide",
     }),
   ],
   optimization: {
     splitChunks: {
-      chunks: "all",
+      cacheGroups: {
+        vendors: {
+          name: "vendors",
+          test: /[\\/]node_modules[\\/]/,
+          chunks: "all",
+        },
+      },
     },
   },
   output: {
