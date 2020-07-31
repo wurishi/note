@@ -4,12 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "guide": "webpack --config ./guide/webpack.config.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@tensorflow/tfjs-node": "^2.0.1",
-    "@tensorflow/tfjs-vis": "^1.4.3"
+    "@tensorflow/tfjs-vis": "^1.4.3",
+    "html-webpack-plugin": "^4.3.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }

@@ -2,7 +2,7 @@
   "name": "note-project",
   "version": "1.0.0",
   "description": "note",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/wurishi/note/issues"
   },
-  "homepage": "https://github.com/wurishi/note#readme"
+  "homepage": "https://github.com/wurishi/note#readme",
+  "dependencies": {
+    "webpack": "^4.44.1"
+  }
 }
