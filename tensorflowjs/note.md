@@ -454,3 +454,88 @@ TensorFlow.js 有一套环境标记, 能够自动评估和检测, 保证是当�
 > 注1: 这两种方法应该在程序的最前面调用, 因为它们影响所有的其他标记. 基于同样的原因, 没有相应的 disable 方法.
 >
 > 注2: 所有标记在控制台都记录为 tf.ENV.features. 尽管没有对应的公开API (不需要考虑版本兼容), 你可以使用 tf.ENV.set 来改变这些标记, 从而对程序做微调或诊断.
+
+## 3. 模型和图层
+
+机器学习中, 一个 model 是一个带有可训练参数的函数. 这个函数将输入转化为输出. 通俗的来说, 这个函数表达了输入和输出之间的变换关系. 通过在数据集上训练模型来获得最佳参数. 训练好的模型可以精确的将输入数据转换为我们想得到的输出.
+
+TensorFlow.js 有两种创建机器学习的方法:
+
+1. 用 Layers API (用 layers 来创建模型)
+2. 用 Core API (底端算子, 例如: `tf.matMul()` 或 `tf.add()` 等)来建立模型
+
+### 3.1 用 Layers API 创建模型
+
+[代码](guide/3.1.js)
+
+Layers API 有两种方式创建模型: 第一种是创建 sequential 模型, 第二种是创建 functional 模型.
+
+#### 使用 sequential model
+
+最常见的模型是 Sequential 模型. 该模型将网络的每一层简单的叠在一起.
+
+- 使用 `sequential()` 函数
+- 使用 `add()` 方法
+
+> 注意: 模型的第一层需要"输入形状"参数 (inputShape). 不要在"输入形状"中包含 batch size (批次大小). 假设要向模型输入一个形状为 [B, 784] 的张量 (B 是任意 batch size), 输入形状要设为 [784].
+
+可以通过 `model.layers` 来使用模型中的每一层. 也可以使用 `model.inputLayers` 和 `model.outputLayers` 来调用输入层和输出层.
+
+#### 使用 functional model
+
+可以通过 `tf.model()` 来创建 `LayersModel`. `tf.model()` 和 `tf.sequential()` 的主要区别为, 可以用 `tf.model()` 来创建任何非闭环的计算图.
+
+### 3.2 验证
+
+`sequential model` 和 `functional model` 都属于 `LayersModel` 类. 使用 `LayersModels` 让验证更方便: 它要求您定义输入形状, 并用定义的形状来验证对模型的输入. `LayersModel` 会自动计算模型中所有张量的形状. 知道张量的形状后, 模型就可以自动创建它所需要的参数, 可以用形状信息来判断两层相邻的层是否相互兼容.
+
+### 3.3 模型总览
+
+使用 `model.summary()` 可以显示很多模型的重要信息.
+
+- 每一层的名字和类型
+- 每一层的输出形状
+- 每一层的权重数量
+- 每一层的输入
+- 一个模型拥有的可训练参数总量, 和不可训练参数总量
+
+### 3.4 序列化
+
+相对于底端 API 而言, 使用 `LayersModel` 的另一个好处是方便存储, 加载模型. `LayersModel` 包含如下信息:
+
+- 可用于重建模型的模型架构信息
+- 模型的权重
+- 训练配置 (例如损失函数, 优化器的评估方式)
+- 优化器的状态 (可用于继续训练模型)
+
+存储和加载模型只需要一行代码:
+
+```javascript
+const saveResult = await model.save('localstorage://my-model-1');
+const model = await tf.loadLayersModel('localstorage://my-model-1');
+```
+
+模型还能保存在不同的媒介中 (如: file storage, IndexedDB, 触发下载到浏览器等等)
+
+### 3.5 自定义层
+
+层是创建模型的基础. 如果模型需要定制化计算模块, 可以写一个自定义层并插入模型中.
+
+计算平方和的自定义层:
+
+[代码](guide/3.5.js)
+
+> 注意: 模型中包含了自定义层, 模型将不能序列化.
+
+### 3.6 用 Core API 创建模型
+
+Layers API 是最常用的建立模型的方式, 因为它的模式是基于广泛应用的 Keras API. Layers API 提供了大量方便的工具, 例如权重初始化, 模型序列化, 训练监测, 可迁移性和安全检查.
+
+当遇到如下情况时, 可能会需要使用 Core API:
+
+- 需要更多灵活性和控制
+- 不需要序列化或可以创造自己的序列化方法
+
+用 Core API 写的模型包含了一系列的函数. 这些函数以一个或多个张量作为输入, 并输出另一个张量.
+
+[代码](guide/3.6.js)

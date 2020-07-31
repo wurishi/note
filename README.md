@@ -18,6 +18,8 @@
 
 electron
 
+# gulp
+
 # javascriptbook
 
 参考资料: 《你所不知道的 Javascript》_(进行中)_
@@ -40,7 +42,7 @@ Rust
 
 # tensorflowjs
 
-参考资料: [TensorFlow For JavaScript](https://tensorflow.google.cn/js/tutorials/setup?hl=zh-cn)
+参考资料: [TensorFlow For JavaScript](https://tensorflow.google.cn/js/tutorials/setup?hl=zh-cn) *(进行中)*
 
 # thinkinfp
 
@@ -72,6 +74,8 @@ U3D JobSystem
 # unityecs
 
 参考资料: [Unity3D Entity Component System 入门学习](https://blog.csdn.net/u012632851/category_7034956.html) **(完成)**
+
+# webpack
 
 # wordcloud
 

@@ -8,6 +8,9 @@ module.exports = {
     "1.2": "./guide/1.2.js",
     "1.3": "./guide/1.3.js",
     "2.1.1": "./guide/2.1.1.js",
+    "3.1": "./guide/3.1.js",
+    "3.5": "./guide/3.5.js",
+    "3.6": "./guide/3.6.js",
   },
   plugins: [
     new CleanWebpackPlugin(),
