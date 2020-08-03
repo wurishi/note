@@ -615,3 +615,130 @@ model.fit() 在幕后做了很多事情:
 - 对于每个批次, 调用 `optimizer.minimize(f)` 根据之前的定义计算出结果并执行 `f`.
 - 用 `f` 计算损失, 分析模型的预测和真实值之间的损失.
 
+## 5. 保存并加载 tf.Model
+
+TensorFlow.js 提供了保存和加载模型的功能, 这些模型可以是使用 Layers API 创建的或从现有 TensorFlow 模型转换来的. 可能是自己训练过的模型, 也可能是别人训练的模型. 使用 Layers API 的一个主要好处是使用它创建的模型是可序列化的.
+
+### 5.1 保存 tf.Model
+
+`tf.Model` 和 `tf.Sequential` 同时提供了函数 `model.save` 用来保存一个模型的*拓扑结构* (topology) 和 *权重* (weights)
+
+- 拓扑结构: 是一个描述模型结构的文件 (例如它使用了哪些操作). 它包含了对存储在外部的模型权重的引用.
+- 权重: 是以有效格式存储给定模型权重的二进制文件. 它们通常存储在与拓扑结构相同的文件夹中.
+
+```javascript
+const saveReulst = await model.save('localstorage://my-model-1');
+```
+
+一些需要注意的地方:
+
+- save 方法采用 scheme 字符串开头的类似 URL 字符串参数. 它描述了想保存模型的地址类型.
+- 在 scheme 之后是路径(path).
+- `save` 方法是异步的.
+- `model.save` 返回值是一个 JSON 对象, 它包含一些可能有用的信息, 例如模型的拓扑结构和权重的大小.
+- 用于保存模型的环境不会影响那些可以加载模型的环境. 在 node.js 中保存模型时并不会阻碍模型在浏览器中被加载.
+
+#### 本地存储 (仅限浏览器)
+
+```javascript
+await model.save('localstorage://my-model');
+```
+
+可以在浏览器的本地存储中以名称 my-model 来保存模型. 这样存储能够在浏览器刷新后保持不变. 当存储空间成为问题时, 用户或浏览器本身可以清除本地存储. 每个浏览器还可以对给定域在本地的存储空间设定限额.
+
+#### IndexedDB (仅限浏览器)
+
+```javascript
+await model.save('indexeddb://my-model');
+```
+
+会将模型保存到浏览器的 IndexedDB 存储中. 与本地存储一样, 它在刷新后仍然存在, 同时它往往也对存储的对象的大小有限制.
+
+#### 文件下载 (仅限浏览器)
+
+```javascript
+await model.save('downloads://my-model');
+```
+
+会让浏览器下载模型文件到用户的机器上, 并生成两个文件:
+
+- 一个名为 `[my-model].json` 的 JSON 文件, 它包含了模型的拓扑结构和权重文件的引用.
+- 一个二进制文件, 其中包含名为 `[my-model].weights.bin` 的权重值.
+
+> 由于 .json 使用相对路径指向 .bin, 所以两个文件需要被安放在同一个文件夹中.
+>
+> 某些浏览器要求用户在同时下载多个文件之前授予权限.
+
+#### HTTP(S) Request
+
+```javascript
+await model.save('http://model-server.domain/upload');
+```
+
+这将创建一个 Web 请求, 以将模型保存到远程服务器. 模型将通过 POST 请求发送到指定的 HTTP 服务器. POST 请求的 body 遵守称为 `multipart/form-data` 的格式. 它由以下两个文件组成:
+
+1. 一个名为 model.json 的 JSON 文件, 其中包含拓扑结构和对权重文件的引用.
+2. 一个二进制文件, 其中包含名为 [my-model].weights.bin 的权重值.
+
+#### 本机文件系统 (仅限于 Node.js)
+
+```javascript
+await model.save('file:///path/to/my-model');
+```
+
+当运行 Node.js 后可以直接访问文件系统并且保存模型. 这个命令将会保存两个文件在 scheme 之后指定的 path 中.
+
+1. 一个名为 model.json 的 JSON 文件, 其中包含拓扑结构和权重文件的引用.
+2. 一个二进制文件, 其中包含名为 model.weights.bin 的权重值.
+
+### 5.2 加载 tf.Model
+
+```javascript
+const model = await tf.loadLayersModel('localstorage://my-model-1');
+```
+
+- 类似于 `model.save()` , `loadLayersModel` 函数使用以 scheme 开头的类似 URL 的字符串参数. 它描述了加载模型的目标类型.
+- scheme 由path指定.
+- URL 字符串可以被替换为一个符合 IOHandler 接口的对象.
+- `tf.loadLayersModel()` 函数是异步的.
+- `tf.loadLayersModel` 返回的值是 `tf.Model`.
+
+#### 本地存储 (仅限浏览器)
+
+```javascript
+const model = await tf.loadLayersModel('localstorage://my-model');
+```
+
+#### IndexedDB (仅限浏览器)
+
+```javascript
+const model = await tf.loadLayersModel('indexeddb://my-model');
+```
+
+#### HTTP(S)
+
+```javascript
+const model = await tf.loadLayersModel('http://model-server.domain/download/model.json');
+```
+
+将从 HTTP 加载模型, 加载 json 文件后, 会请求对应的 json 文件引用的 .bin 文件.
+
+> 注意: 这个工具依赖于 fetch 方法. 如果环境没有提供原生的 fetch 方法, 可以提供全局方法名称 fetch 来满足接口需求, 或是使用类似于 (node-fetch) 的库.
+
+#### 本机文件系统 (仅限于 Node.js)
+
+```javascript
+const model = await tf.loadLayersModel('file://path/to/my-model/model.json');
+```
+
+当运行在 Node.js 上时, 可以直接访问文件系统并加载模型. 注意, 加载时调用的是 model.json 文件本身 (保存时, 指定的是一个文件夹). 相应的 .bin 文件需要和 json 文件在同一个文件夹中.
+
+#### 使用 IOHandlers 加载模型
+
+可以使用 `IOHandler` 执行自定义的加载行为. Tensorflow.js 的 `IOHandler` 提供了 `tf.io.browserFiles`, 运行浏览器用户在浏览器中上传文件.
+
+### 5.3 使用自定义的 IOHandlers 保存或加载模型
+
+- `IOHandler` 是一个含有 `save` 和 `load` 方法的对象.
+- `save` 函数接受一个与 `ModelArtifacts` 接口匹配的参数并且会返回一个解析为 `SaveResult` 的对象.
+- `load` 函数没有接受参数, 需要返回一个解析为 `ModelArtifacts` 的对象. 这和传递给 `save` 的对象相同.
