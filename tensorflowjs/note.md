@@ -742,3 +742,104 @@ const model = await tf.loadLayersModel('file://path/to/my-model/model.json');
 - `IOHandler` 是一个含有 `save` 和 `load` 方法的对象.
 - `save` 函数接受一个与 `ModelArtifacts` 接口匹配的参数并且会返回一个解析为 `SaveResult` 的对象.
 - `load` 函数没有接受参数, 需要返回一个解析为 `ModelArtifacts` 的对象. 这和传递给 `save` 的对象相同.
+
+## 6. 模型转换
+
+TensorFlow.js 配备了各种预训练模型, 这些模型可以在浏览器中使用, [模型仓库](https://github.com/tensorflow/tfjs-models)中有相关介绍. 但也可能已经在其他地方找到或创建了一个 Tensorflow 模型, 并希望在 Web 应用程序中使用该模型. 因此, Tensorflow.js 提供了一个模型转换器, 它包含了两个组件:
+
+1. 一个命令行程序, 用于转换 Keras 和 TensorFlow 模型以在 TensorFlow.js 中使用.
+2. 一个 API, 用于在浏览器中使用 TensorFlow.js 加载和执行模型.
+
+### 6.1 转换模型
+
+Tensorflow.js 转换器可以转换以下几种模型的模型:
+
+- SavedModel: 保存 Tensorflow 模型的默认格式.
+- Keras model: Keras 模型通常保存为 HDF5 文件.
+- TensorFlow Hub module: 这些是打包后在 TensorFlow Hub 中进行分发的模型, TensorFlow Hub 是一个共享和发现模型的平台.
+
+```shell
+tensorflowjs_converter --input_format=keras /tmp/model.h5 /tmp/tfjs_model
+```
+
+这会将路径为 /tmp/model.h5 的模型转换并输出 model.json 文件及其二进制权重文件到目录 /tmp/tfjs_model/中.
+
+### 6.2 运行模型
+
+成功转换模型之后, 将得到一组权重文件和一个模型拓扑文件.
+
+加载转换后的 Tensorflow SavedModel 或 TensorFlow Hub 模块的 API:
+
+```javascript
+const model = await tf.loadGraphModel('path/to/model.json');
+```
+
+转换后的 Keras 模型的 API:
+
+```javascript
+const model = await tf.loadLayersModel('path/to/model.json');
+```
+
+`tf.loadGraphModel` API 返回 `tf.FrozenModel`, 意味着各项参数是固定的并且不能使用新数据对模型进行微调.
+
+`tf.loadLayersModel` API 返回可训练的 `tf.Model`.
+
+## 7. Node 中的 TensorFlow.js
+
+### 7.1 TensorFlow CPU
+
+```javascript
+import * as tf from '@tensorflow/tfjs-node';
+```
+
+当从这个包导入 Tensorflow.js 时, 导入的模型将由 Tensorflow C 二进制文件加速并在 CPU 上运行. CPU 上的 Tensorflow 使用硬件加速来加速内部的线性代数运算.
+
+### 7.2 TensorFlow GPU
+
+```javascript
+import * as tf from '@tensorflow/tfjs-node-gpu';
+```
+
+与 CPU 包一样, 导入的模块将由 Tensorflow C 二进制文件加速, 但是将使用 CUDA 在 GPU 上运行张量运算, 因此只能运行在 Linux 平台. 该绑定比其他可选绑定可以快至少一个数量级.
+
+### 7.3 普通 CPU
+
+```javascript
+import * as tf from '@tensorflow/tfjs';
+```
+
+这个包与浏览器中使用的包类似. 在这个包中, 是在 CPU 上以原生 Javascript 运行的. 这个包比其他包小得多, 因为它不需要 Tensorflow 二进制文件, 但是速度要慢得多.
+
+### 7.4 生产环境考虑因素
+
+Node.js Bindings 为 Tensorflow.js 提供了一个同步地执行操作的后端. 这意味着当调用一个操作时, 例如 `tf.matMul(a,b)`, 它将阻塞主线程直到这个操作完成.
+
+因此, 当前这种 Bindings 非常适合脚本和离线任务. 如果要在实际应用程序(如: Web 服务器) 中使用 Node.js Bindings, 则应设置一个工作队列或设置一些工作线程, 以便使得 Tensorflow.js 代码不会阻塞主线程.
+
+### 7.5 APIs
+
+一旦使用上述任意选项将包导入为 tf 后, 所有常规的 Tensorflow.js 符号都将出现在导入的模块上.
+
+#### tf.browser
+
+在普通的 Tensorflow.js 包中, tf.browser.* 命名空间中的符号在 Node.js 中不可用, 因为它们使用特定浏览器的 API.
+
+目前, 有如下 API:
+
+- tf.browser.fromPixels
+- tf.browser.toPixels
+
+#### tf.node
+
+tf.node 在 node.js 下包含特定 Node 的 API.
+
+TensorBoard 是一个特定 Node.js API
+
+```javascript
+await model.fit(xs, ys, {
+    epochs: 100,
+    validationData: [valXs, valYs],
+    callbacks: tf.node.tensorBoard('/tmp/fit_logs_1')
+});
+```
+
