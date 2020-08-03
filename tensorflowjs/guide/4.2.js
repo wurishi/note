@@ -14,6 +14,13 @@ import * as tf from "@tensorflow/tfjs";
       const newVals = tf.randomNormal(w.shape);
       w.val.assign(newVals);
     });
+
+    // 4.3
+    model.compile({
+      optimizer: "sgd",
+      loss: "categoricalCrossentropy",
+      metrics: ["accuracy"],
+    });
   });
 })();
 console.log("------ 4.2 模型参数 ------");

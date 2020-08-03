@@ -11,7 +11,9 @@ module.exports = {
     // "3.1": "./guide/3.1.js",
     // "3.5": "./guide/3.5.js",
     // "3.6": "./guide/3.6.js",
-    "4.2": "./guide/4.2.js",
+    // "4.2": "./guide/4.2.js",
+    // "4.4": "./guide/4.4.js",
+    "4.6": "./guide/4.6.js",
   },
   plugins: [
     new CleanWebpackPlugin(),
