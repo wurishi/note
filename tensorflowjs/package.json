@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "guide": "webpack --config ./guide/webpack.config.js"
+    "guide": "webpack --config ./guide/webpack.config.js",
+    "bodypix": "webpack --config ./demos/bodypix/webpack.config.js"
   },
   "author": "",
   "license": "ISC",
