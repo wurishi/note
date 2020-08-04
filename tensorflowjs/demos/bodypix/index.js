@@ -10,17 +10,14 @@ let canvas = null;
 let segmentationMode = 0;
 let maskMode = 0;
 let drawMode = 0;
+let imgOrCamera = 0;
 
 let img = null;
-// !(function () {
-//   img = new Image();
-//   img.src = "../img2.jpg";
-//   img.onload = () => {
-//     width = img.naturalWidth;
-//     height = img.naturalHeight;
-//     loadAndPredict(img);
-//   };
-// })();
+img = new Image();
+img.src = "../img.jpg";
+img.onload = () => {
+  loadAndPredict(img);
+};
 
 // video
 let videoEl = null;
@@ -31,8 +28,24 @@ videoEl.muted = true;
 videoEl.id = "webcam";
 videoEl.width = width;
 videoEl.height = height;
-document.body.appendChild(videoEl);
-loadAndPredict();
+// document.body.appendChild(videoEl);
+
+!(function () {
+  const selectEl = document.createElement("select");
+  ["img mode", "web cam"].forEach((label, idx) => {
+    const optionEl = document.createElement("option");
+    optionEl.value = idx;
+    optionEl.label = label;
+    selectEl.appendChild(optionEl);
+  });
+  document.body.appendChild(selectEl);
+  selectEl.onchange = () => {
+    imgOrCamera = selectEl.value;
+    if (imgLoaded) {
+      loadAndPredict(img);
+    }
+  };
+})();
 
 !(function () {
   const selectEl = document.createElement("select");
@@ -114,21 +127,30 @@ async function loadAndPredict(img) {
 
   if (!canvas) {
     canvas = document.createElement("canvas");
+    document.body.appendChild(canvas);
+  }
+
+  if (imgOrCamera == 0) {
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+  } else {
     canvas.width = width;
     canvas.height = height;
-    document.body.appendChild(canvas);
   }
 
   let webcam = null;
   if (videoEl) {
     webcam = await tf.data.webcam(videoEl);
   }
-  await bodyPixFn(net, videoEl);
   do {
-    if (webcam) {
-      img = videoEl;
+    if (imgOrCamera == 0) {
+      webcam = null;
     }
-    await bodyPixFn(net, img);
+    let input = img;
+    if (webcam) {
+      input = videoEl;
+    }
+    await bodyPixFn(net, input);
     await tf.nextFrame();
   } while (webcam);
 

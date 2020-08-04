@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "guide": "webpack --config ./guide/webpack.config.js",
-    "bodypix": "webpack --config ./demos/bodypix/webpack.config.js"
+    "bodypix": "webpack --config ./demos/bodypix/webpack.config.js",
+    "posenet": "webpack --config ./demos/posenet/webpack.config.js"
   },
   "author": "",
   "license": "ISC",

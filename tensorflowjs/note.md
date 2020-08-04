@@ -848,3 +848,6 @@ await model.fit(xs, ys, {
 ## 1. 身体分割 (BodyPix)
 
 [代码](demos/bodypix/index.js)
+
+## 2. 姿势估计 (PoseNet)
+
