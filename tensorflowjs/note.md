@@ -851,3 +851,4 @@ await model.fit(xs, ys, {
 
 ## 2. 姿势估计 (PoseNet)
 
+[代码](demos/posenet/index.js)
