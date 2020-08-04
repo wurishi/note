@@ -6,7 +6,9 @@
   "scripts": {
     "guide": "webpack --config ./guide/webpack.config.js",
     "bodypix": "webpack --config ./demos/bodypix/webpack.config.js",
-    "posenet": "webpack --config ./demos/posenet/webpack.config.js"
+    "posenet": "webpack --config ./demos/posenet/webpack.config.js",
+    "mobilenet": "webpack --config ./demos/mobilenet/webpack.config.js",
+    "cocossd": "webpack --config ./demos/cocossd/webpack.config.js"
   },
   "author": "",
   "license": "ISC",

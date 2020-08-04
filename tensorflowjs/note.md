@@ -852,3 +852,11 @@ await model.fit(xs, ys, {
 ## 2. 姿势估计 (PoseNet)
 
 [代码](demos/posenet/index.js)
+
+## 3. 图像分类 (MobileNet)
+
+[代码](demos/mobilenet/index.js)
+
+## 4. 对象检测 (Coco SSD)
+
+[代码](demos/cocossd/index.js)

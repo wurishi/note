@@ -74,6 +74,9 @@ async function estimatePoseOnImage(imageElement) {
     outputStride: 16,
     multiplier: 0.5,
   });
+  // const net = await posenet.load({
+  //   modelUrl:'../model/100/model-stride16.json'
+  // })
 
   if (inputMode == 0) {
     canvas.width = imageElement.naturalWidth;

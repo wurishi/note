@@ -105,23 +105,38 @@ videoEl.height = height;
   };
 })();
 
+// const btn = document.createElement("button");
+// btn.onclick = () => {
+//   imgLoaded = true;
+//   loadAndPredict(img);
+// };
+// document.body.appendChild(btn);
+
 async function loadAndPredict(img) {
   imgLoaded = false;
   // default
-  // const net = await bodyPix.load();
+  const net = await bodyPix.load();
 
   // MobileNetV1
-  const net = await bodyPix.load({
-    architecture: "MobileNetV1",
-    outputStride: 16,
-    multiplier: 0.75,
-    quantBytes: 2,
-  });
+  // const net = await bodyPix.load({
+  //   architecture: "MobileNetV1",
+  //   outputStride: 16,
+  //   multiplier: 1,
+  //   quantBytes: 2,
+  // });
+
+  // const net = await bodyPix.load({
+  //   modelUrl: "../model/050/model-stride16.json",
+  // });
 
   // ResNet50
   // const net = await bodyPix.load({
   //   architecture: "ResNet50",
   //   outputStride: 32,
+  //   quantBytes: 2,
+  // });
+  // const net = await bodyPix.load({
+  //   modelUrl: "../model/resnet50/model-stride32.json",
   //   quantBytes: 2,
   // });
 
