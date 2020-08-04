@@ -843,3 +843,8 @@ await model.fit(xs, ys, {
 });
 ```
 
+# 三. Demo
+
+## 1. 身体分割 (BodyPix)
+
+[代码](demos/bodypix/index.js)
