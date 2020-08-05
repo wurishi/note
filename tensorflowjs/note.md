@@ -864,3 +864,7 @@ await model.fit(xs, ys, {
 ## 5. 文本恶意检测 (Toxicity)
 
 [代码](demos/toxicity/index.js)
+
+## 6. 通用语句编码器 (Universal Sentence Encoder)
+
+[代码](demos/u-s-e/index.js)
