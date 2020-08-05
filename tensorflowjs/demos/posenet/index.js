@@ -69,14 +69,14 @@ document.body.appendChild(canvas);
 
 async function estimatePoseOnImage(imageElement) {
   imgLoaded = false;
-  const net = await posenet.load({
-    architecture: "MobileNetV1",
-    outputStride: 16,
-    multiplier: 0.5,
-  });
   // const net = await posenet.load({
-  //   modelUrl:'../model/100/model-stride16.json'
-  // })
+  //   architecture: "MobileNetV1",
+  //   outputStride: 16,
+  //   multiplier: 0.5,
+  // });
+  const net = await posenet.load({
+    modelUrl:'../model/075/model-stride16.json'
+  })
 
   if (inputMode == 0) {
     canvas.width = imageElement.naturalWidth;

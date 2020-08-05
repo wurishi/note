@@ -860,3 +860,7 @@ await model.fit(xs, ys, {
 ## 4. 对象检测 (Coco SSD)
 
 [代码](demos/cocossd/index.js)
+
+## 5. 文本恶意检测 (Toxicity)
+
+[代码](demos/toxicity/index.js)
