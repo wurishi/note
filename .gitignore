@@ -6,3 +6,5 @@ unity*/Logs/
 unity*/obj/
 unity*/*.csproj
 unityecs/Assets/ecs/*
+tensorflowjs/demos/*/model/*
+tensorflowjs/demos/*/dist/*
