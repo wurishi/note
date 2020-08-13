@@ -868,3 +868,7 @@ await model.fit(xs, ys, {
 ## 6. 通用语句编码器 (Universal Sentence Encoder)
 
 [代码](demos/u-s-e/index.js)
+
+## 7. 语音指令识别 (Speech Commands)
+
+[代码](demos/speech-commands/index.html)
