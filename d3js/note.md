@@ -803,6 +803,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 
 ![sequences-sunburst](assets/sequences-sunburst.png)
 
+## Brushable Scatterplot
+
+[参考](https://observablehq.com/@d3/brushable-scatterplot)
+
+![brushable-scatterplot](assets/brushable-scatterplot.png)
+
 # Lines 
 
 ## Line Chart
