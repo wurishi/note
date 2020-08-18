@@ -422,6 +422,12 @@ D3.js 中一些常见的图形：
 
 ![moving-average](assets/moving-average.jpg)
 
+## Bollinger bands
+
+[参考](https://observablehq.com/@d3/bollinger-bands)
+
+![bollinger-bands](assets/bollinger-bands.png)
+
 # Animation 
 
 ## Animated Treemap
@@ -796,6 +802,12 @@ d3.curve(d3.curveCatmullRom) : 画弧线
 [参考](https://observablehq.com/@kerryrodden/sequences-sunburst)
 
 ![sequences-sunburst](assets/sequences-sunburst.png)
+
+## Brushable Scatterplot
+
+[参考](https://observablehq.com/@d3/brushable-scatterplot)
+
+![brushable-scatterplot](assets/brushable-scatterplot.png)
 
 # Lines 
 

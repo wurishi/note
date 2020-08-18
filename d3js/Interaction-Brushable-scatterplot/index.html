@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <script src="../utils.js"></script>
+    <script src="../d3.v5.js"></script>
+    <script src="./data.js"></script>
+  </head>
+  <body>
+    <svg></svg>
+    <script>
+      // 1. 基本准备
+      const width = 960;
+      const height = 640;
+      const margin = { top: 60, bottom: 60, left: 60, right: 60 }; // 设置边距
+      const format = d3.format(',d');
+      const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      // 2. 获取svg画布
+      const svg = d3
+        .select('svg') //
+        .style('font', '10px sans-serif')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // 3. 准备 data
+
+      const data = Object.assign(
+        d3.csvParse(
+          window.source.csv,
+          ({ Name: name, Miles_per_Gallon: x, Horsepower: y }) => ({
+            name,
+            x: +x,
+            y: +y,
+          })
+        ),
+        { x: 'Miles per Gallon', y: 'Horsepower' }
+      );
+
+      // 4. xy
+      const x = d3
+        .scaleLinear()
+        .domain(d3.extent(data, (d) => d.x))
+        .nice()
+        .range([margin.left, width - margin.right]);
+
+      const y = d3
+        .scaleLinear()
+        .domain(d3.extent(data, (d) => d.y))
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      // 5. axis
+      const xAxis = (g) =>
+        g //
+          .attr('transform', _t(0, height - margin.bottom))
+          .call(d3.axisBottom(x))
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .append('text') //
+              .attr('x', width - margin.right)
+              .attr('y', -4)
+              .attr('fill', '#000')
+              .attr('font-weight', 'bold')
+              .attr('text-anchor', 'end')
+              .text(data.x)
+          );
+
+      const yAxis = (g) =>
+        g //
+          .attr('transform', _t(margin.left, 0))
+          .call(d3.axisLeft(y))
+          .call((g) => g.select('.domain').remove())
+          .call((g) =>
+            g
+              .select('.tick:last-of-type text')
+              .clone() //
+              .attr('x', 4)
+              .attr('text-anchor', 'start')
+              .attr('font-width', 'bold')
+              .text(data.y)
+          );
+
+      svg.append('g').call(xAxis);
+      svg.append('g').call(yAxis);
+
+      // 6. dot
+      const dot = svg
+        .append('g')
+        .attr('fill', 'none')
+        .attr('stroke', 'steelblue')
+        .attr('stroke-width', 1.5)
+        .selectAll('g')
+        .data(data)
+        .join('circle')
+        .attr('transform', (d) => _t(x(d.x), y(d.y)))
+        .attr('r', 3);
+
+      // 7. brush
+      const brush = d3.brush().on('start brush end', brushed);
+
+      svg.call(brush);
+      function brushed() {
+        let value = [];
+        if (d3.event.selection) {
+          const [[x0, y0], [x1, y1]] = d3.event.selection;
+          value = data.filter((d) => {
+            return x0 <= x(d.x) && x(d.x) < x1 && y0 <= y(d.y) && y(d.y) < y1;
+          });
+        }
+        renderInput(value);
+      }
+
+      function renderInput(value) {
+        let el = document.getElementById('output');
+        if (!el) {
+          el = document.createElement('span');
+          el.id = 'output';
+          document.body.appendChild(el);
+        }
+        el.textContent = value.map((v) => v.name).join(';');
+      }
+    </script>
+  </body>
+</html>
