@@ -883,5 +883,8 @@ await model.fit(xs, ys, {
 
 ## 10. 语义分割 (DeepLab)
 
-目前报错
+目前版本由于数据类型不匹配而报错
 
+## 11. 人脸 (facemesh)
+
+[代码](demos/facemesh/index.js)

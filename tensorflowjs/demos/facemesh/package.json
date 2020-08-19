@@ -1,5 +1,5 @@
 {
-  "name": "deeplab-demo",
+  "name": "facemesh-demo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tensorflow-models/deeplab": "^0.1.1",
+    "@tensorflow-models/facemesh": "0.0.4",
     "@tensorflow/tfjs": "^2.3.0"
   }
 }
