@@ -12,7 +12,8 @@
     "toxicity": "webpack --config ./demos/toxicity/webpack.config.js",
     "u-s-e": "webpack --config ./demos/u-s-e/webpack.config.js",
     "knn": "webpack --config ./demos/knn/webpack.config.js",
-    "blazeface": "webpack --config ./demos/blazeface/webpack.config.js"
+    "blazeface": "webpack --config ./demos/blazeface/webpack.config.js",
+    "deeplab": "webpack --config ./demos/deeplab/webpack.config.js"
   },
   "author": "",
   "license": "ISC",

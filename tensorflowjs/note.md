@@ -880,3 +880,8 @@ await model.fit(xs, ys, {
 ## 9. 简单的人脸检测 (Blazeface)
 
 [代码](demos/blazeface/index.js)
+
+## 10. 语义分割 (DeepLab)
+
+目前报错
+

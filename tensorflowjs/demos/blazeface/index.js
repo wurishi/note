@@ -38,6 +38,24 @@ async function main() {
 
   ctx.drawImage(img, 0, 0);
   if (predictions.length > 0) {
+    /**
+     * predictions = 
+     * [
+     *  {
+     *    topLeft:[x,y],
+     *    bottomRight:[x,y],
+     *    probability:[0.912],
+     *    landmarks:[
+     *      [x,y], // right eye
+     *      [x,y], // left eye
+     *      [x,y], // nose
+     *      [x,y], // mouth
+     *      [x,y], // right ear
+     *      [x,y], // left ear
+     *    ]
+     *  }
+     * ]
+     */
     for (let i = 0, len = predictions.length; i < len; i++) {
       const start = predictions[i].topLeft;
       const end = predictions[i].bottomRight;
