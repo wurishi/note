@@ -876,3 +876,7 @@ await model.fit(xs, ys, {
 ## 8. KNN 分类器 (KNN)
 
 [代码](demos/knn/index.js)
+
+## 9. 简单的人脸检测 (Blazeface)
+
+[代码](demos/blazeface/index.js)
