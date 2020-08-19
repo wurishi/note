@@ -10,7 +10,8 @@
     "mobilenet": "webpack --config ./demos/mobilenet/webpack.config.js",
     "cocossd": "webpack --config ./demos/cocossd/webpack.config.js",
     "toxicity": "webpack --config ./demos/toxicity/webpack.config.js",
-    "u-s-e": "webpack --config ./demos/u-s-e/webpack.config.js"
+    "u-s-e": "webpack --config ./demos/u-s-e/webpack.config.js",
+    "knn": "webpack --config ./demos/knn/webpack.config.js"
   },
   "author": "",
   "license": "ISC",

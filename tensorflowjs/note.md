@@ -872,3 +872,7 @@ await model.fit(xs, ys, {
 ## 7. 语音指令识别 (Speech Commands)
 
 [代码](demos/speech-commands/index.html)
+
+## 8. KNN 分类器 (KNN)
+
+[代码](demos/knn/index.js)
