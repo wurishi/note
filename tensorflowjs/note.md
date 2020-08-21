@@ -885,6 +885,10 @@ await model.fit(xs, ys, {
 
 目前版本由于数据类型不匹配而报错
 
-## 11. 人脸 (facemesh)
+## 11. 人脸标识检测 (facemesh)
 
 [代码](demos/facemesh/index.js)
+
+## 12. 手势标识检测 (handpose)
+
+[代码](demo/handpose/index.js)

@@ -14,7 +14,8 @@
     "knn": "webpack --config ./demos/knn/webpack.config.js",
     "blazeface": "webpack --config ./demos/blazeface/webpack.config.js",
     "deeplab": "webpack --config ./demos/deeplab/webpack.config.js",
-    "facemesh": "webpack --config ./demos/facemesh/webpack.config.js"
+    "facemesh": "webpack --config ./demos/facemesh/webpack.config.js",
+    "handpose": "webpack --config ./demos/handpose/webpack.config.js"
   },
   "author": "",
   "license": "ISC",

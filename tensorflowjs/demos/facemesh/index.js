@@ -2,6 +2,8 @@ import * as tf from "@tensorflow/tfjs";
 import * as facemesh from "@tensorflow-models/facemesh";
 import * as backend from "@tensorflow/tfjs-backend-webgl";
 import { TRIANGULATION } from "./triangulation";
+// import * as Face from '@tensorflow-models/blazeface/dist/face';
+import * as tfconv from "@tensorflow/tfjs-converter";
 
 async function main() {
   const video = await setupCamera();
@@ -24,6 +26,16 @@ async function main() {
   ctx.lineWidth = 0.5;
 
   const model = await facemesh.load();
+
+  // const blazefaceModel = await tfconv.loadGraphModel(
+  //   "../model/blazeface/model.json"
+  // );
+  // const facemeshModel = await tfconv.loadGraphModel(
+  //   "../model/facemesh/model.json"
+  // );
+
+  // const model = new facemesh.FaceMesh(facemeshModel, blazefaceModel);
+
   await renderPrediction(model, video, ctx);
 
   // const img = await imgP("../img.jpg");
