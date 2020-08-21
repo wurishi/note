@@ -15,7 +15,8 @@
     "blazeface": "webpack --config ./demos/blazeface/webpack.config.js",
     "deeplab": "webpack --config ./demos/deeplab/webpack.config.js",
     "facemesh": "webpack --config ./demos/facemesh/webpack.config.js",
-    "handpose": "webpack --config ./demos/handpose/webpack.config.js"
+    "handpose": "webpack --config ./demos/handpose/webpack.config.js",
+    "qna": "webpack --config ./demos/qna/webpack.config.js"
   },
   "author": "",
   "license": "ISC",

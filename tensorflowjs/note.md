@@ -892,3 +892,7 @@ await model.fit(xs, ys, {
 ## 12. 手势标识检测 (handpose)
 
 [代码](demo/handpose/index.js)
+
+## 13. 自然语言问答 (qna)
+
+[代码](demos/qna/index.js)
