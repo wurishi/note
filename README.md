@@ -42,7 +42,13 @@ Rust
 
 # tensorflowjs
 
-参考资料: [TensorFlow For JavaScript](https://tensorflow.google.cn/js/tutorials/setup?hl=zh-cn) *(进行中)*
+参考资料: [TensorFlow For JavaScript](https://tensorflow.google.cn/js/tutorials/setup?hl=zh-cn) **(完成)**
+
+[演示](https://tensorflow.google.cn/js/demos?hl=zh-cn)
+
+[无代码训练](https://teachablemachine.withgoogle.com/train)
+
+[Magenta](https://magenta.tensorflow.org/get-started/)
 
 # thinkinfp
 
