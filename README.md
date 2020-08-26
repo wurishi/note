@@ -12,7 +12,7 @@
 
 # echarts 可视化工具
 
-思路: 类似 echarts example 网站，用一套可视化 UI 代替代码实现编辑功能，并最终提供一个代码输出的功能。 (计划中)
+思路: 类似 echarts example 网站，用一套可视化 UI 代替代码实现编辑功能，并最终提供一个代码输出的功能。react / react hook form / dat.gui (计划中)
 
 # electron
 
