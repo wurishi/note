@@ -1,8 +1,8 @@
-import * as THREE from "../../node_modules/three/build/three.module.js";
-import { OrbitControls } from "../../node_modules/three/examples/jsm/controls/OrbitControls.js";
-import { GUI } from "../../node_modules/dat.gui/build/dat.gui.module.js";
-import { Cloth } from "./cloth.js";
-import { xSegs, ySegs, clothFunction, MASS, TIMESTEP_SQ } from "./utils.js";
+import * as THREE from '../../node_modules/three/build/three.module.js';
+import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls.js';
+import { GUI } from '../../node_modules/dat.gui/build/dat.gui.module.js';
+import { Cloth } from './cloth.js';
+import { xSegs, ySegs, clothFunction, MASS, TIMESTEP_SQ } from './utils.js';
 
 const GRAVITY = 981 * 1.4;
 
@@ -27,7 +27,7 @@ export class Main {
   }
 
   init() {
-    const container = document.createElement("div");
+    const container = document.createElement('div');
     document.body.appendChild(container);
     this.container = container;
 
@@ -87,15 +87,16 @@ export class Main {
     container.appendChild(stats.dom);
     this.stats = stats;
 
-    window.addEventListener("resize", this.onWindowResize, false);
+    window.addEventListener('resize', this.onWindowResize, false);
 
     const mgui = new MGUI(1);
     this.params = mgui.params;
+    this.mgui = mgui;
   }
 
   createCloth() {
     const loader = new THREE.TextureLoader();
-    const clothTexture = loader.load("./circuit_pattern.png");
+    const clothTexture = loader.load('./circuit_pattern.png');
     clothTexture.anisotropy = 16;
 
     const clothMaterial = new THREE.MeshLambertMaterial({
@@ -131,7 +132,7 @@ export class Main {
 
   createGround() {
     const loader = new THREE.TextureLoader();
-    const groundTexture = loader.load("./grasslight-big.jpg");
+    const groundTexture = loader.load('./grasslight-big.jpg');
     groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
     groundTexture.repeat.set(25, 25);
     groundTexture.anisotropy = 16;
@@ -231,8 +232,14 @@ export class Main {
     this.windForce.normalize();
     this.windForce.multiplyScalar(windStrength);
 
+    // 模拟风
     this.simulateWind();
+    // 模拟球
     this.simulateBall(now);
+    // 模拟地板, 防止cloth穿透地面
+    this.simulateFloor();
+    // 模拟pin
+    this.simulatePin();
   }
 
   simulateWind() {
@@ -294,6 +301,31 @@ export class Main {
     }
   }
 
+  simulateFloor() {
+    for (
+      let particles = this.cloth.particles, i = 0, il = particles.length;
+      i < il;
+      i++
+    ) {
+      const particle = particles[i];
+      const pos = particle.position;
+      if (pos.y < -250) {
+        pos.y = -250;
+      }
+    }
+  }
+
+  simulatePin() {
+    const particles = this.cloth.particles;
+    const pins = this.mgui.pins;
+    for (let i = 0, il = pins.length; i < il; i++) {
+      const xy = pins[i];
+      const p = particles[xy];
+      p.position.copy(p.original);
+      p.previous.copy(p.original);
+    }
+  }
+
   diff = new THREE.Vector3();
 
   satisfyConstraints(p1, p2, distance) {
@@ -333,7 +365,7 @@ class MGUI {
 
     this.pins = this.pinsFormation[1];
 
-    this.params.togglePins = this.togglePins;
+    this.params.togglePins = () => this.togglePins();
 
     this.initGUI();
   }
@@ -346,9 +378,9 @@ class MGUI {
 
   initGUI() {
     const gui = new GUI();
-    gui.add(this.params, "enableWind");
-    gui.add(this.params, "showBall");
-    gui.add(this.params, "togglePins");
+    gui.add(this.params, 'enableWind');
+    gui.add(this.params, 'showBall');
+    gui.add(this.params, 'togglePins');
 
     if (this.TESTING) {
       for (let i = 0; i < 50; i++) {
