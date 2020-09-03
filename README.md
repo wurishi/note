@@ -25,6 +25,15 @@ electron
 
 参考资料: 《你所不知道的 Javascript》_(进行中)_
 
+# jsgenerator
+
+参考资料:
+
+- [JavaScript Generators 权威指南](https://github.com/gajus/gajus.com-blog/blob/master/posts/the-definitive-guide-to-the-javascript-generators/index.md)
+- [ES6 Generators 基础](https://davidwalsh.name/es6-generators)
+- [深入 ES6 generators](https://2ality.com/2015/03/es6-generators.html)
+- [3 cases where JavaScript generators rock](https://goshakkk.name/javascript-generators-understanding-sample-use-cases/)
+
 # reactconcurrent
 
 concurrent 实验
@@ -35,7 +44,7 @@ concurrent 实验
 
 # reduxsaga
 
-参考资料: [Redux-Saga](https://redux-saga-in-chinese.js.org/) (计划中)
+参考资料: [Redux-Saga](https://redux-saga-in-chinese.js.org/) _(进行中)_
 
 # rust
 
