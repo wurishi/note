@@ -1,0 +1,20 @@
+{
+  "name": "xstate-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel": "babel --watch src --out-dir . --presets react-app/prod"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@xstate/react": "^0.8.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "xstate": "^4.13.0"
+  }
+}

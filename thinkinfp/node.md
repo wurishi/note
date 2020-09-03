@@ -94,7 +94,7 @@ FP 使用大量的 Function, 几乎每个 Function 都可以由非常小的 Func
 
 Functional Programming (FP) 是一种编程范式 (programming paradigm), FP 的核心思想就是通过 function 为解决各种问题, 并且所有的 function 都是以 **数学函数** 为模型. 在 FP 里 function 是有更明确定义的:
 
-functions 是一种表达式, 可以输入参数, 一理输入参数后就可以**被简化(reduced)**或是说**被运算(evaluated)**.
+functions 是一种表达式, 可以输入参数, 一旦输入参数后就可以**被简化(reduced)**或是说**被运算(evaluated)**.
 
 ```javascript
 add(1)(2) // 可以被简化成 3

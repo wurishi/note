@@ -57,7 +57,7 @@ Rust
 
 # thinkinfp
 
-参考资料: [Think in FP](https://blog.jerry-hong.com/series/fp/) (计划中)
+参考资料: [Think in FP](https://blog.jerry-hong.com/series/fp/) (05/?? 暂停)
 
 # threejs
 
@@ -94,7 +94,7 @@ U3D JobSystem
 
 # xstate
 
-参考资料: [XState](https://blog.jerry-hong.com/posts/xstate-introduction/) (计划中)
+参考资料: [XState](https://blog.jerry-hong.com/posts/xstate-introduction/) (03/?? 暂停)
 
 # zrender
 
