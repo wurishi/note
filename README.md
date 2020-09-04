@@ -29,7 +29,7 @@ electron
 
 参考资料:
 
-- [JavaScript Generators 权威指南](https://github.com/gajus/gajus.com-blog/blob/master/posts/the-definitive-guide-to-the-javascript-generators/index.md)
+- [JavaScript Generators 权威指南](https://github.com/gajus/gajus.com-blog/blob/master/posts/the-definitive-guide-to-the-javascript-generators/index.md) **(完成)**
 - [ES6 Generators 基础](https://davidwalsh.name/es6-generators)
 - [深入 ES6 generators](https://2ality.com/2015/03/es6-generators.html)
 - [3 cases where JavaScript generators rock](https://goshakkk.name/javascript-generators-understanding-sample-use-cases/)

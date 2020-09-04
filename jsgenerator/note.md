@@ -228,3 +228,140 @@ for (const index of interator) {
 // -----
 ```
 
+## 1-8. Throw
+
+除了使用`next()`推进生成器函数的执行之外, 也可以使用throw(). 抛出的错误将会被传进生成器函数, 也就是说你可以自由选择是在生成器函数的内部还是外部处理错误.
+
+```javascript
+const gf = function* () {
+  while (true) {
+    try {
+      yield;
+    } catch (e) {
+      if (e != "a") {
+        throw e;
+      }
+      console.log("Generator内部处理", e);
+    }
+  }
+};
+
+const iterator = gf();
+iterator.next();
+
+try {
+  iterator.throw("a");
+  iterator.throw("b");
+} catch (e) {
+  console.log("未在Generator处理的错误", e);
+}
+// Generator内部处理 a
+// 未在Generator处理的错误 b
+```
+
+和 yield 同样的你可以抛出任何类型的错误, 包括 function, number, array 和 object.
+
+## 1-9. 生成器函数的使用场景1
+
+在 JavaScript 中, I/O 操作通常都是异步的, 一般都需要一个 callback 在操作完成后处理后续功能, 举个例子:
+
+```javascript
+const foo = (name, callback) => {
+  setTimeout(() => {
+    callback(name);
+  }, 100);
+};
+```
+
+如果需要连续执行异步方法, 代码往往会写成这样:
+
+```javascript
+foo("a", (a) => {
+  foo("b", (b) => {
+    foo("c", (c) => {
+      console.log(a, b, c);
+    });
+  });
+});
+```
+
+这就是臭名昭著的回调地狱.
+
+要解决这类问题, 解决方法就是使用 Promise(async/await) 或者生成器函数.
+
+[代码](1-9.js)
+
+```javascript
+controller(function* () {
+  const a = yield curry(foo, "a");
+  const b = yield curry(foo, "b");
+  const c = yield curry(foo, "c");
+  console.log(a, b, c);
+});
+```
+
+## 1-10. 生成器函数的使用场景2 (错误处理)
+
+如果要处理异步方法的错误, 通常是这样写的:
+
+```javascript
+const foo = (name, callback) => {
+  callback(null, name);
+};
+
+foo("a", (error1, result1) => {
+  if (error1) {
+    throw new Error(error1);
+  }
+  foo("b", (error2, result2) => {
+    if (error2) {
+      throw new Error(error2);
+    }
+    foo("c", (error3, result3) => {
+      if (error3) {
+        throw new Error(error3);
+      }
+      console.log(result1, result2, result3);
+    });
+  });
+});
+```
+
+如果有 1-9 的生成器函数处理, 只需要在统一的位置加 `try...catch` 即可.
+
+```javascript
+const curry = (method, ...args) => {
+  return (callback) => {
+    args.push(callback);
+    return method.apply({}, args);
+  };
+};
+
+const controller = (generator) => {
+  const iterator = generator();
+
+  const advancer = (response) => {
+    if (response && response.error) { // 发现错误用迭代器抛出
+      return iterator.throw(response.error);
+    }
+    const state = iterator.next(response);
+    if (!state.done) {
+      state.value(advancer); // 执行curry返回的method
+    }
+  };
+  advancer();
+};
+
+controller(function* () {
+  let a, b, c;
+  try { // 加 try/catch 统一处理任务
+    a = yield curry(foo1, "a");
+    b = yield curry(foo1, { error: "sth err" });
+    c = yield curry(foo1, "c");
+  } catch (e) {
+    console.log(e);
+  }
+  console.log(a, b, c);
+});
+```
+
