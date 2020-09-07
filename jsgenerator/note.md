@@ -367,6 +367,8 @@ controller(function* () {
 
 # 2: ES6 Generators
 
+[参考资料](https://davidwalsh.name/es6-generators)
+
 ## 2-1. ES6 Generators 基础
 
 ES6 中最激动人心的新功能之一就是 Generator.
@@ -404,3 +406,64 @@ foo();
 ES6 Generators 不同于普通的 function, 它允许我们在 Generators 中暂停一次或者多次, 然后再需要时再恢复. 其中其他代码可以在暂停期间运行的.
 
 如果了解过有关并发或多线程的资料, 那么可能会看到**"合作(cooperative)"**这一词. 它的意思大致是表示一个进程(在 JS 中是一个函数)自己可以选择在什么时候中断, 以便于它能和其他代码合作. 这个概念和"**抢先式(preemptive)**"形成先明的对比, "抢先式"表示功能可能在其自己意想不到的时候被中断.
+
+ES6 Generators 的并发行为是合作式的. 在ES6 Generators 函数中, 可以使用一个新关键字 `yield` 从内部暂停自己的执行. 要注意的是, 并没有其他方式从 Generators 外部暂停它, 唯一的方式就是在内部用 `yield` 暂停.
+
+另外, 一旦使用 `yield` 暂停了 Generators, 函数自身将没有办法让自己恢复执行. 恢复执行的唯一途径是使用函数外部的一个控制器.
+
+可以这样说 Generators 函数可以随时暂停随时重新启动, 且次数不限. 因此在实际使用时你甚至可以在 Generators 中使用无限循环(即 `while(true) {...}`). 这种用法在普通的 JS 程序中基本上是不会使用的, 但在 Generators 函数中, 它是合理的操作.
+
+更重要的是, 这种停止和再次执行并不仅仅是针对 Generators 函数执行的控制, 还能使用双路消息(2-way)发送与接受数据. 例如使用普通函数, 可以在函数的开头获取参数, 在结尾用 `return` 返回值. 使用 Generators 可以在每次 `yield` 时获取消息(返回值), 并在每次重新启动时发送消息(传参数).
+
+### 语法
+
+Generators 声明语法:
+
+```javascript
+function * foo() {
+    // ...
+}
+```
+
+`*` 就是与普通 function 的不同之处, 它看起来有些奇怪. 对于其他语言而言, 它看起来很像函数的返回值指针, 但在 JS 中它只是表明这是一个 Generators 函数的方式而已.
+
+> 注意: `function* foo() {}` 和 `function *foo() {}` (注意 `*` 位置有所不同) 两者都是有效的.
+
+然后开始考虑 Generators 函数的内容. 在大多数时候, Generators 函数只是普通的 JS 函数. 在函数内部几乎没有什么新语法需要学习. (即, 之前学习的几乎所有 JS 内容都是可以在 Generators 函数内部使用的)
+
+Generators 函数中唯一的新内容就是新的关键字 `yield`, 要注意的是 `yield` 准确来说应该称其为 "`yield` 表达式" (而不是语句). 这是因为, 当重新启动 Generators 时, 我们可以向其发送一个值, 而发送的任何内容其实都是 `yield` 表达式的执行结果.
+
+举个例子:
+
+```javascript
+function *foo() {
+    let x = 1 + (yield 'foo'); // yield 表达式接收到 100, 执行 1+100
+    console.log(x); // 101
+}
+
+const iterator = foo();
+console.log(iterator.next()); // { value: 'foo', done: false }
+iterator.next(100); // 100 发送给 *foo
+```
+
+`yield 'foo'` 表达式会在 Generators 第一次暂停时发送字符串 `'foo'` (`iterator.next()` 的返回值中的`value`). 当 Generators 在任意时间被重新启动时, 可以再发送一个任意值给 Generators, 在 Generators 内部这个值将会与 1 相加并赋值给 `x`.
+
+这就是两路通讯(2-way communication), 将值 `'foo'` 发送出去并暂停自己. 然后在某个时刻 (可能是立即, 也可能是很久以后), Generators 将重新启动并提供一个值. 这个值就像 `yield` 关键字的请求值一样.
+
+可以在任意表达式的位置使用 yield, 如果不指定发送的值, yield 默认会接收一个 `undefined`.
+
+```javascript
+const foo = (x) => console.log("x: " + x);
+
+const bar = function* () {
+    yield;
+    foo(yield);
+};
+
+const i = bar();
+i.next();
+i.next();
+i.next(1024); // 如果不传值, 会打印 x: undefined
+// x: 1024
+```
+
