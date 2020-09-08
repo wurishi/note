@@ -751,3 +751,217 @@ console.log(it.next()); // bar caught: Oops!
 `yield *` 允许将迭代控制从当前生成器委托给另一个生成器.
 
 目前为止, 讨论的都是生成器函数的同步执行, 接下要讨论的就是生成器如何与异步代码一起使用.
+
+## 2-3. ES6 Generators 处理异步
+
+生成器的主要优点在于, 它提供了单线程的, 具有同步代码样式的外观, 同时又允许你将异步的实现细节隐藏起来. 这个优点将让我们可以非常自然的表达程序的步骤与流程, 而不用关心异步语法的陷阱和问题(如回调地狱).
+
+换句话说, 通过将生成器的逻辑与迭代器的实现细节分开, 我们实现了功能/关注点的分离.
+
+这样做的结果就是, 所有异步代码的功能, 都有了同步代码的外观, 提高了可读性和可维护性.
+
+### 最简单的异步
+
+先来一个最简单的使用生成器函数处理异步的例子.
+
+```javascript
+function makeAjaxCall(url, cb) {
+  setTimeout(() => {
+    cb(
+      JSON.stringify({
+        url,
+        code: 200,
+        t: Date.now(),
+      })
+    );
+  }, 100);
+}
+
+makeAjaxCall("http://url1", function (result1) {
+  const data = JSON.parse(result1);
+  makeAjaxCall("http://url2/?id=" + data.t, function (result2) {
+    const resp = JSON.parse(result2);
+    console.log(resp);
+  });
+});
+```
+
+上面体现了异步代码常见的问题, 回调地狱. 现在来看一下使用生成器函数来处理类似的需求.
+
+```javascript
+let it;
+function request(url) {
+  makeAjaxCall(url, function (response) {
+    it.next(response);
+  });
+}
+function* main() {
+  const result1 = yield request("http://url1");
+  const data = JSON.parse(result1);
+  const result2 = yield request("http://url2/?id=" + data.t);
+  const resp = JSON.parse(result2);
+  console.log(resp);
+}
+
+it = main();
+it.next();
+```
+
+要注意的是 `request()` 包装了 `makeAjaxCall`, 并确保在回调时调用迭代器的 `next()` 方法.
+
+要注意的是这里的 `request()` 调用并没有返回值. 就是说这里的 `yield` 其实发送的是 `undefined`, 后续我们会改进, 不过在这里这并不重要, 因为我们调用 `yield` 主要是为了暂停生成器, 并且在 `makeAjaxCall` 回调调用了 `it.next()` 后才恢复. 
+
+此时因为 `it.next(response)` 已经把返回值(response)发送回生成器了, 所以 `result1/result2` 就能拿到异步请求的数据了.
+
+此时在 `main` 中的 `result1 = yield request()` 看起来就像是请求数据并隐藏了实现细节. 阅读代码时看起来就像是一连串同步的方法, 这样看代码阅读起来会非常清晰, 唯一的代价就是 `yield`, 而与 `yield` 这个非常小的语法开销相比, 嵌套回调地狱将可怕的多!
+
+另外因为 request 已经隐藏了实现细节, 所以要为 request 增加功能是很简单的事, 比如说增加一个缓存功能:
+
+```javascript
+const cache = {};
+function request(url) {
+    if(cache[url]) {
+        setTimeout(function() {
+            it.next(cache[url])
+        }, 0);
+    } else {
+        makeAjaxCall(url, function(resp) {
+            cache[url] = resp;
+            it.next(resp);
+        });
+    }
+}
+```
+
+>  注意: 这里使用了 setTimeout(...,0), 是因为这里如果直接调用, 会报 `Generator is already running`错误, 因为此时生成器函数还没有处于暂停状态, 所以暂时先用 setTimeout(...,0) hack 将立即执行改为稍后调用. 后面将提供更好的方案.
+
+这个例子主要是将异步调用抽象后, 细节分离开将带来更清楚的代码可读性与维护性.
+
+### 更好的异步
+
+上个例子实现了一个简单的异步生成器, 但功能有限. 因此我们需要一个更强大的异步机制来与生成器配合, 从而能够处理更复杂的工作, 这个异步机制就是 Promise.
+
+上个例子有以下几个问题:
+
+1. 没有明确的错误处理方法. 当然我们也可以手动检测 makeAjaxCall 是否发生错误, 并将该错误以 it.throw() 的形式抛出. 然后在生成器函数中使用 try...catch 来处理它, 但如果我们的程序中大量使用生成器, 就可能需要手动实现这些重复的代码.
+2. 如果 makeAjaxCall 是一个第三方类库且并不在我们的控制之下, 然后又碰巧多次调用了回调, 或者回调即可能是发送成功通知也可能是发送错误通知等. 这时生成器为了处理和预防这些问题可能需要大量的手动工作(**第1点和第2点其实最终都需要大量代码写在生成器函数中, 但这样一来就和生成器函数的优点: 隐藏细节背道而驰了**), 而且可能也无法移植.
+3. 很多时候, 我们需要"并行"执行多个任务(如, 同时执行两个 AJAX 请求). 由于生成器 yield 是单个暂停的, 所以并不能实现两个或多个同时运行的需求, 因为它们必须一次运行一个.
+
+以上这些问题其实都是可以解决的, 但为了防止每次重新发明解决方案. 我们需要一个更强大的模式, 该模式应该是可信赖, 可重用的解决方案并且是专门为生成器异步编码而设计的.
+
+首先将 request 改造成 promise 版本.
+
+```javascript
+function request(url) {
+  return new Promise((resolve, reject) => {
+    makeAjaxCall(url, resolve);
+  });
+}
+```
+
+将下来需要有一段程序用来控制生成器的迭代器.
+
+```javascript
+function runGenerator(g) {
+  let it = g(), ret;
+  (function iterate(val) {
+    ret = it.next(val);
+    if (!ret.done) {
+      if ("then" in ret.value) {
+        ret.value.then(iterate);
+      } else {
+        setTimeout(() => iterate(ret.value), 0);
+      }
+    }
+  })();
+}
+```
+
+在 runGenerator 中需要注意的是:
+
+1. 自动初始化生成器的迭代器 (`it`), 然后异步运行 `it` , 直到 `done: true`.
+2. 根据 promise 的规则, 等待其 `then()` 调用时继续迭代器的运行.
+3. 如果返回的不是 promise, 则直接将该发送给生成器.
+
+现在使用新的方案:
+
+```javascript
+runGenerator(function* () {
+  const result1 = yield request("url1");
+  const data = JSON.parse(result1);
+  const result2 = yield request("url2" + data.t);
+  const resp = JSON.parse(result2);
+  console.log(resp);
+});
+```
+
+代码看起来和之前的生成器代码非常类似. 这主要还是归功于生成器本身将细节都隐藏了起来. 接下来我们将更方便的处理之前提到的问题.
+
+#### 错误处理
+
+```javascript
+function request(url) {
+    return new Promise((resolve, reject) => {
+        makeAjaxCall(url, function(err, text) {
+            if(err) reject(err);
+            else resolve(text);
+        })
+    });
+}
+
+runGenerator(function* () {
+  let result1;
+  try {
+      result1 = yield request("url1");
+  }
+  catch(err) {
+      console.log('Error:' + err);
+      return;
+  }
+  const data = JSON.parse(result1);
+  let result2;
+  try {
+      result2 = yield request("url2" + data.t);
+  }
+  catch(err) {
+      console.log('Error: ' + err);
+      return;
+  }
+  const resp = JSON.parse(result2);
+  console.log(resp);
+});
+```
+
+#### 并发操作
+
+```javascript
+const search_terms = yield Promise.all([
+    request("url1"),
+    request("url2"),
+    request("url3"),
+]);
+```
+
+使用 Promise.all([...]) 即可实现并发操作.
+
+### ES7 async
+
+其实上述的使用 Generators + Promise 的方案, 在 ES7 中有一个很类似的功能可以代替, 就是 `async / await`. 使用它的话代码类似这样:
+
+```javascript
+async function main() {
+    const result1 = await request('url1');
+    const data = JSON.parse(result1);
+    
+    const result2 = await request('url2?id=' + data.id);
+    const resp = JSON.parse(result2);
+    console.log(resp);
+}
+main();
+```
+
+### 总结
+
+简而言之, 使用 `generators` + `yield` Promise, 结合两者的优势, 可以获得一个真正强大和优雅的并且看起来像是同步的异步流程控制.
+
+在 ES7 则可以直接使用 `async function` 实现.
