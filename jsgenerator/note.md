@@ -467,3 +467,127 @@ i.next(1024); // 如果不传值, 会打印 x: undefined
 // x: 1024
 ```
 
+### Generator Iterator
+
+迭代器(Iterator)是一种特殊的行为, 它其实上属于一种设计模式. 通过调用 `next()` 来遍历一组有序的值.
+
+例如在数组 `[1,2,3,4,5]`上使用迭代器, 第一次调用 `next()` 将返回 `1`, 第二次调用 `next()` 返回 `2`, 以此类推. 返回所有值后, 调用 `next()` 将返回 `null` 或 `false`, 通知你已经遍历了数据容器中所有的值.
+
+从外部控制 Generator 功能使用的就是迭代器, 迭代器负责与 Generator 交互. 举个简单的例子:
+
+```javascript
+function *foo() {
+    yield 1;
+    yield 2;
+    yield 3;
+    yield 4;
+    yield 5;
+}
+```
+
+怎样一步步获取到 foo 生成器函数的值呢? 使用迭代器.
+
+```javascript
+const it = foo();
+```
+
+**需要特别注意的是, 这里并不像普通函数那样, foo() 并没有执行foo**
+
+如果需要执行生成器函数(foo), 需要执行以下操作:
+
+```javascript
+const message = it.next();
+```
+
+这将让 foo 执行到 `yield 1` 并暂停, 但这并不是我们唯一得到的内容.
+
+```javascript
+console.log(message); // {value: 1, done: false}
+```
+
+实际上, 每次调用 `next()`, 我们都会获得一个对象, 对象里面有一个属性 `value`, 表示 `yield` 返回的值, 另外还有一个布尔类型的属性 `done` 表示生成器函数是否全部执行完成.
+
+继续执行迭代:
+
+```javascript
+console.log(it.next()); // {value: 2, done: false}
+console.log(it.next()); // {value: 3, done: false}
+console.log(it.next()); // {value: 4, done: false}
+console.log(it.next()); // {value: 5, done: false}
+```
+
+要注意的是, 当 `value` 为 `5` 时, `done` 仍然是 `false`. 这是因为从技术上来讲, 生成器的功能并没有完全结束. 我们仍然可以调用 `next()`, 如果此时我们发送了一个值, 那么 `yield 5` 表达式的结果就是发送的这个值. 只有这样操作了以后, 生成器的功能才算完全结束.
+
+因此:
+
+```javascript
+console.log(it.next()); // {value: undefined, done: true}
+```
+
+此时生成器函数的结果表示函数已经执行完成了(done: true), 但是 value 没有任何数据, 因为此时已经用了所有的 `yield` 语句.
+
+你可能会想到 `return` 是否能在生成器函数中使用, 如果可以 return 的值是否有通过 value 发送出去?
+
+```javascript
+function *foo() {
+    yield 1;
+    return 2;
+}
+const it = foo();
+console.log(it.next()); // {value: 1, done: false}
+consoel.log(it.next()); // {value: 2, done: true}
+```
+
+看起来使用 return 也是可以的, 但这并不是一个好主意. 因为当我们使用 `for...of` 循环遍历迭代器时, 最终 return 的值将被丢弃.
+
+#### for...of
+
+ES6 提供了遍历迭代器的完整语法支持: `for...of`
+
+```javascript
+function *foo() {
+    yield 1;
+    yield 2;
+    yield 3;
+    yield 4;
+    yield 5;
+    return 6;
+}
+let v;
+for(v of foo()) {
+    console.log(v);
+}
+// 1 2 3 4 5
+console.log(v); // 仍然是5而不是6
+```
+
+`foo...of`会自动创建迭代器来遍历 `foo()`, 遍历将直到迭代器的 `done: true` 时才会结束. 只要 `done` 是 `false`, 它就会自动提取 `value` 属性并分配给迭代变量(这里指的是 `v`).
+
+要注意的是, `foo...of` 会忽略 `return 6` 这个值, 因为 `return` 优先把 `done` 设置为 `true` 了.
+
+另外, 因为 `foo...of` 隐藏了调用 next() 的细节, 所以`foo...of`并不适用于我们需要传值给生成器的场景.
+
+#### 完整的例子
+
+这个例子将同时包含数据发送给生成器函数和从生成器函数发送数据.
+
+```javascript
+function *foo(x) {
+    const y = 2 * (yield (x + 1));
+    const z = yield (y / 3);
+    return (x + y + z);
+}
+
+const it = foo(5);
+console.log(it.next()); // {value: 6, done: false}
+console.log(it.next(12)); // {value: 8, done: false}
+console.log(it.next(13)); // {value: 5 + 24 + 13, done: true}
+```
+
+### 总结
+
+以上就是生成器函数的基础知识, 后续将讨论一些进阶问题:
+
+- 错误处理如何工作?
+- 一个生成器能否调用另一个生成器?
+- 异步代码如何与生成器一起使用?
