@@ -591,3 +591,163 @@ console.log(it.next(13)); // {value: 5 + 24 + 13, done: true}
 - 错误处理如何工作?
 - 一个生成器能否调用另一个生成器?
 - 异步代码如何与生成器一起使用?
+
+## 2-2. ES6 Generators 进阶
+
+### 错误处理
+
+对于 ES6 Generators 而言, 即使外部迭代控制是异步进行的, 生成器内部代码仍然是**同步的**. 所以仍然能使用`try...catch`机制处理错误.
+
+```javascript
+function *foo() {
+    try {
+        const x = yield 3;
+    } catch (err) {
+        console.log('Error: ' + err);
+    }
+}
+```
+
+当函数执行到 `yield 3` 表达式后将暂停, 如果之后将错误发送回生成器函数, 那 try...catch 将捕获到这个错误.
+
+```javascript
+const it = foo();
+const res = it.next(); // {value: 3, done: false}
+// 之前是使用 it.next() 让 foo 继续执行
+// 但这次使用 it.throw() 将错误抛给 foo
+it.throw('Oops!'); // Error: Oops! 这里是 foo 中 catch 执行的结果
+```
+
+在这里我们使用迭代器的另一个方法 `throw()` 将错误抛给生成器, 然后 `yield` 处就会发生错误, 并被 `try...catch` 捕获到.
+
+**注意**: 如果使用 `throw()` 将错误抛给生成器, 但是生成器函数内部没有用 `try...catch` 捕获错误, 则该错误会像正常情况一样立即传播出去:
+
+```javascript
+function *foo() {}
+const it = foo();
+try {
+    it.throw('Oops!');
+} catch (err) {
+    console.log('Error: ' + err); // 因为 foo 内部没有使用 try...catch 捕获错误, 所以错误传播了出来, 并在这里被捕获到.
+}
+```
+
+另外, 错误处理的方向也可以是相反的(之前是外部抛错误给生成器函数内部, 显然生成器函数内部也可以直接触发错误传播给外部)
+
+```javascript
+function *foo() {
+    const x = yield 3;
+    const y = x.toUpperCase(); // 可能会报类型错误
+    yield y;
+}
+const it = foo();
+it.next(); // {value: 3, done: false}
+try {
+    it.next(42); // 42是数字无法调用toUpperCase()
+} catch (err) {
+    console.log(err); // TypeError 来自于 42.toUpperCase()
+}
+```
+
+### 委托 Generators
+
+在某些时候, 我们可能会需要在生成器函数中调用另一个生成器函数, 此时除了在当前生成器函数中创建迭代器以外, 也可以将要调用的生成器函数委托给外部的迭代器. 如果要这样做, 就要使用 `yield` 关键字的变体: `yield *`.
+
+```javascript
+function* foo() {
+  let x = yield 3;
+  x = yield 4;
+}
+
+function* bar() {
+  yield 1;
+  yield 2;
+  yield* foo();
+  yield 5;
+}
+
+for (const v of bar()) {
+  console.log(v);
+}
+// 1 2 3 4 5
+```
+
+此时, 一开始迭代器是被用来控制 bar() 的, 但当执行到 yield* foo() 时, 迭代器被委托用来控制 foo(), 可以这样理解:
+
+```javascript
+const it = bar();
+console.log(it.next()); // {value: 1, done: false}
+console.log(it.next()); // {value: 2, done: false}
+console.log(it.next()); // {value: 3, done: false}
+console.log(it.next("x value")); // {value: 4, done: false} 此时 foo 中 x 变量的值为 "x value"
+```
+
+另外一个 `yield *` 的技巧是从 `return` 中获取代理的生成器的结束返回值.
+
+```javascript
+function* foo() {
+    yield 2;
+    yield 3;
+    return "foo";
+}
+
+function* bar() {
+    yield 1;
+    const v = yield* foo(); // 可以获取 foo return 的值, yield 的返回值是拿不到的
+    console.log("v: " + v);
+    yield 4;
+}
+
+for (const v of bar()) {
+    console.log(v);
+}
+// 1 2 3
+// v: foo
+// 4
+```
+
+如例子所示, `yield* foo()` 会委托迭代控制(`next()` 调用), 一旦 `foo()` 全部执行完成了, 就会获取到 `foo` 中 `return` 的值(在这里是字符串 `"foo"`), 并将值分配给变量 `v`.
+
+这也是 `yield` 和 `yield *` 的区别, 对于 `yield` 表达式, 得到的结果是 `next()` 传递的内容. 但是对于 `yield *` 表达式, 它仅能接收到委托的生成器中的 `return` 的内容. (因为 `next()` 发送的值被委托出去了)
+
+另外也可以在 yield * 委托时处理错误
+
+```javascript
+function* foo() {
+    try {
+        yield 2;
+    } catch (error) {
+        console.log("foo caught: " + error);
+    }
+    yield 3;
+    throw "Oops!";
+}
+
+function* bar() {
+    yield 1;
+    try {
+        yield* foo();
+    } catch (error) {
+        console.log("bar caught: " + error);
+    }
+}
+
+const it = bar();
+
+console.log(it.next()); // {value: 1, done: false}
+console.log(it.next()); // {value: 2, done: false}
+
+console.log(it.throw("Uh oh!")); // foo caught: Uh oh!
+// {value: 3, done: false}
+
+console.log(it.next()); // bar caught: Oops!
+// {value: undefined, done: true}
+```
+
+### 总结
+
+因为生成器函数内部也是同步执行的, 这意味着可以像往常一样使用 `try...catch` 处理 `yield` 中的错误. 迭代器还有一个 `throw()` 方法可以在生成器暂停的位置向生成器抛错误, 这个错误也可以被生成器内部的 `try...catch` 捕获到.
+
+`yield *` 允许将迭代控制从当前生成器委托给另一个生成器.
+
+目前为止, 讨论的都是生成器函数的同步执行, 接下要讨论的就是生成器如何与异步代码一起使用.
