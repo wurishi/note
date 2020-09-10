@@ -1113,7 +1113,192 @@ console.log(iter.next()); // { value: undefined, done: true }
 1. 数组解构模式
 
    ```javascript
+   const set = new Set().add("a").add("b").add("c");
    
+   const [x, y] = set;
+   console.log(x, y); // 'a' 'b'
+   
+   const [first, ...rest] = set;
+   console.log(first, rest); // 'a' ['b', 'c']
    ```
 
 2. `for-of` 循环
+
+   ```javascript
+   for(let x of iterable) {
+       // ...
+   }
+   ```
+
+3. `Array.from()`
+
+   ```javascript
+   ![3-1-4](assets/3-1-4.png)const map = new Map().set(false, "no").set(true, "yes");
+   console.log(Array.from(map)); // map 是可迭代的
+   console.log(Array.from({ length: 3, 0: "a", 2: "c" })); // ArrayLike 是可迭代的
+   /* ArrayLike 约定:
+   interface ArrayLike<T> {
+       readonly length: number;
+       readonly [n: number]: T;
+   }
+   */
+   ```
+
+4. 解构操作符 `...`
+
+5. `Map` 和 `Set`
+
+   ```javascript
+   new Map([['key', 'value'], ['uno', 'one']]);
+   new Set(['red', 'green', 'yellow']);
+   // WeakMap 和 WeakSet 类似, 四者的构造函数都可以接受可迭代的数据源
+   ```
+
+6. `Promise`
+
+   ```javascript
+   Promise.all(...);
+   Promise.race(...);
+   ```
+
+7. `yield*`
+
+### 3-1-4 实现 iterables
+
+![3-1-4](assets/3-1-4.png)
+
+```javascript
+const iterable = {
+    [Symbol.iterator]() {
+        let step = 0;
+        let iterator = {
+            next() {
+                if (step <= 2) step++;
+                switch (step) {
+                    case 1:
+                        return { value: 'hello', done: false };
+                    case 2:
+                        return { value: 'world', done: false };
+                    default:
+                        return { value: undefined, done: true };
+                }
+            },
+        };
+        return iterator;
+    },
+};
+
+for (let x of iterable) {
+    console.log(x);
+}
+// hello
+// world
+```
+
+#### (一) 迭代器本身可以迭代
+
+```javascript
+function iterateOver(...args) {
+    let index = 0;
+    let iterable = {
+        [Symbol.iterator]() {
+            return this;
+        },
+        next() {
+            if (index < args.length) {
+                return { value: args[index++] };
+            } else {
+                return { done: true };
+            }
+        },
+    };
+    return iterable;
+}
+
+for (let x of iterateOver('a', 'b', 'c', 'd')) {
+    console.log(x);
+}
+```
+
+ES6 中所有内置的迭代器都遵循了这种模式, 例如数组:
+
+```javascript
+const arr = [];
+const iterator = arr[Symbol.iterator]();
+console.log(iterator[Symbol.iterator]() === iterator); // true
+```
+
+另外要注意迭代数组本身和数组的iterator的区别:
+
+```javascript
+for (let x of arr) {
+    console.log(x);
+    break;
+}
+// 1
+for (let x of arr) {
+    console.log(x);
+}
+// 1 2
+```
+
+```javascript
+const iterable = arr[Symbol.iterator]();
+for (let x of iterable) {
+    console.log(x);
+    break;
+}
+// 1
+for (let x of iterable) {
+    console.log(x);
+}
+// 2
+// arr.values() 也是类似的情况
+```
+
+
+
+#### (二) 可选的迭代器方法: `return()` 和 `throw()`
+
+迭代器还有两个可选方法:
+
+- return(): 如果迭代器过早结束, 则为迭代器提供清理的机会.
+- throw(): 提供生成器函数 yield* 的支持.
+
+通过 return() 关闭迭代器: 
+
+可选的 return() 方法提供了迭代器没有迭代到最后时的清理操作(关闭迭代器). 比如说在 for-of 中, 以下情况都有可能中断迭代:
+
+- break
+- continue (可能由于某些外部操作, 让 continue 类似 break)
+- throw
+- return
+
+在以上几种情况下, for-of 都需要让迭代器知道迭代不会正常运算到最后了. 
+
+```javascript
+function readLinesSync(fileName) {
+    let file = ...;
+    return {
+        [Symbol.iterator]() {
+            return this;
+        },
+        next() {
+            if(file.isAtEndOfFile()) {
+                file.close();
+                return {done: true}
+            }
+            // return file stream
+        },
+        return() {
+            file.close();
+            return {done: true};
+        }
+    }
+}
+
+for(const line of readLinesSync(fileName)) {
+    console.log(x);
+    break; // 因为加了 return(), 即使 break 文件也能正确关闭了.
+}
+```
