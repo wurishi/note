@@ -965,3 +965,155 @@ main();
 简而言之, 使用 `generators` + `yield` Promise, 结合两者的优势, 可以获得一个真正强大和优雅的并且看起来像是同步的异步流程控制.
 
 在 ES7 则可以直接使用 `async function` 实现.
+
+# 3: ES6 迭代
+
+[参考资料](https://2ality.com/2015/02/es6-iteration.html)
+
+## 3-1. ECMAScript 6 中的可迭代项和迭代器
+
+ES6 引入了新的迭代接口 Iterable, 这篇将会介绍它是如何工作的, 哪些语法可以使用它(如: for-of 循环), 以及哪些数据源可以通过它提供数据(如: 数组).
+
+### 3-1-1 Iterability
+
+可迭代性包含二部分内容:
+
+- 数据消费者(Data consumers): 例如: `for-of` 循环遍历, `...`解构运算符等.
+- 数据源(Data sources): 数据使用者可以从各种数据来源中获得数据. 例如: 遍历数组元素, 从 Map 中获取键值或从字符串中提取字符.
+
+数据消费者要支持所有的数据来源可能是不切实际的, 尤其是自定义的数据消费者和来源. 因此 ES6 引入了接口 Iterable, 数据消费者使用它, 数据源实现它.
+
+![3-1-1](assets/3-1-1.png)
+
+鉴于 JavaScript 是没有接口的, 所以 Iterable 更多的是约定:
+
+- **Source**: 当一个值拥有 key 为 symbol(Symbol.iterator) 的方法时, 则该值被认为是可迭代的. 调用该方法返回的对象称为迭代器(*iterator*). 迭代器有一个方法 `next()` 它是用来迭代数据的.
+- **Consumption**: 消费者使用迭代器中数据源中遍历获取数据.
+
+举个 Array 的例子:
+
+```javascript
+const arr = ['a', 'b', 'c'];
+const iter = arr[Symbol.iterator]();
+
+console.log(iter.next()); // { value: 'a', done: false }
+console.log(iter.next()); // { value: 'b', done: false }
+console.log(iter.next()); // { value: 'c', done: false }
+console.log(iter.next()); // { value: undefined, done: true }
+```
+
+会发现 `next()` 返回的对象中, 属性 `value` 表示迭代的数值, `done` 表示迭代是否完成.
+
+### 3-1-2 可迭代的数据源
+
+1. array
+
+   ```javascript
+   for (const x of ["a", "b"]) {
+     console.log(x);
+   }
+   // 'a'
+   // 'b'
+   ```
+
+2. string
+
+   字符串也可以迭代, 但是迭代的是 Unicode 值, 所以迭代的值可能是 1 或者 2 个字符(characters).
+
+   ```javascript
+   for (const x of "a\uD83D\uDC0A") {
+     console.log(x);
+   }
+   // 'a'
+   // '\uD83D\uDC0A' (emoji)
+   ```
+
+3. Map
+
+   Map 迭代返回的是一个 [key, value] 的数组. 迭代的顺序是确定的, 即始终是以添加进 Map 的顺序迭代的.
+
+   ```javascript
+   const map = new Map().set("a", 1).set("b", 2);
+   for (const pair of map) {
+     console.log(pair);
+   }
+   // ['a', 1]
+   // ['b', 2]
+   ```
+   注意:  WeakMap 不可迭代.
+
+4. Set
+
+   Set 迭代的顺序和添加进 Set 的顺序是相同的.
+
+   ```javascript
+   const set = new Set().add("a").add("b");
+   for (const x of set) {
+     console.log(x);
+   }
+   // 'a'
+   // 'b'
+   ```
+
+   注意: WeakSet 不可迭代
+
+5. arguments
+
+   ```javascript
+   function printArgs() {
+     for (const x of arguments) {
+       console.log(x);
+     }
+   }
+   printArgs("a", "b");
+   // 'a'
+   // 'b'
+   ```
+
+6. DOM
+
+   大多数的 DOM 数据结构最终也是可以迭代的.
+
+   ```javascript
+   for (const node of document.querySelectorAll("div")) {
+     console.log(node);
+   }
+   ```
+
+7. 通过计算的可迭代数据
+
+   并非所有的可迭代数据都必须来自于一个特定的数据结构, 也可以是通过计算获得的. 例如: 所有主要的 ES6 数据结构 (数组, 映射, 集合等) 都有三种返回可迭代对象的方法:
+
+   - entries(): 返回的是 [key, value] 数组. 对于数组, 键代表是它们的索引. 对于集合每个键和值都是相同的.
+   - keys(): 返回由键组成的迭代器.
+   - values(): 返回由值组成的迭代器.
+
+8. 普通对象是不可迭代的
+
+   ```javascript
+   for (let x of {}) { // TypeError
+     console.log(x);
+   }
+   ```
+
+   主要原因在于, 迭代 {} 其实需要做二件事情:
+
+   1. 通过反射分析数据结构
+   2. 迭代数据
+
+   会发现, 其实第1步操作与迭代数据是无关的, 如果要实现普通对象的迭代可能需要你手动给 Object.prototype 添加 [Symbol.iterator] 方法, 但这依然可能会有问题:
+
+   - 如果是使用 `Object.create(null)` 创建的对象, 无法通过原型链得到迭代支持.
+   - 动态往对象上添加属性可能会破坏可迭代性.
+
+   **如果使用的是 ES6, 更推荐使用 Map 代替 Object 实现映射这种数据结构**
+
+### 3-1-3 ES6 内置的迭代语法
+
+1. 数组解构模式
+
+   ```javascript
+   
+   ```
+
+2. `for-of` 循环
