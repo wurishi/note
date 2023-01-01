@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/wurishi/note#readme",
   "dependencies": {
-    "webpack": "^4.44.1"
+    "webpack": "^5.75.0"
   }
 }
